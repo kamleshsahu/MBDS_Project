@@ -1,6 +1,7 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import android.widget.CheckBox;
@@ -47,6 +50,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_StartDest_NotFilled;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHeading;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorMsg_StartDest_NotFilled;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,14 +78,11 @@ public class MainActivity extends AppCompatActivity {
     static String timezone;
 
      TextView departAt;
-     CardView date_holder;
 
     static ProgressDialog progress;
 
-
-
-
-
+    static android.app.AlertDialog.Builder bld;
+    final MainActivity cont=MainActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,45 +91,9 @@ public class MainActivity extends AppCompatActivity {
         tv_source=findViewById(R.id.source);
         tv_dstn=findViewById(R.id.destination);
         recyclerView = findViewById(R.id.recycler);
-
-        tv_source.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
-              intent.putExtra("src",1);
-              startActivity(intent);
-            }
-        });
-
-        tv_dstn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
-                intent.putExtra("src",0);
-                startActivity(intent);
-            }
-        });
-
-
-        findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new RouteFinder(sp,dp,travelmode,avoid,responseCallback).find();
-            }
-        });
-
-
-        date_holder = findViewById(R.id.card_date);
+        progress=new ProgressDialog(this);
         departAt = findViewById(R.id.date1);
-        date_holder.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                datePicker();
-
-            }
-        });
-
+      
         final Calendar c = Calendar.getInstance();
         timezone=c.getTimeZone().getID();
         mYear = c.get(Calendar.YEAR);
@@ -150,60 +117,6 @@ public class MainActivity extends AppCompatActivity {
         ((ImageView) (findViewById(R.id.c))).setImageResource(R.drawable.walk_off);
         ((ImageView) (findViewById(R.id.d))).setImageResource(R.drawable.bike_off);
 
-
-        findViewById(R.id.swap).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(sp!=null && dp!=null) {
-                    resetresult();
-                    Point temp = sp;
-                    sp = dp;
-                    dp = temp;
-
-                    new TimeZoneOfOrigin(sp, new Callback<TimeZoneApiResponse>() {
-                        @Override
-                        public void onResponse(Call<TimeZoneApiResponse> call, Response<TimeZoneApiResponse> response) {
-                            timezone=response.body().getTimeZoneId();
-
-                            if(timezone!=null) {
-                                final Calendar c = Calendar.getInstance();
-                                c.setTimeZone(TimeZone.getTimeZone(timezone));
-                                mYear = c.get(Calendar.YEAR);
-                                mMonth = c.get(Calendar.MONTH);
-                                mDay = c.get(Calendar.DAY_OF_MONTH);
-                                mHour = c.get(Calendar.HOUR_OF_DAY);
-                                mMinute = c.get(Calendar.MINUTE);
-                               jstart_date_millis = c.getTimeInMillis() - ((mHour * 60 + mMinute) * 60 * 1000);
-                                jstart_time_millis = (mHour * 60 + mMinute) * 60 * 1000;
-
-
-                                String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
-                                String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
-                                String curr_time = sHour + ":" + sMinute;
-                                //       time.setText(curr_time);
-                               departAt.setText(curr_time + "," + mDay + " " + month[mMonth] + " " + String.valueOf(mYear).substring(2));
-                            }else{
-                              //  displayError(emsgHead,emsg);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<TimeZoneApiResponse> call, Throwable t) {
-                                  t.printStackTrace();
-                        }
-                    }).getTimeZone();
-
-                    String srctemp = tv_source.getText().toString();
-                    tv_source.setText(tv_dstn.getText());
-                    tv_dstn.setText(srctemp);
-
-                }else{
-                 //   displayError("Start/Destination Address no filled","Please fill Start and Destination to find routes");
-                    //Toast.makeText(context,"start or end Address is null",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
         findViewById(R.id.a).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,30 +224,101 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
+        bld = new AlertDialog.Builder(cont);
 
 
     }
 
-    Callback<DirectionsResponse> responseCallback= new Callback<DirectionsResponse>() {
+    public void findRoute_onClick(View view) {
+        if(sp!=null && dp!=null) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+            progress.setTitle("Loading Routes...");
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setIndeterminate(true);
+            progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            progress.show();
+
+            new RouteFinder(sp,dp,travelmode,avoid,RouteRespCallback).find();
+        }else{
+            displayError(ErrorHead_StartDest_NotFilled,ErrorMsg_StartDest_NotFilled);
+
+        }
+    }
+
+    Callback<TimeZoneApiResponse> timeZoneApiRespCallback=new Callback<TimeZoneApiResponse>() {
+        @Override
+        public void onResponse(Call<TimeZoneApiResponse> call, Response<TimeZoneApiResponse> response) {
+            progress.dismiss();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+            if(response.isSuccessful()) {
+                timezone=response.body().getTimeZoneId();
+                final Calendar c = Calendar.getInstance();
+                c.setTimeZone(TimeZone.getTimeZone(timezone));
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+                jstart_date_millis = c.getTimeInMillis() - ((mHour * 60 + mMinute) * 60 * 1000);
+                jstart_time_millis = (mHour * 60 + mMinute) * 60 * 1000;
+
+
+                String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
+                String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
+                String curr_time = sHour + ":" + sMinute;
+                //       time.setText(curr_time);
+                departAt.setText(curr_time + "," + mDay + " " + month[mMonth] + " " + String.valueOf(mYear).substring(2));
+            }else{
+                  displayError(ErrorHeading,response.message());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<TimeZoneApiResponse> call, Throwable t) {
+            progress.dismiss();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            t.printStackTrace();
+            displayError(ErrorHeading,t.getMessage());
+        }
+    };
+
+    Callback<DirectionsResponse> RouteRespCallback= new Callback<DirectionsResponse>() {
             @Override
             public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
 
-                directionapiresp = response.body();
-                LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setHasFixedSize(true);
+                progress.dismiss();
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-                RouteListAdapter adapterList = new RouteListAdapter(getApplicationContext(), directionapiresp);
+                if(response.isSuccessful()) {
+                    directionapiresp = response.body();
+                    LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+                    recyclerView.setLayoutManager(manager);
+                    recyclerView.setHasFixedSize(true);
 
-                recyclerView.setAdapter(adapterList);
+                    RouteListAdapter adapterList = new RouteListAdapter(getApplicationContext(), directionapiresp);
+
+                    recyclerView.setAdapter(adapterList);
+
+                }else {
+                    displayError(ErrorHeading,response.message());
+                }
             }
 
             @Override
             public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                progress.dismiss();
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 t.printStackTrace();
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                displayError(ErrorHeading,t.getMessage());
+   //             Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
+
+
         };
 
     @Override
@@ -348,30 +332,17 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.action_retry:
- //               directionapi=null;
-                recyclerView.setAdapter(null);
- //               requestDirection();
-//                Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
+                resetresult();
+                findRoute_onClick(null);
                 return true;
             case R.id.Subscription:
-//                Intent intent=new Intent(getApplicationContext(), Subscription.class);
-//                startActivity(intent);
-
-                //               Toast.makeText(this, "Retrying...", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(getApplicationContext(), Subscription.class);
+                startActivity(intent);
                 return true;
             case R.id.action_clr:
-//                Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
 
-                directionapiresp=null;
-                selectedroute=0;
-
- //               travelmode=0;
- //               HIGHWAYS=false;TOLLS=false;FERRIES=false;
-                travelmode=null;
-                avoid=null;
-                sp = null;
-                dp = null;
-
+                resetresult();
+                resetInputs();
                 finish();
                 startActivity(getIntent());
 
@@ -381,9 +352,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void datePicker() {
-
+    public void datePicker(View view) {
         // Get Current Date
 
 
@@ -462,16 +431,16 @@ public class MainActivity extends AppCompatActivity {
         ((CheckBox) findViewById(R.id.ferries)).setChecked(false);
     }
 
-//    static void displayError(String title, String msg){
-//
-//        bld.setMessage(msg);
-//        bld.setNeutralButton("OK", null);
-//        bld.setTitle(title);
-//        Log.d("TAG", "Showing alert dialog: " + msg);
-//        Dialog dialog=bld.create();
-//        //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-//        dialog.show();
-//    };
+    static void displayError(String title, String msg){
+
+        bld.setMessage(msg);
+        bld.setNeutralButton("OK", null);
+        bld.setTitle(title);
+        Log.d("TAG", "Showing alert dialog: " + msg);
+        Dialog dialog=bld.create();
+        //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
+    };
 
 
     @Override
@@ -489,5 +458,53 @@ public class MainActivity extends AppCompatActivity {
         dp = null;
     }
 
+   void resetInputs(){
+       selectedroute=0;
+       travelmode=DirectionsCriteria.PROFILE_DRIVING_TRAFFIC;
+       avoid=null;
+       sp = null;
+       dp = null;
+    }
 
+
+    public void source_onclick(View view) {
+        Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
+        intent.putExtra("src",1);
+        startActivity(intent);
+    }
+
+    public void destination_onclick(View view) {
+        Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
+        intent.putExtra("src",0);
+        startActivity(intent);
+    }
+
+
+    public void swap_onClick(View view) {
+        if(sp!=null && dp!=null) {
+            resetresult();
+            Point temp = sp;
+            sp = dp;
+            dp = temp;
+
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+            progress.setTitle("Fetching TimeZone...");
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setIndeterminate(true);
+            progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            progress.show();
+
+            new TimeZoneOfOrigin(sp, timeZoneApiRespCallback).getTimeZone();
+
+            String srctemp = tv_source.getText().toString();
+            tv_source.setText(tv_dstn.getText());
+            tv_dstn.setText(srctemp);
+
+        }else{
+            displayError(ErrorHead_StartDest_NotFilled,ErrorMsg_StartDest_NotFilled);        }
+    }
 }

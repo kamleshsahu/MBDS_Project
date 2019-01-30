@@ -48,7 +48,7 @@ public class SelectPlaceActivity extends AppCompatActivity {
 
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
 
-            MainActivity.tv_source.setText(feature.text());
+            MainActivity.tv_source.setText(feature.placeName());
             MainActivity.sp=feature.center();
 
             finish();
@@ -60,7 +60,7 @@ public class SelectPlaceActivity extends AppCompatActivity {
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
 
 
-            MainActivity.tv_dstn.setText(feature.text());
+            MainActivity.tv_dstn.setText(feature.placeName());
             MainActivity.dp=feature.center();
 
 

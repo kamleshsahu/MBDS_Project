@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Subscription"
+    android:id="@+id/main_layout"
+    android:visibility="visible"
+    >
+    <android.support.v7.widget.Toolbar
+        app:titleTextColor="@color/loo_pre"
+        android:background="@color/colorPrimary"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    <android.support.v7.widget.CardView
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/llTimeRemainingg"
+        app:cardBackgroundColor="#00C853"
+        app:cardElevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/llTimeRemaining"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/app_name"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="16sp"
+                android:id="@+id/tvTimeRemaining"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_below="@id/llTimeRemainingg"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout">
+
+    <include
+        android:id="@+id/sub_box"
+        layout="@layout/subscribe_layout_box"
+        />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2">
+
+
+        <ImageView
+            android:id="@+id/screen_wait"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+
+            android:visibility="gone" />
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_margin="10dp"
+    android:layout_alignParentBottom="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayout3">
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        app:fb_iconPosition="left"
+        app:fb_borderColor="#FFFFFF"
+        app:fb_borderWidth="1dp"
+        app:fb_defaultColor="@color/colorPrimary"
+        app:fb_focusColor="@color/colorPrimary"
+        app:fb_radius="30dp"
+        app:fb_text="Start Trial"
+        android:fontFamily="sans-serif-thin"
+        android:textSize="13sp"
+        android:padding="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:id="@+id/btnStartTrial"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:text="Start Trial" />
+    <mehdi.sakout.fancybuttons.FancyButton
+        app:fb_iconPosition="left"
+        app:fb_borderColor="#FFFFFF"
+        app:fb_borderWidth="1dp"
+        app:fb_defaultColor="@color/colorPrimary"
+        app:fb_focusColor="@color/colorPrimary"
+        app:fb_radius="30dp"
+        app:fb_text="Subscribe"
+        android:background="@color/alternateRoute"
+        android:fontFamily="sans-serif-thin"
+        android:textSize="15sp"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:onClick="onInfiniteGasButtonClicked"
+        android:id="@+id/subscribe"/>
+</LinearLayout>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--app:elevation="6dp"-->
+        <!--app:borderWidth="3dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:id="@+id/backbutton"-->
+        <!--android:src="@drawable/ic_close_black_24dp"-->
+       <!--android:layout_margin="16dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" >-->
+
+    <!--</android.support.design.widget.FloatingActionButton>-->
+
+</RelativeLayout>

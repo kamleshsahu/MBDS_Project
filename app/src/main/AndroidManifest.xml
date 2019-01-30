@@ -20,6 +20,7 @@
 
         </activity>
         <activity android:name=".Activity.SelectPlaceActivity" />
+        <activity android:name=".Activity.Subscription" />
 
     </application>
 

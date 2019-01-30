@@ -35,8 +35,22 @@ public class Constants {
 
 
    public static final String fastest_route="Fastest route,then usual traffic";
- 
-   
+
+   public static String SKU_INFINITE_GAS_MONTHLY = "monthly_01";
+   public static String SKU_INFINITE_GAS_QUATERLY = "quarterly_03";
+   public static String SKU_INFINITE_GAS_HALFYEARLY = "halfyearly_06";
+   public static String SKU_INFINITE_GAS_YEARLY = "yearly_12";
+
+   public static String TRIALY_APP_KEY = "CNXFXUSWNXNREPZN6FW"; //TODO: Replace with your app key, which can be found on your Trialy developer dashboard
+   public static String TRIALY_SKU = "premium_test"; //TODO: Replace with a trial SKU, which can be found on your Trialy developer dashboard. Each app can have multiple trials
+   public static String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsGAwg6yWWzv0sh77t3Ba+xkYOGxM2pfueFWaaVDt6eVLqbh2xbMpnThRWhuMAkFrEkLdN1DJWDZu1UuQZkUq7J4oUff3fpJny87yG8ATjBhxe1eT7bNXHyL66J/BVDW4rCC98bW4LE/ApsIdllFDxzxif5YM1wL8+E1X1J6liwnbwcjFv7mUWT/eCqMXe6OYegcc3d4Rvb/tinDTxDqAwWxK4SqwmRpFFzNnVen0X/Y+AG3iAWiTEmrF1MZuVn19iD+PxTSAE2e1Xsrp5l6TZlLWBMCTLXBXau2fMC6nAF9HJ63kLzJ604q713gP834mz/8fOUWjM2UN1QyFCMhLKwIDAQAB" ;
+
+
+   public static final String ErrorHeading="Error";
+   public static final String ErrorDesc="";
+
+   public static final String ErrorHead_StartDest_NotFilled="Start/Destination Address not filled";
+   public static final String ErrorMsg_StartDest_NotFilled="Please Select Start and Destination to find routes";
 
 
 }

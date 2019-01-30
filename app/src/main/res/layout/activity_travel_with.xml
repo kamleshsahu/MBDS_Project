@@ -36,6 +36,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:onClick="swap_onClick"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -67,6 +68,7 @@
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="10dp"
                                 android:id="@+id/source_field"
+                                android:onClick="source_onclick"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
@@ -112,6 +114,7 @@
                                 android:layout_marginTop="1dp"
                                 android:layout_width="match_parent"
                                 android:id="@+id/dstn_field"
+                                android:onClick="destination_onclick"
                                 android:layout_height="wrap_content">
 
 
@@ -169,6 +172,7 @@
 
                             android:layout_marginRight="10dp"
                             android:id="@+id/card_date"
+                            android:onClick="datePicker"
                             app:cardBackgroundColor="@color/colorAccent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -397,6 +401,7 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginTop="2dp"
                         android:id="@+id/submit"
+                        android:onClick="findRoute_onClick"
                         android:layout_gravity="center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
