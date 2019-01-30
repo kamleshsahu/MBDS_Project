@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_retry"
+        android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="retry"
+        app:showAsAction="always" />
+    <item
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:fontFamily="sans-serif-thin"
+        android:id="@+id/action_clr"
+        android:title="Clear"
+        app:showAsAction="always" />
+    <!--<item-->
+
+        <!--android:fontFamily="sans-serif-thin"-->
+        <!--android:id="@+id/Subscription"-->
+        <!--android:title="Subscription"-->
+        <!--app:showAsAction="never" />-->
+    <item
+        android:fontFamily="sans-serif-thin"
+        android:id="@+id/action_settings"
+        android:title="Show Weather After"
+        app:showAsAction="never" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:fontFamily="sans-serif-thin"
+                    android:id="@+id/km10"
+                    android:orderInCategory="1"
+                    android:title="Every 10 Km"/>
+                <item
+                    android:fontFamily="sans-serif-thin"
+                    android:id="@+id/km20"
+                    android:orderInCategory="1"
+                    android:title="Every 20 Km"/>
+
+                <item
+                    android:fontFamily="sans-serif-thin"
+                    android:id="@+id/km30"
+                    android:orderInCategory="2"
+                    android:title="Every 30 Km"/>
+
+                <item
+                    android:fontFamily="sans-serif-thin"
+                    android:id="@+id/km40"
+                    android:orderInCategory="3"
+                    android:title="Every 40 Km"/>
+
+                <item
+                    android:fontFamily="sans-serif-thin"
+                    android:id="@+id/km50"
+                    android:orderInCategory="4"
+                    android:checked="true"
+                    android:title="Every 50 Km"/>
+            </group>
+        </menu>
+    </item>
+</menu>

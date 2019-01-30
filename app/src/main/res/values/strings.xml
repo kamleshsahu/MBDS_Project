@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MapboxDemo</string>
+    <string name="FasttestRoute">Fastest route, despite the usual traffic</string>
+</resources>
