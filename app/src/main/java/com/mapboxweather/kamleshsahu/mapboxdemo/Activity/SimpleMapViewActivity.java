@@ -47,6 +47,7 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.bitmapfromstring;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.vipul.hp_hp.library.Layout_to_Image;
@@ -267,7 +268,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 //
 //        new RouteFinder(sp, dp, DirectionsCriteria.PROFILE_CYCLING, null, new Callback<DirectionsResponse>() {
 //            @Override
-//            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+//            public void onResponse(Call<DirectionsResponse> call, Resp<DirectionsResponse> response) {
 //                System.out.println("response");
 //                directionapiresp = response.body();
 //                DirectionsRoute route = directionapiresp.routes().get(0);
@@ -397,8 +398,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
             if (msg.obj != null) {
                 System.out.println("received weather data :");
-                Item item = (Item) msg.obj;
-
+                Resp resp = (Resp) msg.obj;
+                Item item=resp.getIntermediatePointData();
                 if (item != null) {
                     items.add(item);
                     MarkerOptions options = new MarkerOptions();
@@ -434,7 +435,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     options.setIcon(icon);
                     Marker marker= mapboxMap.addMarker(options);
                     markersInterm.add(marker);
+                }else {
+                    MainActivity.displayError(resp.getError().getHeading(),resp.getError().getMessage());
                 }
+            }else{
+                MainActivity.displayError("unknown error","error while finding weather");
             }
 
             return false;
@@ -448,7 +453,9 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
             if (msg.obj != null) {
                 System.out.println("received weather data :");
-                MStep mstep = (MStep) msg.obj;
+
+                Resp resp=(Resp)msg.obj;
+                MStep mstep = resp.getmStep();
 
                 if (mstep != null) {
                     mSteps.add(mstep);
@@ -484,6 +491,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     options.setIcon(icon);
                     Marker marker= mapboxMap.addMarker(options);
                     markersSteps.add(marker);
+                }else {
+                    MainActivity.displayError(resp.getError().getHeading(),resp.getError().getMessage());
                 }
             }
 
@@ -666,6 +675,9 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                // weatherApi = new WeatherApi();
                // weatherApi.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 //               Toast.makeText(this, "Fetching Weather...", Toast.LENGTH_SHORT).show();
+                mapboxMap.clear();
+                drawRoute();
+                showWeather(null);
                 return true;
 
             case R.id.action_clr:

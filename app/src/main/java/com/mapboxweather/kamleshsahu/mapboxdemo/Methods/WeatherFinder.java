@@ -15,9 +15,10 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi2;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
 
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +30,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity.items;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkSky_BaseURL;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkskyKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_Weather;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.strDays;
 
@@ -98,12 +100,12 @@ public class WeatherFinder {
                 //.addNetworkInterceptor(networkInterceptor)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.darksky.net/")
+                .baseUrl(DarkSky_BaseURL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        String llt=lat+","+lng;
+        String llt=lat+","+lng+","+time;
                 //"40.015,-105.2705";
                 //+","+System.currentTimeMillis()*1000;
 
@@ -112,7 +114,7 @@ public class WeatherFinder {
 //        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 //        sdf.setTimeZone(TimeZone.getTimeZone(calendar.getTimeZone().getID()));
 //        llt+=","+sdf.format(calendar.getTime());
-        llt+=","+time;
+
         ApiInterface apiService = retrofit.create(ApiInterface.class);
         Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt);
 
@@ -125,6 +127,7 @@ public class WeatherFinder {
                     public void onResponse(Call<Darkskyapi> call, Response<Darkskyapi> response) {
 
 
+                        if(response.isSuccessful()){
                         Darkskyapi resp = response.body();
                         System.out.println("weather resp :" + new Gson().toJson(resp));
 
@@ -144,17 +147,29 @@ public class WeatherFinder {
                         Item item = new Item(new LatLng(resp.getLatitude(), resp.getLongitude()), resp.getCurrently(), stn_arrtime, "", matrixResponse.destinations().get(k).name());
 
                         Message message = new Message();
-                        message.obj = item;
+                        message.obj = new Resp(item);
                         SimpleMapViewActivity.myItemhandler.sendMessage(message);
-                    }
+
+                        }else {
+                            Message message = new Message();
+                            message.obj = new Resp(new mError(ErrorHead_Weather, response.message()));
+                            SimpleMapViewActivity.myItemhandler.sendMessage(message);
+                        }
+                }
 
                     @Override
                     public void onFailure(Call<Darkskyapi> call, Throwable t) {
-
+                           t.printStackTrace();
+                        Message message = new Message();
+                        message.obj = new Resp(new mError(ErrorHead_Weather,t.getMessage()));
+                        SimpleMapViewActivity.myStephandler.sendMessage(message);
                     }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
+                Message message = new Message();
+                message.obj = new Resp(new mError(ErrorHead_Weather,e.getMessage()));
+                SimpleMapViewActivity.myItemhandler.sendMessage(message);
             }
 
         }
@@ -173,20 +188,20 @@ public class WeatherFinder {
                 //.addNetworkInterceptor(networkInterceptor)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.darksky.net/")
+                .baseUrl(DarkSky_BaseURL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        String llt=lat+","+lng;
+        String llt=lat+","+lng+","+time;
         //"40.015,-105.2705";
         //+","+System.currentTimeMillis()*1000;
 
-        Calendar calendar=Calendar.getInstance();
+//        Calendar calendar=Calendar.getInstance();
 
 //        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 //        sdf.setTimeZone(TimeZone.getTimeZone(calendar.getTimeZone().getID()));
-        llt+=","+time;
+
         ApiInterface apiService = retrofit.create(ApiInterface.class);
         Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt);
 
@@ -198,33 +213,42 @@ public class WeatherFinder {
                 @Override
                 public void onResponse(Call<Darkskyapi> call, Response<Darkskyapi> response) {
 
-            //        System.out.println(response.raw());
+                    if(response.isSuccessful()) {
+                        Darkskyapi resp = response.body();
+                        final Calendar c = Calendar.getInstance();
+                        c.setTimeZone(TimeZone.getTimeZone(resp.getTimezone()));
+                        c.setTimeInMillis(Long.parseLong(resp.getCurrently().getTime()) * 1000);
+                        int mHour = c.get(Calendar.HOUR_OF_DAY);
+                        int mMinute = c.get(Calendar.MINUTE);
 
-                    Darkskyapi resp = response.body();
-                    final Calendar c = Calendar.getInstance();
-                    c.setTimeZone(TimeZone.getTimeZone(resp.getTimezone()));
-                    c.setTimeInMillis(Long.parseLong(resp.getCurrently().getTime())*1000);
-                    int mHour = c.get(Calendar.HOUR_OF_DAY);
-                    int mMinute = c.get(Calendar.MINUTE);
+                        String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
+                        String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
+                        String stn_arrtime = sHour + ":" + sMinute + " ," + strDays[c.get(Calendar.DAY_OF_WEEK) - 1] + " ," + c.get(Calendar.DAY_OF_MONTH) + " " + month[c.get(Calendar.MONTH)] + " " + String.valueOf(c.get(Calendar.YEAR)).substring(2);
+                        //"."+d.getTimezone();
+                        MStep mStep = new MStep(pos, step, resp.getCurrently(), stn_arrtime, aft_distance, step.distance());
 
-                    String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
-                    String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
-                    String stn_arrtime = sHour + ":" + sMinute +" ,"+strDays[c.get(Calendar.DAY_OF_WEEK)-1]+" ,"+c.get(Calendar.DAY_OF_MONTH)+" "+month[c.get(Calendar.MONTH)]+" "+String.valueOf(c.get(Calendar.YEAR)).substring(2);
-                    //"."+d.getTimezone();
-                    MStep mStep=new MStep(pos,step,resp.getCurrently(), stn_arrtime,aft_distance, step.distance());
-
-                    Message message = new Message();
-                    message.obj = mStep;
-                    SimpleMapViewActivity.myStephandler.sendMessage(message);
+                        Message message = new Message();
+                        message.obj = new Resp(mStep);
+                        SimpleMapViewActivity.myStephandler.sendMessage(message);
+                    }else{
+                        Message message = new Message();
+                        message.obj = new Resp(new mError(ErrorHead_Weather,response.message()));
+                        SimpleMapViewActivity.myStephandler.sendMessage(message);
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<Darkskyapi> call, Throwable t) {
-
+                    Message message = new Message();
+                    message.obj = new Resp(new mError(ErrorHead_Weather,t.getMessage()));
+                    SimpleMapViewActivity.myStephandler.sendMessage(message);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            Message message = new Message();
+            message.obj = new Resp(new mError(ErrorHead_Weather,e.getMessage()));
+            SimpleMapViewActivity.myStephandler.sendMessage(message);
         }
 
     }

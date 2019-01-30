@@ -52,5 +52,10 @@ public class Constants {
    public static final String ErrorHead_StartDest_NotFilled="Start/Destination Address not filled";
    public static final String ErrorMsg_StartDest_NotFilled="Please Select Start and Destination to find routes";
 
+   public static final String ErrorHead_Weather="Error fetching Weather";
+   public static final String ErrorHead_STEP="Error in Step Activity";
+   public static final String ErrorHead_MainFunction="Error in Main Function";
+   public static final String ErrorHead_IntermFunction="Error in Interm_Point Function";
 
+   public static final String DarkSky_BaseURL="https://api.darksky.net/";
 }

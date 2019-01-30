@@ -1,13 +1,18 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
 
+import android.os.Message;
+
 import com.google.gson.Gson;
 import com.mapbox.api.matrix.v1.models.MatrixResponse;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi2;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +24,8 @@ import java.util.TimeZone;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_IntermFunction;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_STEP;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.strDays;
 
@@ -65,33 +72,42 @@ public class ALLIntermsWeatherFinder  {
         public void onResponse(Call<MatrixResponse> call, Response<MatrixResponse> response) {
 
 
-            System.out.println(response.code());
-            System.out.println(response.raw());
-            distanceMatrix = response.body();
-            for (int k=0;k<distanceMatrix.destinations().size();k++) {
+            if(response.isSuccessful()) {
+                System.out.println(response.code());
+                System.out.println(response.raw());
+                distanceMatrix = response.body();
+                for (int k = 0; k < distanceMatrix.destinations().size(); k++) {
 
 
-                long duration =distanceMatrix.durations().get(0)[k].intValue();
+                    long duration = distanceMatrix.durations().get(0)[k].intValue();
 
-                long arrival_time_millis = dep_time_millis + duration * 1000;
-                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-             //  System.out.println("timezone id :"+timezoneid);
-             //   if(timezoneid!=null)
+                    long arrival_time_millis = dep_time_millis + duration * 1000;
+                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                    //  System.out.println("timezone id :"+timezoneid);
+                    //   if(timezoneid!=null)
 
-                sdf.setTimeZone(TimeZone.getTimeZone(timezoneid));
-                String time=sdf.format(arrival_time_millis);
-                final int FinalK=k;
-                new WeatherFinder(FinalK,interms.get(FinalK),distanceMatrix,time).fetchWeather();
+                    sdf.setTimeZone(TimeZone.getTimeZone(timezoneid));
+                    String time = sdf.format(arrival_time_millis);
+                    final int FinalK = k;
+                    new WeatherFinder(FinalK, interms.get(FinalK), distanceMatrix, time).fetchWeather();
 
 
-                //  return new Item(point, resp.getCurrently(), stn_arrtime, distanceMatrix.rows[0].elements[k].DistanceCalculator.humanReadable, distanceMatrix.destinationAddresses[k].toString());
+                    //  return new Item(point, resp.getCurrently(), stn_arrtime, distanceMatrix.rows[0].elements[k].DistanceCalculator.humanReadable, distanceMatrix.destinationAddresses[k].toString());
+                }
+            }else {
+                Message message = new Message();
+                message.obj = new Resp(new mError(ErrorHead_IntermFunction,response.message()));
+                SimpleMapViewActivity.myItemhandler.sendMessage(message);
+
             }
         }
 
         @Override
         public void onFailure(Call<MatrixResponse> call, Throwable t) {
-
-             t.printStackTrace();
+            t.printStackTrace();
+            Message message = new Message();
+            message.obj = new Resp(new mError(ErrorHead_IntermFunction,t.getMessage()));
+            SimpleMapViewActivity.myItemhandler.sendMessage(message);
         }
     };
 

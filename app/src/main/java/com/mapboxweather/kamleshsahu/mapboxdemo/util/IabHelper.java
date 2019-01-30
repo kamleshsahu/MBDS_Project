@@ -270,7 +270,7 @@ public class IabHelper {
                             logDebug("Subscriptions AVAILABLE.");
                             mSubscriptionsSupported = true;
                         } else {
-                            logDebug("Subscriptions NOT AVAILABLE. Response: " + response);
+                            logDebug("Subscriptions NOT AVAILABLE. Resp: " + response);
                             mSubscriptionsSupported = false;
                             mSubscriptionUpdateSupported = false;
                         }
@@ -585,13 +585,13 @@ public class IabHelper {
             }
         }
         else if (resultCode == Activity.RESULT_CANCELED) {
-            logDebug("Purchase canceled - Response: " + getResponseDesc(responseCode));
+            logDebug("Purchase canceled - Resp: " + getResponseDesc(responseCode));
             result = new IabResult(IABHELPER_USER_CANCELLED, "User canceled.");
             if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
         }
         else {
             logError("Purchase failed. Result code: " + Integer.toString(resultCode)
-                    + ". Response: " + getResponseDesc(responseCode));
+                    + ". Resp: " + getResponseDesc(responseCode));
             result = new IabResult(IABHELPER_UNKNOWN_PURCHASE_RESPONSE, "Unknown purchase response.");
             if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
         }
