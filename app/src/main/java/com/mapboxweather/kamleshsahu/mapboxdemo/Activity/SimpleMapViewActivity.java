@@ -1,5 +1,6 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -100,6 +102,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     long interval=50000;
     int i=0;
     static MapboxMap mapboxMap;
+    int totalsteps=0;
 
 
 
@@ -211,8 +214,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 //   Toast.makeText(mApp, "0", Toast.LENGTH_SHORT).show();
         }
 ////////////////////////////////////////////////////////////////////
-       //directionapiresp=;
-      //  selectedroute=getIntent().getIntExtra("selectedroute",0);
+
 
 ////////////////////////////////////////////////////////////
         //drag up list adapter
@@ -436,9 +438,13 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     Marker marker= mapboxMap.addMarker(options);
                     markersInterm.add(marker);
                 }else {
+                    MainActivity.progress.dismiss();
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     MainActivity.displayError(resp.getError().getHeading(),resp.getError().getMessage());
                 }
             }else{
+                MainActivity.progress.dismiss();
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 MainActivity.displayError("unknown error","error while finding weather");
             }
 
@@ -459,10 +465,13 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
                 if (mstep != null) {
                     mSteps.add(mstep);
+                    if(MainActivity.progress!=null) MainActivity.progress.setProgress((int)(100/totalsteps)* mSteps.size());
                     if (--stepcount <= 0) {
-
                         Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
                         link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
+
+                        MainActivity.progress.dismiss();
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
 
 
@@ -492,6 +501,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     Marker marker= mapboxMap.addMarker(options);
                     markersSteps.add(marker);
                 }else {
+                    MainActivity.progress.dismiss();
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     MainActivity.displayError(resp.getError().getHeading(),resp.getError().getMessage());
                 }
             }
@@ -522,7 +533,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
             routeadapter.notifyDataSetChanged();
 
             polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
-            polylineOptionsList.get(val).width(10);
+            polylineOptionsList.get(val).width(9);
             Polyline selectedPolyline=mapboxMap.addPolyline(polylineOptionsList.get(val));
             polylines.set(val,selectedPolyline);
 
@@ -563,6 +574,17 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
     public void showWeather(View view){
+        MainActivity.progress.setTitle("Loading Weather Data...");
+        MainActivity.progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        MainActivity.progress.setIndeterminate(false);
+        MainActivity.progress.setProgress(0);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        MainActivity.progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        MainActivity.progress.show();
+
+        totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
 
         new task().execute();
     }

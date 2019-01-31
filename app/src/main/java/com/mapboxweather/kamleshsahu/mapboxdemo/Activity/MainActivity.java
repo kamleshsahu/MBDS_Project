@@ -35,8 +35,11 @@ import android.widget.Toast;
 
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeZoneOfOrigin;
@@ -53,6 +56,9 @@ import retrofit2.Response;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_StartDest_NotFilled;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHeading;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorMsg_StartDest_NotFilled;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.REQUEST_CODE_AUTOCOMPLETE1;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.REQUEST_CODE_AUTOCOMPLETE2;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
 
 public class MainActivity extends AppCompatActivity {
@@ -227,6 +233,47 @@ public class MainActivity extends AppCompatActivity {
         bld = new AlertDialog.Builder(cont);
 
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE1) {
+            CarmenFeature feature = PlaceAutocomplete.getPlace(data);
+            System.out.println("feature text :"+feature.text());
+
+            Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
+
+            MainActivity.tv_source.setText(feature.placeName());
+            MainActivity.sp=feature.center();
+
+
+            progress.setTitle("Fetching TimeZone...");
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setIndeterminate(true);
+            progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            progress.show();
+
+            new TimeZoneOfOrigin(sp, timeZoneApiRespCallback).getTimeZone();
+
+
+
+        }else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE2) {
+            CarmenFeature feature = PlaceAutocomplete.getPlace(data);
+            System.out.println("feature text :"+feature.text());
+
+            Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
+
+
+            MainActivity.tv_dstn.setText(feature.placeName());
+            MainActivity.dp=feature.center();
+
+
+
+        }
     }
 
     public void findRoute_onClick(View view) {
@@ -468,15 +515,40 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void source_onclick(View view) {
-        Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
-        intent.putExtra("src",1);
-        startActivity(intent);
+//        Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
+//        intent.putExtra("src",1);
+//        startActivity(intent);
+        PlaceOptions placeOptions=PlaceOptions
+                .builder()
+                .hint("Start Address...")
+                .backgroundColor(getResources().getColor(R.color.loo_pre))
+                .build();
+
+        Intent intent = new PlaceAutocomplete.IntentBuilder()
+                .accessToken(MapboxKey)
+                .placeOptions(placeOptions)
+                .build(MainActivity.this);
+
+        startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE1);
     }
 
     public void destination_onclick(View view) {
-        Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
-        intent.putExtra("src",0);
-        startActivity(intent);
+//        Intent intent=new Intent(MainActivity.this,SelectPlaceActivity.class);
+//        intent.putExtra("src",0);
+//        startActivity(intent);
+
+        PlaceOptions placeOptions=PlaceOptions
+                .builder()
+                .hint("Destination Address...")
+                .backgroundColor(getResources().getColor(R.color.loo_pre))
+                .build();
+
+        Intent intent = new PlaceAutocomplete.IntentBuilder()
+                .accessToken(MapboxKey)
+                .placeOptions(placeOptions)
+                .build(MainActivity.this);
+
+        startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE2);
     }
 
 
@@ -487,8 +559,6 @@ public class MainActivity extends AppCompatActivity {
             sp = dp;
             dp = temp;
 
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
             progress.setTitle("Fetching TimeZone...");
             progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);

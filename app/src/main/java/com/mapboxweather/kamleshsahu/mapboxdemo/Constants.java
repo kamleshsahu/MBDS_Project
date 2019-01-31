@@ -58,4 +58,7 @@ public class Constants {
    public static final String ErrorHead_IntermFunction="Error in Interm_Point Function";
 
    public static final String DarkSky_BaseURL="https://api.darksky.net/";
+
+   public static final int REQUEST_CODE_AUTOCOMPLETE1=1001;
+   public static final int REQUEST_CODE_AUTOCOMPLETE2=1002;
 }
