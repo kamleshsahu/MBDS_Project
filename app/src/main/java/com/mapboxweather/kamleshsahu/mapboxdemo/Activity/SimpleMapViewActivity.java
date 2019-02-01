@@ -1,5 +1,7 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,8 +79,9 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
     private MapView mapView;
     public static Handler myItemhandler,myStephandler;
-    public static List<Item> items=new ArrayList<>();
-    public static List<MStep> mSteps=new ArrayList<>();
+  ;
+
+
     Point sp=MainActivity.sp,dp=MainActivity.dp;
     DirectionsResponse directionapiresp=MainActivity.directionapiresp;
     int stepcount=0;
@@ -87,10 +91,13 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     long jstarttime=MainActivity.jstart_date_millis+MainActivity.jstart_time_millis;
 
     static android.app.AlertDialog.Builder bld;
-    static List<PolylineOptions> polylineOptionsList=new ArrayList<>();
-    static List<Polyline> polylines=new ArrayList<>();
-    static List<Marker> markersInterm = new ArrayList<>();
-    static List<Marker> markersSteps = new ArrayList<>();
+
+    List<PolylineOptions> polylineOptionsList;
+    List<Item> items;
+    List<MStep> mSteps;
+    List<Polyline> polylines;
+    List<Marker> markersInterm;
+    List<Marker> markersSteps;
 
     static SlidingUpPanelLayout slidingUpPanelLayout;
     static RecyclerView link;
@@ -104,7 +111,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     static MapboxMap mapboxMap;
     int totalsteps=0;
 
-
+    ProgressDialog progress;
+    final SimpleMapViewActivity cont=SimpleMapViewActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +124,14 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
         // This contains the MapView in XML and needs to be called after the access token is configured.
         setContentView(R.layout.activity_basic_simple_mapview);
+        items = new ArrayList<>();
+        mSteps = new ArrayList<>();
+        polylineOptionsList = new ArrayList<>();
+        markersSteps = new ArrayList<>();
+        markersInterm = new ArrayList<>();
+        polylines = new ArrayList<>();
+
+        progress=new ProgressDialog(this);
         ////////////////////////////////////////////////////////////
         //menu
         setTitle("MapView");
@@ -242,7 +258,6 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
                 SimpleMapViewActivity.mapboxMap = mapboxMap;
                 drawRoute();
-
                 mapboxMap.setOnPolylineClickListener(polylineClickListener);
 
             }
@@ -266,58 +281,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
 //////////////////////////////////////////////////////////////////////////////////
-
-//
-//        new RouteFinder(sp, dp, DirectionsCriteria.PROFILE_CYCLING, null, new Callback<DirectionsResponse>() {
-//            @Override
-//            public void onResponse(Call<DirectionsResponse> call, Resp<DirectionsResponse> response) {
-//                System.out.println("response");
-//                directionapiresp = response.body();
-//                DirectionsRoute route = directionapiresp.routes().get(0);
-//                stepcount = route.legs().get(0).steps().size();
-//                List<LatLng> points = new ArrayList<>();
-//                List<Point> coords = LineString.fromPolyline(route.geometry(), Constants.PRECISION_6).coordinates();
-//                //    new task().execute();
-//                Polyline polyline = null;
-//                for (Point point : coords) {
-//                    points.add(new LatLng(point.latitude(), point.longitude()));
-//                }
-//
-//                if (!points.isEmpty()) {
-//
-//                    if (polyline != null) {
-//                        mapboxMap.removePolyline(polyline);
-//                    }
-//
-//                    // Draw polyline on map
-//                    polyline = mapboxMap.addPolyline(new PolylineOptions()
-//                            .addAll(points)
-//                            .color(Color.parseColor("#4264fb"))
-//                            .width(5));
-//
-//
-//                }
-//
-//                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(0));
-//                link.setAdapter(routeadapter);
-//                if (directionapiresp.routes().get(0).legs().get(0).distance() != null) {
-//                    slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//                t.printStackTrace();
-//            }
-//        }).find();
-
-//        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-//            // only for gingerbread and newer versions
-//            ((LinearLayout)findViewById(R.id.show)).setBackgroundResource(R.drawable.chat);
-//        } else {
-//            ((LinearLayout) findViewById(R.id.show)).setBackgroundResource(R.drawable.ic_chat_bubble_black_24dp);
-//        }
+        bld = new AlertDialog.Builder(cont);
 
     }
 ///////////////////////////////////////////////////////////////
@@ -343,6 +307,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
         Polyline selectedPolyline = null;
         PolylineOptions SelectedpolyOptions = null;
+        polylines=new ArrayList<>();
 
         for (int i = 0; i < directionapiresp.routes().size(); i++) {
             if (i != selectedroute) {
@@ -376,7 +341,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
                 SelectedpolyOptions = new PolylineOptions();
                 SelectedpolyOptions.color(getApplicationContext().getResources().getColor(R.color.seletedRoute));
-                SelectedpolyOptions.width(10);
+                SelectedpolyOptions.width(9);
                 SelectedpolyOptions.addAll(points);
                 polylineOptionsList.add(SelectedpolyOptions);
 
@@ -399,7 +364,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
             if (msg.obj != null) {
-                System.out.println("received weather data :");
+                System.out.println("received interm weather data :");
                 Resp resp = (Resp) msg.obj;
                 Item item=resp.getIntermediatePointData();
                 if (item != null) {
@@ -438,14 +403,16 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     Marker marker= mapboxMap.addMarker(options);
                     markersInterm.add(marker);
                 }else {
-                    MainActivity.progress.dismiss();
+                    Log.e("error","item null,item handler");
+                    progress.dismiss();
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    MainActivity.displayError(resp.getError().getHeading(),resp.getError().getMessage());
+                    displayError(resp.getError().getHeading(),resp.getError().getMessage());
                 }
             }else{
-                MainActivity.progress.dismiss();
+                Log.e("error","message obj null,item handler");
+                progress.dismiss();
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                MainActivity.displayError("unknown error","error while finding weather");
+                displayError("unknown error","error while finding weather");
             }
 
             return false;
@@ -458,19 +425,19 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
             if (msg.obj != null) {
-                System.out.println("received weather data :");
+                System.out.println("received step weather data :");
 
                 Resp resp=(Resp)msg.obj;
                 MStep mstep = resp.getmStep();
 
                 if (mstep != null) {
                     mSteps.add(mstep);
-                    if(MainActivity.progress!=null) MainActivity.progress.setProgress((int)(100/totalsteps)* mSteps.size());
+           //         if(progress!=null) progress.setProgress((int)(100/totalsteps)* mSteps.size());
                     if (--stepcount <= 0) {
                         Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
                         link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
 
-                        MainActivity.progress.dismiss();
+                        progress.dismiss();
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
 
@@ -501,9 +468,9 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     Marker marker= mapboxMap.addMarker(options);
                     markersSteps.add(marker);
                 }else {
-                    MainActivity.progress.dismiss();
+                    progress.dismiss();
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    MainActivity.displayError(resp.getError().getHeading(),resp.getError().getMessage());
+                    displayError(resp.getError().getHeading(),resp.getError().getMessage());
                 }
             }
 
@@ -574,17 +541,17 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
     public void showWeather(View view){
-        MainActivity.progress.setTitle("Loading Weather Data...");
-        MainActivity.progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        MainActivity.progress.setIndeterminate(false);
-        MainActivity.progress.setProgress(0);
+//        progress.setTitle("Loading Weather Data...");
+//        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        progress.setIndeterminate(false);
+//        progress.setProgress(0);
+//
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//        progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//        progress.show();
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        MainActivity.progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        MainActivity.progress.show();
-
-        totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
+//        totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
 
         new task().execute();
     }
@@ -697,7 +664,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                // weatherApi = new WeatherApi();
                // weatherApi.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 //               Toast.makeText(this, "Fetching Weather...", Toast.LENGTH_SHORT).show();
-                mapboxMap.clear();
+
                 drawRoute();
                 showWeather(null);
                 return true;
@@ -712,4 +679,20 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+
+    static void displayError(String title, String msg){
+
+        bld.setMessage(msg);
+        bld.setNeutralButton("OK", null);
+        bld.setTitle(title);
+        Log.d("TAG", "Showing alert dialog: " + msg);
+        Dialog dialog=bld.create();
+        //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
+    };
 }

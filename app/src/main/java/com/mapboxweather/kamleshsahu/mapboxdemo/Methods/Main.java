@@ -120,6 +120,7 @@ public class Main {
                         next += (int) interval;
                     }
                 }
+
                 if (interms.size() > 0) {
                     new ALLIntermsWeatherFinder(steps.get(k).maneuver().location(), interms, travelmode, timezoneid, jstarttime, aft_duration).call();
                 }

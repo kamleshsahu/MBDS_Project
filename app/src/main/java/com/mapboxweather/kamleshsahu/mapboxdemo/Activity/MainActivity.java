@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
      TextView departAt;
 
-    static ProgressDialog progress;
+     ProgressDialog progress;
 
     static android.app.AlertDialog.Builder bld;
     final MainActivity cont=MainActivity.this;

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class Subscription extends AppCompatActivity implements IabBroadcastRecei
     static final String TAG = "Subscription Activity";
 
     // Does the user have the premium upgrade?
+
 
 
     // Does the user have an active subscription to the infinite gas plan?
@@ -120,8 +122,11 @@ public class Subscription extends AppCompatActivity implements IabBroadcastRecei
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_subscription);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         findViewById(R.id.sub_card).setBackgroundResource(R.drawable.gradient);
 
@@ -220,17 +225,17 @@ public class Subscription extends AppCompatActivity implements IabBroadcastRecei
             }
         });
 
-
-        Toolbar back = (Toolbar) findViewById(R.id.toolbar);
-
-        back.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // back button pressed
-                startActivity(new Intent(Subscription.this,MainActivity.class));
-                finish();
-            }
-        });
+//
+//        Toolbar back = (Toolbar) findViewById(R.id.toolbar);
+//
+//        back.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // back button pressed
+//                startActivity(new Intent(Subscription.this,MainActivity.class));
+//                finish();
+//            }
+//        });
     }
 
     // Listener that's called when we finish querying the items and subscriptions we own
@@ -771,20 +776,42 @@ public class Subscription extends AppCompatActivity implements IabBroadcastRecei
     }
 
 
-    @Override
-    public void onBackPressed() {
-
-        if(!mSubscribedToInfiniteGas && !havetrial) {
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-            System.exit(0);
-
-            }
-        super.onBackPressed();
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                //Write your logic here
+//                if(!mSubscribedToInfiniteGas && !havetrial) {
+//                    Intent intent = new Intent(Intent.ACTION_MAIN);
+//                    intent.addCategory(Intent.CATEGORY_HOME);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                    finish();
+//                    System.exit(0);
+//
+//                }
+//                super.onBackPressed();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
+//
+//
+//    @Override
+//    public void onBackPressed() {
+//
+//        if(!mSubscribedToInfiniteGas && !havetrial) {
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_HOME);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            finish();
+//            System.exit(0);
+//
+//            }
+//        super.onBackPressed();
+//    }
 
 
 }

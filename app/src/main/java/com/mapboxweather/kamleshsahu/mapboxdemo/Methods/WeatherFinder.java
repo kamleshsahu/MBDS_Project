@@ -3,6 +3,7 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
 
 import android.os.Message;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mapbox.api.directions.v5.models.LegStep;
@@ -129,7 +130,7 @@ public class WeatherFinder {
 
                         if(response.isSuccessful()){
                         Darkskyapi resp = response.body();
-                        System.out.println("weather resp :" + new Gson().toJson(resp));
+                        System.out.println("item weather resp :" + new Gson().toJson(resp));
 
                         int k = pos;
 
@@ -151,6 +152,9 @@ public class WeatherFinder {
                         SimpleMapViewActivity.myItemhandler.sendMessage(message);
 
                         }else {
+                            Log.e("error","response not success,on response,item weather caller,matrixcall enque");
+
+                            System.out.println(response.errorBody());
                             Message message = new Message();
                             message.obj = new Resp(new mError(ErrorHead_Weather, response.message()));
                             SimpleMapViewActivity.myItemhandler.sendMessage(message);
@@ -159,13 +163,15 @@ public class WeatherFinder {
 
                     @Override
                     public void onFailure(Call<Darkskyapi> call, Throwable t) {
-                           t.printStackTrace();
+                        t.printStackTrace();
+                        Log.e("error","weather enque,on failture,item weather caller,matrixcall enque");
                         Message message = new Message();
                         message.obj = new Resp(new mError(ErrorHead_Weather,t.getMessage()));
-                        SimpleMapViewActivity.myStephandler.sendMessage(message);
+                        SimpleMapViewActivity.myItemhandler.sendMessage(message);
                     }
                 });
             } catch (Exception e) {
+                Log.e("error","item weather caller,catch block,matrixcall enque");
                 e.printStackTrace();
                 Message message = new Message();
                 message.obj = new Resp(new mError(ErrorHead_Weather,e.getMessage()));

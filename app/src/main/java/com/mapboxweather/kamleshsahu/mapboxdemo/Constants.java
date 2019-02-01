@@ -1,5 +1,10 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Constants {
 
    public final static String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -61,4 +66,15 @@ public class Constants {
 
    public static final int REQUEST_CODE_AUTOCOMPLETE1=1001;
    public static final int REQUEST_CODE_AUTOCOMPLETE2=1002;
+
+//   public static Map<String,Integer> max_Api_Count=new HashMap<>();
+//
+//   public Constants() {
+//      max_Api_Count.put(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC,9);
+//      max_Api_Count.put(DirectionsCriteria.PROFILE_DRIVING,24);
+//      max_Api_Count.put(DirectionsCriteria.PROFILE_CYCLING,24);
+//      max_Api_Count.put(DirectionsCriteria.PROFILE_WALKING,24);
+//   }
+
+
 }
