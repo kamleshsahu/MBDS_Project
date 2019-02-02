@@ -44,6 +44,7 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main;
@@ -79,7 +80,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
     private MapView mapView;
     public static Handler myItemhandler,myStephandler;
-  ;
+
 
 
     Point sp=MainActivity.sp,dp=MainActivity.dp;
@@ -260,6 +261,22 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 drawRoute();
                 mapboxMap.setOnPolylineClickListener(polylineClickListener);
 
+                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(@NonNull Marker marker) {
+
+                       Log.i("marker id ",marker.getId()+"");
+                        if(marker.getId()>=1000){
+                            Log.i("marker clicked","step marker clicked");
+                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get((int)marker.getId()-1000)).show();
+                        }else{
+                            Log.i("marker clicked","item marker clicked");
+                            new CustomDialogClass(SimpleMapViewActivity.this,items.get((int)marker.getId())).show();
+                            }
+                        return false;
+                    }
+                });
+
             }
 
         });
@@ -373,25 +390,25 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     options.setPosition(item.getPoint());
 
                     LinearLayout relativeLayout = findViewById(R.id.show);
-                    TextView time = findViewById(R.id.step_time);
+//                    TextView time = findViewById(R.id.step_time);
                     TextView weather = findViewById(R.id.step_weather);
                     ImageView step_icon = findViewById(R.id.step_icon);
-                    TextView location_name = findViewById(R.id.location_name);
+//                    TextView location_name = findViewById(R.id.location_name);
                     Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
 
 
-                    String time_data[] = item.getArrtime().split(",", 2);
-                    if (time_data.length >= 2)
-                        time.setText(time_data[0] + "\n" + time_data[1]);
-                    else time.setText(item.getArrtime());
-                    if (item.getLname() != null) {
-                        String lname[] = item.getLname().split(",");
-                        if (lname.length >= 2)
-                            location_name.setText(lname[0].length() < 20 ? lname[0] : lname[0].substring(0, 19) + "..,\n" + lname[1]);
-                        else {
-                            location_name.setText(lname[0]);
-                        }
-                    }
+//                    String time_data[] = item.getArrtime().split(",", 2);
+//                    if (time_data.length >= 2)
+//                        time.setText(time_data[0] + "\n" + time_data[1]);
+//                    else time.setText(item.getArrtime());
+//                    if (item.getLname() != null) {
+//                        String lname[] = item.getLname().split(",");
+//                        if (lname.length >= 2)
+//                            location_name.setText(lname[0].length() < 20 ? lname[0] : lname[0].substring(0, 19) + "..,\n" + lname[1]);
+//                        else {
+//                            location_name.setText(lname[0]);
+//                        }
+//                    }
 
                     ImageView image = step_icon;
                     new bitmapfromstring(item.getWlist().getIcon(), image, weather);
@@ -401,6 +418,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                             .fromBitmap(bitmap);
                     options.setIcon(icon);
                     Marker marker= mapboxMap.addMarker(options);
+                    marker.setId(markersInterm.size());
                     markersInterm.add(marker);
                 }else {
                     Log.e("error","item null,item handler");
@@ -432,7 +450,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
                 if (mstep != null) {
                     mSteps.add(mstep);
-           //         if(progress!=null) progress.setProgress((int)(100/totalsteps)* mSteps.size());
+                    if(progress!=null) progress.setProgress((int)(100/totalsteps)* mSteps.size());
                     if (--stepcount <= 0) {
                         Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
                         link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
@@ -445,17 +463,17 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     MarkerOptions options = new MarkerOptions();
                     options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
                     LinearLayout relativeLayout = findViewById(R.id.show);
-                    TextView time = findViewById(R.id.step_time);
+//                    TextView time = findViewById(R.id.step_time);
                     TextView weather = findViewById(R.id.step_weather);
                     ImageView step_icon = findViewById(R.id.step_icon);
-                    TextView location_name = findViewById(R.id.location_name);
+//                   TextView location_name = findViewById(R.id.location_name);
                     Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
 
 
-                    String time_data[] = mstep.getArrtime().split(",", 2);
-                    if (time_data.length >= 2)
-                        time.setText(time_data[0] + "\n" + time_data[1]);
-                    else time.setText(mstep.getArrtime());
+//                    String time_data[] = mstep.getArrtime().split(",", 2);
+//                    if (time_data.length >= 2)
+//                        time.setText(time_data[0] + "\n" + time_data[1]);
+//                    else time.setText(mstep.getArrtime());
 
 
                     ImageView image = step_icon;
@@ -466,6 +484,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                             .fromBitmap(bitmap);
                     options.setIcon(icon);
                     Marker marker= mapboxMap.addMarker(options);
+                    marker.setId(1000+markersSteps.size());
                     markersSteps.add(marker);
                 }else {
                     progress.dismiss();
@@ -495,6 +514,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 }
 
             }
+            int prevroute=selectedroute;
             selectedroute=val;
             routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
             routeadapter.notifyDataSetChanged();
@@ -507,12 +527,14 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
             Update_dragUpHeadline();
 
-            for(int k=0;k<markersSteps.size();k++){
-                markersSteps.get(k).remove();
-            }
-            for(int k=0;k<markersInterm.size();k++){
-                markersInterm.get(k).remove();
-            }
+
+                for (int k = 0; k < markersSteps.size(); k++) {
+                    markersSteps.get(k).remove();
+                }
+                for (int k = 0; k < markersInterm.size(); k++) {
+                    markersInterm.get(k).remove();
+                }
+
         }
     };
 
@@ -541,17 +563,19 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
     public void showWeather(View view){
-//        progress.setTitle("Loading Weather Data...");
-//        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//        progress.setIndeterminate(false);
-//        progress.setProgress(0);
-//
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-//                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//        progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//        progress.show();
 
-//        totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
+        progress=new ProgressDialog(this);
+        progress.setTitle("Loading Weather Data...");
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setIndeterminate(false);
+        progress.setProgress(0);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        progress.show();
+
+        totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
 
         new task().execute();
     }
@@ -695,4 +719,6 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         dialog.show();
     };
+
+
 }
