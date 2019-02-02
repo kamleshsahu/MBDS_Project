@@ -46,4 +46,6 @@ dependencies {
 
     //fancy button on subscription page
     implementation 'com.github.medyo:fancybuttons:1.9.0'
+
+    implementation 'com.github.mastrgamr:mapbox-android-utils:v0.3'
 }

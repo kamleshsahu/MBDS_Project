@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,8 +29,10 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.core.constants.Constants;
+import com.mapbox.geojson.GeoJson;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
+import com.mapbox.geojson.utils.GeoJsonUtils;
 import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -45,12 +48,14 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.bitmapfromstring;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
@@ -266,13 +271,23 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     public boolean onMarkerClick(@NonNull Marker marker) {
 
                        Log.i("marker id ",marker.getId()+"");
-                        if(marker.getId()>=1000){
+//                        if(marker.getId()>=1000){
+//                            Log.i("marker clicked","step marker clicked");
+//                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get((int)marker.getId()-1000)).show();
+//                        }else{
+//                            Log.i("marker clicked","item marker clicked");
+//                            new CustomDialogClass(SimpleMapViewActivity.this,items.get((int)marker.getId())).show();
+//                            }
+
+                        if(marker.getTitle().startsWith("S")){
                             Log.i("marker clicked","step marker clicked");
-                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get((int)marker.getId()-1000)).show();
-                        }else{
+                            int index= Integer.parseInt(marker.getTitle().substring(1));
+                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get(index)).show();
+                        }else if(marker.getTitle().startsWith("I")){
                             Log.i("marker clicked","item marker clicked");
-                            new CustomDialogClass(SimpleMapViewActivity.this,items.get((int)marker.getId())).show();
-                            }
+                            int index= Integer.parseInt(marker.getTitle().substring(1));
+                            new CustomDialogClass(SimpleMapViewActivity.this,items.get(index)).show();
+                        }
                         return false;
                     }
                 });
@@ -414,12 +429,16 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     new bitmapfromstring(item.getWlist().getIcon(), image, weather);
                     Bitmap bitmap = layout_to_image.convert_layout();
 
+//                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
+//                            .fromBitmap(bitmap);
                     Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-                            .fromBitmap(bitmap);
+                            .fromResource(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()));
+
                     options.setIcon(icon);
                     Marker marker= mapboxMap.addMarker(options);
-                    marker.setId(markersInterm.size());
                     markersInterm.add(marker);
+                   // marker.setId(markersInterm.indexOf(marker));
+                    marker.setTitle("I"+markersInterm.indexOf(marker));
                 }else {
                     Log.e("error","item null,item handler");
                     progress.dismiss();
@@ -468,24 +487,27 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     ImageView step_icon = findViewById(R.id.step_icon);
 //                   TextView location_name = findViewById(R.id.location_name);
                     Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
-
-
-//                    String time_data[] = mstep.getArrtime().split(",", 2);
-//                    if (time_data.length >= 2)
-//                        time.setText(time_data[0] + "\n" + time_data[1]);
-//                    else time.setText(mstep.getArrtime());
-
-
+//
+//
+////                    String time_data[] = mstep.getArrtime().split(",", 2);
+////                    if (time_data.length >= 2)
+////                        time.setText(time_data[0] + "\n" + time_data[1]);
+////                    else time.setText(mstep.getArrtime());
+//
+//
                     ImageView image = step_icon;
                     new bitmapfromstring(mstep.getWlist().getIcon(), image, weather);
                     Bitmap bitmap = layout_to_image.convert_layout();
-
+//
                     Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-                            .fromBitmap(bitmap);
+                            .fromResource(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()));
+//                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
+//                            .fromBitmap(bitmap);
                     options.setIcon(icon);
                     Marker marker= mapboxMap.addMarker(options);
-                    marker.setId(1000+markersSteps.size());
                     markersSteps.add(marker);
+//                    marker.setId(1000+markersSteps.indexOf(marker));
+                    marker.setTitle("S"+markersSteps.indexOf(marker));
                 }else {
                     progress.dismiss();
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -524,17 +546,19 @@ public class SimpleMapViewActivity extends AppCompatActivity {
             Polyline selectedPolyline=mapboxMap.addPolyline(polylineOptionsList.get(val));
             polylines.set(val,selectedPolyline);
 
+            
+
 
             Update_dragUpHeadline();
 
-
-                for (int k = 0; k < markersSteps.size(); k++) {
-                    markersSteps.get(k).remove();
-                }
-                for (int k = 0; k < markersInterm.size(); k++) {
-                    markersInterm.get(k).remove();
-                }
-
+             if(selectedroute!=prevroute) {
+                 for (int k = 0; k < markersSteps.size(); k++) {
+                     markersSteps.get(k).remove();
+                 }
+                 for (int k = 0; k < markersInterm.size(); k++) {
+                     markersInterm.get(k).remove();
+                 }
+             }
         }
     };
 
