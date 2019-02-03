@@ -524,41 +524,46 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         @Override
         public void onPolylineClick(@NonNull Polyline polyline) {
             int val=0;
+
             for(int k=0;k<polylines.size();k++){
-                polylines.get(k).remove();
-                if(!polylines.get(k).equals(polyline)){
-                    polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
-                    polylineOptionsList.get(k).width(7);
-                    Polyline p=mapboxMap.addPolyline(polylineOptionsList.get(k));
-                    polylines.set(k,p);
-                }else{
+                if(polylines.get(k).equals(polyline)){
                     val=k;
                 }
-
             }
-            int prevroute=selectedroute;
-            selectedroute=val;
-            routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
-            routeadapter.notifyDataSetChanged();
 
-            polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
-            polylineOptionsList.get(val).width(9);
-            Polyline selectedPolyline=mapboxMap.addPolyline(polylineOptionsList.get(val));
-            polylines.set(val,selectedPolyline);
+            if(selectedroute!=val) {
+                for (int k = 0; k < polylines.size(); k++) {
+                    polylines.get(k).remove();
+                    if (!polylines.get(k).equals(polyline)) {
+                        polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
+                        polylineOptionsList.get(k).width(7);
+                        Polyline p = mapboxMap.addPolyline(polylineOptionsList.get(k));
+                        polylines.set(k, p);
+                    }
+                }
 
-            
+                int prevroute = selectedroute;
+                selectedroute = val;
+                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
+                routeadapter.notifyDataSetChanged();
+
+                polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
+                polylineOptionsList.get(val).width(9);
+                Polyline selectedPolyline = mapboxMap.addPolyline(polylineOptionsList.get(val));
+                polylines.set(val, selectedPolyline);
 
 
-            Update_dragUpHeadline();
+                Update_dragUpHeadline();
 
-             if(selectedroute!=prevroute) {
-                 for (int k = 0; k < markersSteps.size(); k++) {
-                     markersSteps.get(k).remove();
-                 }
-                 for (int k = 0; k < markersInterm.size(); k++) {
-                     markersInterm.get(k).remove();
-                 }
-             }
+                if (selectedroute != prevroute) {
+                    for (int k = 0; k < markersSteps.size(); k++) {
+                        markersSteps.get(k).remove();
+                    }
+                    for (int k = 0; k < markersInterm.size(); k++) {
+                        markersInterm.get(k).remove();
+                    }
+                }
+            }
         }
     };
 
