@@ -23,6 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity.progress;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_MainFunction;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_STEP;
 
@@ -83,6 +84,7 @@ public class Main {
             long aft_duration = 0;
             long aft_distance = 0;
 
+            int totalsteps=steps.size();
             for (int k = 0; k < steps.size(); k++) {
                 if (k == 0) {
                     aft_duration = 0;
@@ -93,6 +95,7 @@ public class Main {
                 }
 
                 new stepapiscaller(k, jstarttime, aft_duration, aft_distance, timezoneid, steps.get(k)).call();
+                if(progress!=null) progress.setProgress((int)(90/totalsteps)* k);
                 List<LatLng> points = new ArrayList<>();
                 List<Point> coords = LineString.fromPolyline(steps.get(k).geometry(), Constants.PRECISION_6).coordinates();
 

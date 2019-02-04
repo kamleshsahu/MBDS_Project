@@ -3,6 +3,7 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -96,7 +97,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     String travelmode=MainActivity.travelmode;
     long jstarttime=MainActivity.jstart_date_millis+MainActivity.jstart_time_millis;
 
-    static android.app.AlertDialog.Builder bld;
+     android.app.AlertDialog.Builder bld;
 
     List<PolylineOptions> polylineOptionsList;
     List<Item> items;
@@ -117,19 +118,21 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     static MapboxMap mapboxMap;
     int totalsteps=0;
 
-    ProgressDialog progress;
-    final SimpleMapViewActivity cont=SimpleMapViewActivity.this;
+    public static ProgressDialog progress;
+//    static final SimpleMapViewActivity cont=SimpleMapViewActivity.this;
+
+    static Task task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_basic_simple_mapview);
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
         Mapbox.getInstance(this, MapboxKey);
 
         // This contains the MapView in XML and needs to be called after the access token is configured.
-        setContentView(R.layout.activity_basic_simple_mapview);
+
         items = new ArrayList<>();
         mSteps = new ArrayList<>();
         polylineOptionsList = new ArrayList<>();
@@ -313,7 +316,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
 //////////////////////////////////////////////////////////////////////////////////
-        bld = new AlertDialog.Builder(cont);
+   //     bld = new AlertDialog.Builder(cont);
 
     }
 ///////////////////////////////////////////////////////////////
@@ -469,15 +472,6 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
                 if (mstep != null) {
                     mSteps.add(mstep);
-                    if(progress!=null) progress.setProgress((int)(100/totalsteps)* mSteps.size());
-                    if (--stepcount <= 0) {
-                        Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
-                        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
-
-                        progress.dismiss();
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    }
-
 
                     MarkerOptions options = new MarkerOptions();
                     options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
@@ -508,10 +502,23 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     markersSteps.add(marker);
 //                    marker.setId(1000+markersSteps.indexOf(marker));
                     marker.setTitle("S"+markersSteps.indexOf(marker));
+
+                    if (--stepcount <= 0) {
+                        Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
+                        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
+
+                        progress.dismiss();
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    }
+
                 }else {
                     progress.dismiss();
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    displayError(resp.getError().getHeading(),resp.getError().getMessage());
+                    try {
+                        displayError(resp.getError().getHeading(), resp.getError().getMessage());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -606,11 +613,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
         totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
 
-        new task().execute();
+        new Task().execute();
     }
 
 
-    class task extends AsyncTask<Object,Object,Object>{
+    class Task extends AsyncTask<Object,Object,Object>{
 
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -652,6 +659,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         mapView.onDestroy();
     }
 
@@ -738,15 +746,35 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    static void displayError(String title, String msg){
+     void displayError(String title, String msg){
+        if(bld==null) {
+            int maxLength = (msg.length() < 40)?msg.length():40;
+            msg = msg.substring(0, maxLength);
+            bld = new AlertDialog.Builder(SimpleMapViewActivity.this);
+            bld.setMessage(msg);
+            bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.out.println(" display error dialog dismiss");
+                    dialog.dismiss();
+                    bld=null;
+                }
+            });
+            bld.setTitle(title);
+            bld.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    System.out.println(" display error dialog dismiss");
+                    dialog.dismiss();
+                    bld=null;
+                }
+            });
+            Log.d("TAG", "Showing alert dialog: " + msg);
+            Dialog dialog = bld.create();
+            //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 
-        bld.setMessage(msg);
-        bld.setNeutralButton("OK", null);
-        bld.setTitle(title);
-        Log.d("TAG", "Showing alert dialog: " + msg);
-        Dialog dialog=bld.create();
-        //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        dialog.show();
+            dialog.show();
+        }
     };
 
 

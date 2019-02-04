@@ -94,9 +94,9 @@ public class WeatherFinder {
     void fetchWeather(){
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(120, TimeUnit.SECONDS)
-                .writeTimeout(120, TimeUnit.SECONDS)
-                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
                 //.addInterceptor(loggingInterceptor)
                 //.addNetworkInterceptor(networkInterceptor)
                 .build();
