@@ -7,6 +7,7 @@
     android:padding="0dp"
     android:background="#fff">
     <android.support.v7.widget.CardView
+        app:cardBackgroundColor="@color/loo_pre"
         android:elevation="4dp"
         app:cardCornerRadius="8dp"
         android:layout_margin="9dp"
@@ -44,7 +45,7 @@
                         <!--&lt;!&ndash;android:textSize="14sp" />&ndash;&gt;-->
                 <!--<TextView-->
 
-                    <!--android:textColor="#43A047"-->
+                    <!--android:textColor="@color/colorPrimaryDark"-->
                     <!--android:fontFamily="sans-serif-condensed"-->
                     <!--android:id="@+id/temp"-->
                     <!--android:layout_width="wrap_content"-->
@@ -73,7 +74,7 @@
                         <!--android:layout_marginLeft="2dp"-->
                         <!--android:fontFamily="sans-serif-condensed"-->
                         <!--android:text="Cloudy"-->
-                        <!--android:textColor="#43A047"-->
+                        <!--android:textColor="@color/colorPrimaryDark"-->
                         <!--android:textSize="12sp" />-->
                 <!--</LinearLayout>-->
 
@@ -179,17 +180,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
        <LinearLayout
+           android:layout_gravity="bottom"
            android:layout_weight="8"
            android:layout_width="0dp"
            android:layout_height="wrap_content">
            <TextView
-           android:textColor="#43A047"
+               android:textStyle="bold"
+           android:textColor="@color/colorPrimaryDark"
            android:fontFamily="sans-serif-thin"
            android:id="@+id/temp"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="70"
-           android:textSize="50sp" />
+           android:textSize="20sp" />
        </LinearLayout>
     <LinearLayout
         android:layout_gravity="center_vertical"
@@ -205,12 +208,13 @@
          />
 
         <TextView
+            android:textStyle="bold"
         android:id="@+id/weather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-thin"
         android:text="Cloudy Cloudy"
-        android:textColor="#43A047"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="12sp" />
     </LinearLayout>
     </LinearLayout>
@@ -228,6 +232,8 @@
     android:layout_width="20dp"
     android:layout_height="20dp" />
         <TextView
+            android:textColor="#8c8c8c"
+            android:textStyle="bold"
             android:layout_marginLeft="2dp"
             android:layout_gravity="center_vertical"
         android:id="@+id/arrtime"
@@ -236,7 +242,7 @@
         android:fontFamily="sans-serif-thin"
         android:text="arrtime"
         android:textAllCaps="true"
-        android:textSize="12sp" />
+        android:textSize="15sp" />
         <ImageView
             android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"
@@ -244,6 +250,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp" />
         <TextView
+            android:textColor="#8c8c8c"
+            android:textStyle="bold"
             android:layout_marginLeft="2dp"
             android:layout_gravity="center_vertical"
             android:id="@+id/distance"
@@ -252,7 +260,7 @@
             android:fontFamily="sans-serif-thin"
             android:text="distance"
             android:textAllCaps="true"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
         <ImageView
             android:layout_marginLeft="10dp"
@@ -261,6 +269,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp" />
         <TextView
+            android:textColor="#8c8c8c"
+            android:textStyle="bold"
             android:layout_marginLeft="2dp"
             android:layout_gravity="center_vertical"
             android:id="@+id/stepLength"
@@ -269,7 +279,7 @@
             android:fontFamily="sans-serif-thin"
             android:text="step"
             android:textAllCaps="true"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
     </LinearLayout>
         <!--layout 2  end.........................................................-->
@@ -281,8 +291,8 @@
         android:layout_height="wrap_content">
         <TextView
 
-            android:textColor="#43A047"
-            android:textStyle="italic"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
         android:textAlignment="center"
         android:layout_gravity="center_vertical"
         android:fontFamily="sans-serif-thin"

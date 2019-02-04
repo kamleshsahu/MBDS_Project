@@ -6,7 +6,7 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.v7.widget.CardView
-        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardBackgroundColor="#e1e1e1"
         android:layout_width="match_parent"
         android:layout_height="68dp">
 
@@ -15,27 +15,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:textStyle="bold"
                 android:fontFamily="sans-serif-thin"
                 android:id="@+id/route_name"
                 android:layout_marginLeft="12dp"
                 android:textSize="18dp"
                 android:maxLines="1"
-                android:textColor="@color/loo_pre"
+                android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="NH-36 Highway"/>
 <TextView
+    android:textStyle="bold"
     android:fontFamily="sans-serif-thin"
     android:layout_below="@+id/route_name"
     android:id="@+id/duration"
     android:layout_marginLeft="12dp"
     android:textSize="18dp"
-    android:textColor="@color/loo_pre"
+    android:textColor="@color/colorPrimary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="20 hours 11 Minutes"/>
 
             <TextView
+                android:textStyle="bold"
                 android:fontFamily="sans-serif-thin"
                 android:id="@+id/distance"
                 android:layout_width="wrap_content"
@@ -47,15 +50,15 @@
                 android:layout_toEndOf="@+id/duration"
                 android:layout_toRightOf="@+id/duration"
                 android:text="(112 Miles)"
-                android:textColor="@color/loo_pre"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp" />
         <TextView
             android:textStyle="italic"
-            android:fontFamily="sans-serif-thin"
+            android:fontFamily="sans-serif"
             android:textSize="10sp"
             android:visibility="visible"
             android:id="@+id/fastestroute"
-            android:textColor="@color/loo_pre"
+            android:textColor="@color/colorPrimary"
             android:layout_below="@id/duration"
             android:layout_marginLeft="12dp"
             android:layout_width="match_parent"
