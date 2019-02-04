@@ -235,8 +235,9 @@ public class WeatherFinder {
 
                         Message message = new Message();
                         message.obj = new Resp(mStep);
-                        SimpleMapViewActivity.myStephandler.sendMessage(message);
+                        SimpleMapViewActivity.myStephandler.sendMessageAtTime(message,100);
                     }else{
+                        Log.e("error Weather finder",response.message());
                         Message message = new Message();
                         message.obj = new Resp(new mError(ErrorHead_Weather,response.message()));
                         SimpleMapViewActivity.myStephandler.sendMessage(message);
@@ -245,16 +246,18 @@ public class WeatherFinder {
 
                 @Override
                 public void onFailure(Call<Darkskyapi> call, Throwable t) {
-                    Message message = new Message();
-                    message.obj = new Resp(new mError(ErrorHead_Weather,t.getMessage()));
-                    SimpleMapViewActivity.myStephandler.sendMessage(message);
+                    Log.e("error Weather finder",t.getMessage());
+                    t.printStackTrace();
+//                    Message message = new Message();
+//                    message.obj = new Resp(new mError(ErrorHead_Weather,t.getMessage()));
+//                    SimpleMapViewActivity.myStephandler.sendMessage(message);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Message message = new Message();
-            message.obj = new Resp(new mError(ErrorHead_Weather,e.getMessage()));
-            SimpleMapViewActivity.myStephandler.sendMessage(message);
+//            Message message = new Message();
+//            message.obj = new Resp(new mError(ErrorHead_Weather,e.getMessage()));
+//            SimpleMapViewActivity.myStephandler.sendMessage(message);
         }
 
     }

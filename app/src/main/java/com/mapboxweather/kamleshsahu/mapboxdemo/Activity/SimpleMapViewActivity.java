@@ -121,7 +121,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     public static ProgressDialog progress;
 //    static final SimpleMapViewActivity cont=SimpleMapViewActivity.this;
 
-    static Task task;
+    Boolean AlreadyGotError=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +139,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         markersSteps = new ArrayList<>();
         markersInterm = new ArrayList<>();
         polylines = new ArrayList<>();
-
+        AlreadyGotError=false;
         progress=new ProgressDialog(this);
         ////////////////////////////////////////////////////////////
         //menu
@@ -304,6 +304,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         myItemhandler = new Handler(myIntermediatePointsCallback);
 
         myStephandler = new Handler(myStepsHandlerCallback);
+
+
  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
                 routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(0));
@@ -512,12 +514,16 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     }
 
                 }else {
-                    progress.dismiss();
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    try {
-                        displayError(resp.getError().getHeading(), resp.getError().getMessage());
-                    }catch (Exception e){
-                        e.printStackTrace();
+                    if(progress.isShowing()){
+                        progress.dismiss();
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                    try {
+//
+//                        displayError(resp.getError().getHeading(), resp.getError().getMessage());
+//                    }catch (Exception e){
+//                        Log.e("diplay error :","mstep obj is coming null");
+//                        e.printStackTrace();
+//                    }
                     }
                 }
             }
@@ -599,7 +605,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
     public void showWeather(View view){
-
+        AlreadyGotError=false;
         progress=new ProgressDialog(this);
         progress.setTitle("Loading Weather Data...");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -747,34 +753,35 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     }
 
      void displayError(String title, String msg){
-        if(bld==null) {
-            int maxLength = (msg.length() < 40)?msg.length():40;
-            msg = msg.substring(0, maxLength);
-            bld = new AlertDialog.Builder(SimpleMapViewActivity.this);
-            bld.setMessage(msg);
-            bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    System.out.println(" display error dialog dismiss");
-                    dialog.dismiss();
-                    bld=null;
-                }
-            });
-            bld.setTitle(title);
-            bld.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    System.out.println(" display error dialog dismiss");
-                    dialog.dismiss();
-                    bld=null;
-                }
-            });
-            Log.d("TAG", "Showing alert dialog: " + msg);
-            Dialog dialog = bld.create();
-            //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+           if(!AlreadyGotError) {
+               AlreadyGotError=true;
+               int maxLength = (msg.length() < 40) ? msg.length() : 40;
+               msg = msg.substring(0, maxLength);
+               bld = new AlertDialog.Builder(SimpleMapViewActivity.this);
+               bld.setMessage(msg);
+               bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       System.out.println(" display error dialog dismiss");
+                       dialog.dismiss();
+                       bld = null;
+                   }
+               });
+               bld.setTitle(title);
+               bld.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                   @Override
+                   public void onCancel(DialogInterface dialog) {
+                       System.out.println(" display error dialog dismiss");
+                       dialog.dismiss();
+                       bld = null;
+                   }
+               });
+               Log.d("TAG", "Showing alert dialog: " + msg);
+               Dialog dialog = bld.create();
+               //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 
-            dialog.show();
-        }
+               dialog.show();
+           }
     };
 
 
