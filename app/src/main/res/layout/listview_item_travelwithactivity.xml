@@ -43,7 +43,7 @@
 
                 <TextView
                     android:id="@+id/route"
-
+                    android:textStyle="bold"
                     android:fontFamily="sans-serif-thin"
                     android:textSize="16sp"
                     android:text="via NH130B"
@@ -52,6 +52,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    android:textStyle="bold"
                     android:layout_marginTop="3dp"
                     android:id="@+id/route_detail"
                     android:fontFamily="sans-serif-thin"
@@ -70,6 +71,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/time"
                     android:textColor="#7CB342"
                     android:layout_gravity="right"
@@ -80,6 +82,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/distance"
                     android:layout_gravity="right"
                     android:fontFamily="sans-serif-thin"
