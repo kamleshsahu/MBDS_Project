@@ -6,13 +6,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,15 +23,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.core.constants.Constants;
-import com.mapbox.geojson.GeoJson;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
-import com.mapbox.geojson.utils.GeoJsonUtils;
-import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -43,17 +37,18 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.style.layers.Property;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.bitmapfromstring;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
@@ -64,17 +59,10 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHeading;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.fastest_route;
 
@@ -122,6 +110,10 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 //    static final SimpleMapViewActivity cont=SimpleMapViewActivity.this;
 
     Boolean AlreadyGotError=false;
+
+    private static final String MARKER_SOURCE = "markers-source";
+    private static final String MARKER_STYLE_LAYER = "markers-style-layer";
+    private static final String MARKER_IMAGE = "custom-marker";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,6 +296,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         myItemhandler = new Handler(myIntermediatePointsCallback);
 
         myStephandler = new Handler(myStepsHandlerCallback);
+
+
 
 
  ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -784,5 +778,19 @@ public class SimpleMapViewActivity extends AppCompatActivity {
            }
     };
 
-
+    private void addMarkers() {
+        List<Feature> features = new ArrayList<>();
+        /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
+        features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));
+        FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
+        GeoJsonSource source = new GeoJsonSource(MARKER_SOURCE, featureCollection);
+        mapboxMap.addSource(source);
+        /* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
+        SymbolLayer markerStyleLayer = new SymbolLayer(MARKER_STYLE_LAYER, MARKER_SOURCE)
+                .withProperties(
+                        PropertyFactory.iconAllowOverlap(true),
+                        PropertyFactory.iconImage(MARKER_IMAGE)
+                );
+        mapboxMap.addLayer(markerStyleLayer);
+    }
 }

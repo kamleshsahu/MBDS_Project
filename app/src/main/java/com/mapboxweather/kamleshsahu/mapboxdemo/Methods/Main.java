@@ -11,6 +11,7 @@ import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.ApiInterface;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
 
@@ -18,12 +19,17 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity.progress;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkSky_BaseURL;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_MainFunction;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_STEP;
 
@@ -36,7 +42,7 @@ public class Main {
     private long interval=50000;
     private long jstarttime;
     private String travelmode;
-
+    public static ApiInterface apiService;
 
 
     public static void main(String... args){
@@ -79,6 +85,23 @@ public class Main {
 
     public void execute(){
         try {
+
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    //.addInterceptor(loggingInterceptor)
+                    //.addNetworkInterceptor(networkInterceptor)
+                    .build();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(DarkSky_BaseURL)
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            apiService = retrofit.create(ApiInterface.class);
+
+
             List<LegStep> steps = routedata.legs().get(0).steps();
 
             long aft_duration = 0;

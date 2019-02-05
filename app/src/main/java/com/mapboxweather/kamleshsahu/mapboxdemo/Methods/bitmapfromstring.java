@@ -71,8 +71,8 @@ public class bitmapfromstring {
                 weather.setText("Wind");
                 break;
             default:
-                image.setBackgroundResource(R.drawable.clear_day);
-                weather.setText("Clear Day");
+               // image.setBackgroundResource(R.drawable.clear_day);
+                weather.setText("Weather Not Found");
         }
 
     }

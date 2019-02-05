@@ -36,6 +36,7 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkskyKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_Weather;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.strDays;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main.apiService;
 
 public class WeatherFinder {
 
@@ -93,18 +94,20 @@ public class WeatherFinder {
 
     void fetchWeather(){
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                //.addInterceptor(loggingInterceptor)
-                //.addNetworkInterceptor(networkInterceptor)
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(DarkSky_BaseURL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .readTimeout(60, TimeUnit.SECONDS)
+//                .writeTimeout(60, TimeUnit.SECONDS)
+//                .connectTimeout(60, TimeUnit.SECONDS)
+//                //.addInterceptor(loggingInterceptor)
+//                //.addNetworkInterceptor(networkInterceptor)
+//                .build();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(DarkSky_BaseURL)
+//                .client(okHttpClient)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        apiService = retrofit.create(ApiInterface.class);
 
         String llt=lat+","+lng+","+time;
                 //"40.015,-105.2705";
@@ -116,7 +119,7 @@ public class WeatherFinder {
 //        sdf.setTimeZone(TimeZone.getTimeZone(calendar.getTimeZone().getID()));
 //        llt+=","+sdf.format(calendar.getTime());
 
-        ApiInterface apiService = retrofit.create(ApiInterface.class);
+
         Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt);
 
       //  call.enqueue(darkskyapiCallback);
@@ -186,18 +189,20 @@ public class WeatherFinder {
 
     void fetchWeather2(){
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(120, TimeUnit.SECONDS)
-                .writeTimeout(120, TimeUnit.SECONDS)
-                .connectTimeout(120, TimeUnit.SECONDS)
-                //.addInterceptor(loggingInterceptor)
-                //.addNetworkInterceptor(networkInterceptor)
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(DarkSky_BaseURL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .readTimeout(120, TimeUnit.SECONDS)
+//                .writeTimeout(120, TimeUnit.SECONDS)
+//                .connectTimeout(120, TimeUnit.SECONDS)
+//                //.addInterceptor(loggingInterceptor)
+//                //.addNetworkInterceptor(networkInterceptor)
+//                .build();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(DarkSky_BaseURL)
+//                .client(okHttpClient)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        ApiInterface apiService = retrofit.create(ApiInterface.class);
+
 
         String llt=lat+","+lng+","+time;
         //"40.015,-105.2705";
@@ -208,7 +213,7 @@ public class WeatherFinder {
 //        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 //        sdf.setTimeZone(TimeZone.getTimeZone(calendar.getTimeZone().getID()));
 
-        ApiInterface apiService = retrofit.create(ApiInterface.class);
+
         Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt);
 
         //  call.enqueue(darkskyapiCallback);
@@ -235,7 +240,7 @@ public class WeatherFinder {
 
                         Message message = new Message();
                         message.obj = new Resp(mStep);
-                        SimpleMapViewActivity.myStephandler.sendMessageAtTime(message,100);
+                        SimpleMapViewActivity.myStephandler.sendMessage(message);
                     }else{
                         Log.e("error Weather finder",response.message());
                         Message message = new Message();
