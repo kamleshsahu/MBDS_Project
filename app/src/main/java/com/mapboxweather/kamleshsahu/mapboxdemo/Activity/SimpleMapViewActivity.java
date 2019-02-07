@@ -5,12 +5,19 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.FeatureGroupInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,13 +30,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Annotation;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -37,15 +49,21 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.constants.MapboxConstants;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.style.expressions.Expression;
+import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main;
@@ -60,9 +78,14 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.vipul.hp_hp.library.Layout_to_Image;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
+import static com.mapbox.geojson.LineString.fromJson;
+import static com.mapbox.geojson.LineString.fromLngLats;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.fastest_route;
 
@@ -111,9 +134,14 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
     Boolean AlreadyGotError=false;
 
-    private static final String MARKER_SOURCE = "markers-source";
-    private static final String MARKER_STYLE_LAYER = "markers-style-layer";
-    private static final String MARKER_IMAGE = "custom-marker";
+//    private static final String MARKER_SOURCE = "markers-source";
+//    private static final String MARKER_STYLE_LAYER = "markers-style-layer";
+//    private static final String MARKER_IMAGE = "custom-marker";
+
+    String layerids[],linelayerids[];
+    List<String> layeridlist;
+    Boolean layeridCreated;
+    List<Source> markersourcelist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +152,10 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         Mapbox.getInstance(this, MapboxKey);
 
         // This contains the MapView in XML and needs to be called after the access token is configured.
-
+        markersourcelist=new ArrayList<>();
+        layeridCreated = false;
+        linelayerids=new String[directionapiresp.routes().size()];
+        layeridlist=new ArrayList<>();
         items = new ArrayList<>();
         mSteps = new ArrayList<>();
         polylineOptionsList = new ArrayList<>();
@@ -259,38 +290,41 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
                 SimpleMapViewActivity.mapboxMap = mapboxMap;
                 drawRoute();
-                mapboxMap.setOnPolylineClickListener(polylineClickListener);
 
-                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(@NonNull Marker marker) {
 
-                       Log.i("marker id ",marker.getId()+"");
-//                        if(marker.getId()>=1000){
+                mapboxMap.addOnMapClickListener(mapClickListener);
+
+//                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+//                    @Override
+//                    public boolean onMarkerClick(@NonNull Marker marker) {
+//
+//                        marker.getPosition();
+//                        marker.hideInfoWindow();
+//                       Log.i("marker id ",marker.getId()+"");
+////                        if(marker.getId()>=1000){
+////                            Log.i("marker clicked","step marker clicked");
+////                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get((int)marker.getId()-1000)).show();
+////                        }else{
+////                            Log.i("marker clicked","item marker clicked");
+////                            new CustomDialogClass(SimpleMapViewActivity.this,items.get((int)marker.getId())).show();
+////                            }
+//
+//                        if(marker.getTitle().startsWith("S")){
 //                            Log.i("marker clicked","step marker clicked");
-//                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get((int)marker.getId()-1000)).show();
-//                        }else{
+//                            int index= Integer.parseInt(marker.getTitle().substring(1));
+//                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get(index)).show();
+//                        }else if(marker.getTitle().startsWith("I")){
 //                            Log.i("marker clicked","item marker clicked");
-//                            new CustomDialogClass(SimpleMapViewActivity.this,items.get((int)marker.getId())).show();
-//                            }
-
-                        if(marker.getTitle().startsWith("S")){
-                            Log.i("marker clicked","step marker clicked");
-                            int index= Integer.parseInt(marker.getTitle().substring(1));
-                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get(index)).show();
-                        }else if(marker.getTitle().startsWith("I")){
-                            Log.i("marker clicked","item marker clicked");
-                            int index= Integer.parseInt(marker.getTitle().substring(1));
-                            new CustomDialogClass(SimpleMapViewActivity.this,items.get(index)).show();
-                        }
-                        return false;
-                    }
-                });
-
+//                            int index= Integer.parseInt(marker.getTitle().substring(1));
+//                            new CustomDialogClass(SimpleMapViewActivity.this,items.get(index)).show();
+//                        }
+//                        return false;
+//                    }
+//                });
+//                mapboxMap.setOnPolylineClickListener(polylineClickListener);
             }
 
         });
-
 
 
         myItemhandler = new Handler(myIntermediatePointsCallback);
@@ -314,19 +348,35 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 //////////////////////////////////////////////////////////////////////////////////
    //     bld = new AlertDialog.Builder(cont);
 
+
+
     }
 ///////////////////////////////////////////////////////////////
 
     void drawRoute(){
         mapboxMap.clear();
-        mapboxMap.addMarker(new MarkerOptions()
-                .position(new LatLng(sp.latitude(), sp.longitude()))
+//        mapboxMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(sp.latitude(), sp.longitude()))
+//
+//        );
+//        mapboxMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(dp.latitude(), dp.longitude()))
+//
+//        );
 
-        );
-        mapboxMap.addMarker(new MarkerOptions()
-                .position(new LatLng(dp.latitude(), dp.longitude()))
+//        Bitmap icon1 = BitmapFactory.decodeResource(
+//                SimpleMapViewActivity.this.getResources(), R.drawable.pina);
+//
+//        Bitmap icon2 = BitmapFactory.decodeResource(
+//                SimpleMapViewActivity.this.getResources(),R.drawable.pinb);
 
-        );
+
+
+
+        layeridCreated = false;
+
+        linelayerids=new String[directionapiresp.routes().size()];
+
         setCameraWithCoordinationBounds();
         //add route(s) to the map.
 
@@ -336,57 +386,160 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 //            slidingUpPanelLayout.setPanelHeight(context.getResources().getDimensionPixelSize(R.dimen.dragupsize));
 //        }
 
-        Polyline selectedPolyline = null;
-        PolylineOptions SelectedpolyOptions = null;
-        polylines=new ArrayList<>();
+//        Polyline selectedPolyline = null;
+//        PolylineOptions SelectedpolyOptions = null;
+//        polylines=new ArrayList<>();
+//
+//        for (int i = 0; i < directionapiresp.routes().size(); i++) {
+//            if (i != selectedroute) {
+//
+//                List<LatLng> points = new ArrayList<>();
+//                List<Point> coords = LineString.fromPolyline(directionapiresp.routes().get(i).geometry(), Constants.PRECISION_6).coordinates();
+//                //    new task().execute();
+//
+//                for (Point point : coords) {
+//                    points.add(new LatLng(point.latitude(), point.longitude()));
+//                }
+//
+//                PolylineOptions polyOptions = new PolylineOptions();
+//                polyOptions.color(getApplicationContext().getResources().getColor(R.color.alternateRoute));
+//                polyOptions.width(7);
+//                polyOptions.addAll(points);
+//
+//                Polyline polyline =mapboxMap.addPolyline(polyOptions);
+//                polylines.add(polyline);
+//
+//                polylineOptionsList.add(polyOptions);
+//            }else {
+//                List<LatLng> points = new ArrayList<>();
+//                List<Point> coords = LineString.fromPolyline(directionapiresp.routes().get(i).geometry(), Constants.PRECISION_6).coordinates();
+//                //    new task().execute();
+//
+//                for (Point point : coords) {
+//                    points.add(new LatLng(point.latitude(), point.longitude()));
+//                }
+//
+//
+//                SelectedpolyOptions = new PolylineOptions();
+//                SelectedpolyOptions.color(getApplicationContext().getResources().getColor(R.color.seletedRoute));
+//                SelectedpolyOptions.width(9);
+//                SelectedpolyOptions.addAll(points);
+//                polylineOptionsList.add(SelectedpolyOptions);
+//
+//            }
+//        }
+//
+//        if(SelectedpolyOptions !=null) {
+//            selectedPolyline = mapboxMap.addPolyline(SelectedpolyOptions);
+//            polylines.add(selectedPolyline);
+//       }
+//
+//        polylineOptionsList.add(SelectedpolyOptions);
+//        mapboxMap.addPolylines(polylineOptionsList);
 
-        for (int i = 0; i < directionapiresp.routes().size(); i++) {
-            if (i != selectedroute) {
 
-                List<LatLng> points = new ArrayList<>();
-                List<Point> coords = LineString.fromPolyline(directionapiresp.routes().get(i).geometry(), Constants.PRECISION_6).coordinates();
-                //    new task().execute();
 
-                for (Point point : coords) {
-                    points.add(new LatLng(point.latitude(), point.longitude()));
+
+        for(int i=0;i<directionapiresp.routes().size();i++){
+            String id="p"+i;
+            linelayerids[i]=id;
+       //     layeridlist.add(id);
+            if(i!=selectedroute)
+            addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute));
+        }
+        addPolyline(directionapiresp.routes().get(i).geometry(),"p"+selectedroute,getResources().getColor(R.color.seletedRoute));
+
+//        addMarkers(R.drawable.pina,"img1","sp",sp,"sp","sp");
+//        addMarkers(R.drawable.pinb,"img2","dp",dp,"dp","dp");
+    }
+
+    MapboxMap.OnMapClickListener mapClickListener= new MapboxMap.OnMapClickListener() {
+
+        @Override
+        public void onMapClick(@NonNull LatLng point) {
+            Log.d("map clicked", "map clicked");
+// Convert LatLng coordinates to screen pixel and only query the rendered features.
+            final PointF pointf = mapboxMap.getProjection().toScreenLocation(point);
+
+            RectF rectF = new RectF(pointf.x - 10, pointf.y - 10, pointf.x + 10, pointf.y + 10);
+    //        String layerids[] = {"S1", "S2","S3","S4","S5","S6","S7","S8","S9"};
+    //        List<String> layeridlist=new ArrayList<>();
+            if(!layeridCreated) {
+ //               Collections.reverse(layeridlist);
+                layerids = layeridlist.toArray(new String[layeridlist.size()]);
+            }
+            List<Feature> features = mapboxMap.queryRenderedFeatures(rectF,layerids);
+
+
+
+            if (features.size() > 0) {
+                Feature feature = features.get(0);
+
+                Log.i("featute id :", feature.id());
+
+                if (feature.id().startsWith("S")) {
+                    Log.i("marker clicked :", "step marker clicked");
+                    int index = Integer.parseInt(feature.id().substring(1));
+                    new CustomDialogClass(SimpleMapViewActivity.this, mSteps.get(index)).show();
+                } else if (feature.id().startsWith("I")) {
+                    Log.i("marker clicked :", "item marker clicked");
+                    int index = Integer.parseInt(feature.id().substring(1));
+                    new CustomDialogClass(SimpleMapViewActivity.this, items.get(index)).show();
+//                }else if(feature.id().startsWith("p")){
+//                            String id=features.get(0).id();
+//                            selectedroute=Integer.parseInt(id.substring(1));
+//
+//                            for(int i=0;i<directionapiresp.routes().size();i++){
+//                                if(selectedroute!=i) {
+//                                    mapboxMap.getLayer("p" + i).setProperties(
+//                                            PropertyFactory.lineWidth(7f),
+//                                            PropertyFactory.lineColor(getResources().getColor(R.color.alternateRoute)));
+//                                }
+//                            }
+//
+//                            mapboxMap.getLayer(id).setProperties(
+//                                    PropertyFactory.lineWidth(8f),
+//                                    PropertyFactory.lineColor(getResources().getColor(R.color.seletedRoute)));
+////
+               }
+
+                else{
+                      routechangeListener(pointf);
                 }
 
-                PolylineOptions polyOptions = new PolylineOptions();
-                polyOptions.color(getApplicationContext().getResources().getColor(R.color.alternateRoute));
-                polyOptions.width(7);
-                polyOptions.addAll(points);
+            }else{
+                System.out.println(" else part else part");
+                routechangeListener(pointf);
+            }
 
-                Polyline polyline =mapboxMap.addPolyline(polyOptions);
-                polylines.add(polyline);
+        }
+    };
 
-                polylineOptionsList.add(polyOptions);
-            }else {
-                List<LatLng> points = new ArrayList<>();
-                List<Point> coords = LineString.fromPolyline(directionapiresp.routes().get(i).geometry(), Constants.PRECISION_6).coordinates();
-                //    new task().execute();
 
-                for (Point point : coords) {
-                    points.add(new LatLng(point.latitude(), point.longitude()));
+    void routechangeListener(PointF pointf){
+        System.out.println("feature id not matching ");
+        RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
+        List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
+        if(features1.size()>0){
+            System.out.println("line data :"+features1.get(0).id());
+            if(features1.get(0).id().startsWith("p")){
+                String id=features1.get(0).id();
+                selectedroute=Integer.parseInt(id.substring(1));
+
+                for(int i=0;i<directionapiresp.routes().size();i++){
+                    if(selectedroute!=i) {
+                        mapboxMap.getLayer("p" + i).setProperties(
+                                PropertyFactory.lineWidth(7f),
+                                PropertyFactory.lineColor(getResources().getColor(R.color.alternateRoute)));
+                    }
                 }
 
-
-                SelectedpolyOptions = new PolylineOptions();
-                SelectedpolyOptions.color(getApplicationContext().getResources().getColor(R.color.seletedRoute));
-                SelectedpolyOptions.width(9);
-                SelectedpolyOptions.addAll(points);
-                polylineOptionsList.add(SelectedpolyOptions);
+                mapboxMap.getLayer(id).setProperties(
+                        PropertyFactory.lineWidth(8f),
+                        PropertyFactory.lineColor(getResources().getColor(R.color.seletedRoute)));
 
             }
         }
-
-        if(SelectedpolyOptions !=null) {
-            selectedPolyline = mapboxMap.addPolyline(SelectedpolyOptions);
-            polylines.add(selectedPolyline);
-       }
-
-//        polylineOptionsList.add(SelectedpolyOptions);
- //       mapboxMap.addPolylines(polylineOptionsList);
-
     }
 
     Handler.Callback myIntermediatePointsCallback=new Handler.Callback() {
@@ -424,20 +577,25 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 //                        }
 //                    }
 
-                    ImageView image = step_icon;
-                    new bitmapfromstring(item.getWlist().getIcon(), image, weather);
-                    Bitmap bitmap = layout_to_image.convert_layout();
-
+//                    ImageView image = step_icon;
+//                    new bitmapfromstring(item.getWlist().getIcon(), image, weather);
+//                    Bitmap bitmap = layout_to_image.convert_layout();
+//
+////                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
+////                            .fromBitmap(bitmap);
 //                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-//                            .fromBitmap(bitmap);
-                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-                            .fromResource(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()));
+//                            .fromResource(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()));
+//
+//                    options.setIcon(icon);
+//                    Marker marker= mapboxMap.addMarker(options);
+//                      markersInterm.add(marker);
+//                   // marker.setId(markersInterm.indexOf(marker));
+//                    marker.setTitle("I"+markersInterm.indexOf(marker));
 
-                    options.setIcon(icon);
-                    Marker marker= mapboxMap.addMarker(options);
-                    markersInterm.add(marker);
-                   // marker.setId(markersInterm.indexOf(marker));
-                    marker.setTitle("I"+markersInterm.indexOf(marker));
+                    String id="I"+items.indexOf(item);
+                    layeridlist.add(id);
+                    addMarkers(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()),id,id,Point.fromLngLat(item.getPoint().getLongitude(),item.getPoint().getLatitude()),id,id);
+
                 }else {
                     Log.e("error","item null,item handler");
                     progress.dismiss();
@@ -485,19 +643,22 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 ////                    else time.setText(mstep.getArrtime());
 //
 //
-                    ImageView image = step_icon;
-                    new bitmapfromstring(mstep.getWlist().getIcon(), image, weather);
-                    Bitmap bitmap = layout_to_image.convert_layout();
-//
-                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-                            .fromResource(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()));
+
+//                    ImageView image = step_icon;
+//                    new bitmapfromstring(mstep.getWlist().getIcon(), image, weather);
+//                    Bitmap bitmap = layout_to_image.convert_layout();
+////
 //                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-//                            .fromBitmap(bitmap);
-                    options.setIcon(icon);
-                    Marker marker= mapboxMap.addMarker(options);
-                    markersSteps.add(marker);
-//                    marker.setId(1000+markersSteps.indexOf(marker));
-                    marker.setTitle("S"+markersSteps.indexOf(marker));
+//                            .fromResource(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()));
+//
+//                    options.setIcon(icon);
+//                    Marker marker= mapboxMap.addMarker(options);
+//                    markersSteps.add(marker);
+//
+//                    marker.setTitle("S"+markersSteps.indexOf(marker));
+                     String id="S"+mstep.getPos();
+                     layeridlist.add(id);
+                     addMarkers(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()),id,id,mstep.getStep().maneuver().location(),id,id);
 
                     if (--stepcount <= 0) {
                         Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
@@ -612,10 +773,36 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         progress.show();
 
         totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
+        removeWeatherIcons();
 
-        new Task().execute();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Task().execute();
+            }
+        },1000);
+
     }
 
+
+    void removeWeatherIcons(){
+        for(int i=0;i<layeridlist.size();i++) {
+            mapboxMap.removeLayer(layeridlist.get(i));
+            mapboxMap.removeImage(layeridlist.get(i));
+
+        }
+
+        for(int i=0;i<markersourcelist.size();i++){
+            mapboxMap.removeSource(markersourcelist.get(i));
+        }
+
+
+
+
+        System.out.println("all removed");
+        layeridlist=new ArrayList<>();
+        markersourcelist=new ArrayList<>();
+    }
 
     class Task extends AsyncTask<Object,Object,Object>{
 
@@ -762,14 +949,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                    }
                });
                bld.setTitle(title);
-               bld.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                   @Override
-                   public void onCancel(DialogInterface dialog) {
-                       System.out.println(" display error dialog dismiss");
-                       dialog.dismiss();
-                       bld = null;
-                   }
-               });
+
                Log.d("TAG", "Showing alert dialog: " + msg);
                Dialog dialog = bld.create();
                //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
@@ -778,19 +958,88 @@ public class SimpleMapViewActivity extends AppCompatActivity {
            }
     };
 
-    private void addMarkers() {
+
+
+
+    private void addMarkers(int iconid,String MARKER_IMAGE,String MARKER_SOURCE,Point point,String MARKER_STYLE_LAYER,String index) {
         List<Feature> features = new ArrayList<>();
         /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
-        features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));
+      //  features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));
+
+
+        features.add(Feature.fromGeometry(point, null,index));
+
+
         FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
         GeoJsonSource source = new GeoJsonSource(MARKER_SOURCE, featureCollection);
-        mapboxMap.addSource(source);
+
+
+
+
+
+                  mapboxMap.removeSource(source.getId());
+                  mapboxMap.addSource(source);
+
+
+
         /* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
         SymbolLayer markerStyleLayer = new SymbolLayer(MARKER_STYLE_LAYER, MARKER_SOURCE)
                 .withProperties(
                         PropertyFactory.iconAllowOverlap(true),
                         PropertyFactory.iconImage(MARKER_IMAGE)
+
+
                 );
+
+        Bitmap icon = BitmapFactory.decodeResource(
+               SimpleMapViewActivity.this.getResources(),iconid);
         mapboxMap.addLayer(markerStyleLayer);
+     //  mapboxMap.addLayerAbove(markerStyleLayer,"p"+selectedroute);
+        mapboxMap.addImage(MARKER_IMAGE,icon);
+
     }
+
+
+    private void addPolyline(String poly, String LINE_LAYER_ID, int color) {
+        List<Feature> features = new ArrayList<>();
+        /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
+        //  features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));
+
+
+         features.add(Feature.fromGeometry(LineString.fromPolyline(poly, Constants.PRECISION_6), null, LINE_LAYER_ID));
+
+
+
+
+        FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
+        GeoJsonSource source = new GeoJsonSource(LINE_LAYER_ID, featureCollection);
+
+// The layer properties for our line. This is where we make the line dotted, set the
+// color, etc.
+           LineLayer lineLayer= new LineLayer(LINE_LAYER_ID, LINE_LAYER_ID);
+
+           if(LINE_LAYER_ID.equals("p"+selectedroute)){
+               lineLayer.withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                       PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                       PropertyFactory.lineOpacity(.9f),
+                       PropertyFactory.lineWidth(8f),
+                       PropertyFactory.lineColor(color));
+
+           }else {
+                    lineLayer.withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                            PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                            PropertyFactory.lineOpacity(.9f),
+                            PropertyFactory.lineWidth(7f),
+                            PropertyFactory.lineColor(color));
+
+           }
+
+
+  //      mapboxMap.addLayer(markerStyleLayer);
+
+          mapboxMap.addLayer(lineLayer);
+          mapboxMap.addSource(source);
+
+    }
+
 }
