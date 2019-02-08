@@ -46,7 +46,7 @@ public class weatherIconMap {
             return iconMap.get(icon);
         } else {
             //   return R.drawable.maneuver_starting;
-            return R.drawable.clear_day;
+            return R.drawable.not_found;
         }
     }
 

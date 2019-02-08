@@ -205,61 +205,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        ((RadioGroup) findViewById(R.id.distance_unit)).check(R.id.automatic);
-//        ((RadioGroup) findViewById(R.id.distance_unit)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//                int selectedId = radioGroup.getCheckedRadioButtonId();
-//                DistanceUnit = Integer.parseInt(findViewById(selectedId).getTag().toString());
-//                System.out.println(DistanceUnit);
-//                resetresult();
-//            }
-//        });
-
-
-//        ((CheckBox) findViewById(R.id.highway))
-//                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                    @Override
-//                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                      //  HIGHWAYS=isChecked;
-//                        avoid=DirectionsCriteria.EXCLUDE_MOTORWAY;
-//                        resetresult();
-//
-//                        ((CheckBox) findViewById(R.id.highway)).setChecked(isChecked);
-////                        ((CheckBox) findViewById(R.id.ferries)).setChecked(false);
-////                        ((CheckBox) findViewById(R.id.tolls)).setChecked(false);
-//                    }
-//                });
-//        ((CheckBox) findViewById(R.id.tolls))
-//                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                    @Override
-//                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                       // TOLLS=isChecked;
-//                        avoid=DirectionsCriteria.EXCLUDE_TOLL;
-//                        resetresult();
-//
-//                        ((CheckBox) findViewById(R.id.tolls)).setChecked(!isChecked);
-////                       ((CheckBox) findViewById(R.id.highway)).setChecked(false);
-////                        ((CheckBox) findViewById(R.id.ferries)).setChecked(false);
-//
-//
-//                    }
-//                });
-//
-//        ((CheckBox) findViewById(R.id.ferries))
-//                    .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                    @Override
-//                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                       // FERRIES=isChecked;
-//                        avoid=DirectionsCriteria.EXCLUDE_FERRY;
-//
-//                        ((CheckBox) findViewById(R.id.ferries)).setChecked(!isChecked);
-////                        ((CheckBox) findViewById(R.id.tolls)).setChecked(false);
-////                        ((CheckBox) findViewById(R.id.highway)).setChecked(false);
-//
-//                        resetresult();
-//                    }
-//                });
 
 
         highway.setOnClickListener(new View.OnClickListener() {

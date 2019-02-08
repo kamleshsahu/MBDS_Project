@@ -518,11 +518,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
     void routechangeListener(PointF pointf){
-        System.out.println("feature id not matching ");
+ //       System.out.println("feature id not matching ");
         RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
         List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
         if(features1.size()>0){
-            System.out.println("line data :"+features1.get(0).id());
+ //           System.out.println("line data :"+features1.get(0).id());
             if(features1.get(0).id().startsWith("p")){
                 String id=features1.get(0).id();
                 selectedroute=Integer.parseInt(id.substring(1));
@@ -538,7 +538,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 mapboxMap.getLayer(id).setProperties(
                         PropertyFactory.lineWidth(8f),
                         PropertyFactory.lineColor(getResources().getColor(R.color.seletedRoute)));
-
+                Update_dragUpHeadline();
             }
         }
     }
@@ -664,9 +664,14 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     if (--stepcount <= 0) {
                         Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
                         link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
+                      new Handler().postDelayed(new Runnable() {
+                          @Override
+                          public void run() {
+                              progress.dismiss();
+                              getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                          }
+                      },1000);
 
-                        progress.dismiss();
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
 
                 }else {
@@ -689,52 +694,52 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     };
 
 
-    MapboxMap.OnPolylineClickListener polylineClickListener=new MapboxMap.OnPolylineClickListener() {
-        @Override
-        public void onPolylineClick(@NonNull Polyline polyline) {
-            int val=0;
-
-            for(int k=0;k<polylines.size();k++){
-                if(polylines.get(k).equals(polyline)){
-                    val=k;
-                }
-            }
-
-            if(selectedroute!=val) {
-                for (int k = 0; k < polylines.size(); k++) {
-                    polylines.get(k).remove();
-                    if (!polylines.get(k).equals(polyline)) {
-                        polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
-                        polylineOptionsList.get(k).width(7);
-                        Polyline p = mapboxMap.addPolyline(polylineOptionsList.get(k));
-                        polylines.set(k, p);
-                    }
-                }
-
-                int prevroute = selectedroute;
-                selectedroute = val;
-                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
-                routeadapter.notifyDataSetChanged();
-
-                polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
-                polylineOptionsList.get(val).width(9);
-                Polyline selectedPolyline = mapboxMap.addPolyline(polylineOptionsList.get(val));
-                polylines.set(val, selectedPolyline);
-
-
-                Update_dragUpHeadline();
-
-                if (selectedroute != prevroute) {
-                    for (int k = 0; k < markersSteps.size(); k++) {
-                        markersSteps.get(k).remove();
-                    }
-                    for (int k = 0; k < markersInterm.size(); k++) {
-                        markersInterm.get(k).remove();
-                    }
-                }
-            }
-        }
-    };
+//    MapboxMap.OnPolylineClickListener polylineClickListener=new MapboxMap.OnPolylineClickListener() {
+//        @Override
+//        public void onPolylineClick(@NonNull Polyline polyline) {
+//            int val=0;
+//
+//            for(int k=0;k<polylines.size();k++){
+//                if(polylines.get(k).equals(polyline)){
+//                    val=k;
+//                }
+//            }
+//
+//            if(selectedroute!=val) {
+//                for (int k = 0; k < polylines.size(); k++) {
+//                    polylines.get(k).remove();
+//                    if (!polylines.get(k).equals(polyline)) {
+//                        polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
+//                        polylineOptionsList.get(k).width(7);
+//                        Polyline p = mapboxMap.addPolyline(polylineOptionsList.get(k));
+//                        polylines.set(k, p);
+//                    }
+//                }
+//
+//                int prevroute = selectedroute;
+//                selectedroute = val;
+//                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
+//                routeadapter.notifyDataSetChanged();
+//
+//                polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
+//                polylineOptionsList.get(val).width(9);
+//                Polyline selectedPolyline = mapboxMap.addPolyline(polylineOptionsList.get(val));
+//                polylines.set(val, selectedPolyline);
+//
+//
+//                Update_dragUpHeadline();
+//
+//                if (selectedroute != prevroute) {
+//                    for (int k = 0; k < markersSteps.size(); k++) {
+//                        markersSteps.get(k).remove();
+//                    }
+//                    for (int k = 0; k < markersInterm.size(); k++) {
+//                        markersInterm.get(k).remove();
+//                    }
+//                }
+//            }
+//        }
+//    };
 
 
     void setCameraWithCoordinationBounds() {
@@ -781,12 +786,13 @@ public class SimpleMapViewActivity extends AppCompatActivity {
             public void run() {
                 new Task().execute();
             }
-        },1000);
+        },500);
 
     }
 
 
     void removeWeatherIcons(){
+
         for(int i=0;i<layeridlist.size();i++) {
             mapboxMap.removeLayer(layeridlist.get(i));
             mapboxMap.removeImage(layeridlist.get(i));
@@ -799,7 +805,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
 
-
+        layeridCreated = false;
         System.out.println("all removed");
         layeridlist=new ArrayList<>();
         markersourcelist=new ArrayList<>();
