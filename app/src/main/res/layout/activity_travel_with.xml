@@ -328,6 +328,7 @@
                                     android:text="Avoid"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
+
                                 <CheckBox
                                     android:id="@+id/highway"
                                     android:layout_width="wrap_content"

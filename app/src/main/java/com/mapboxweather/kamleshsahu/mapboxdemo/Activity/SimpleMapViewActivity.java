@@ -355,14 +355,14 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
     void drawRoute(){
         mapboxMap.clear();
-//        mapboxMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(sp.latitude(), sp.longitude()))
-//
-//        );
-//        mapboxMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(dp.latitude(), dp.longitude()))
-//
-//        );
+        mapboxMap.addMarker(new MarkerOptions()
+                .position(new LatLng(sp.latitude(), sp.longitude()))
+
+        );
+        mapboxMap.addMarker(new MarkerOptions()
+                .position(new LatLng(dp.latitude(), dp.longitude()))
+
+        );
 
 //        Bitmap icon1 = BitmapFactory.decodeResource(
 //                SimpleMapViewActivity.this.getResources(), R.drawable.pina);
@@ -451,6 +451,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 //        addMarkers(R.drawable.pina,"img1","sp",sp,"sp","sp");
 //        addMarkers(R.drawable.pinb,"img2","dp",dp,"dp","dp");
+
     }
 
     MapboxMap.OnMapClickListener mapClickListener= new MapboxMap.OnMapClickListener() {
