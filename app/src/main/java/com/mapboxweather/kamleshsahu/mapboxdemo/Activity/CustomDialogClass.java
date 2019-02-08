@@ -11,10 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.bitmapfromstring;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
@@ -62,18 +59,22 @@ public class CustomDialogClass extends Dialog implements
         time=findViewById(R.id.date);
         try {
 //            Log.i("custom marker class","on create run...");
-//            if(mStep!=null) System.out.println(new Gson().toJson(mStep));
+//            if(mStep!=null) //System.out.println(new Gson().toJson(mStep));
 //            else Log.e("mstep null","mstep is null");
-//            if(item!=null) System.out.println(new Gson().toJson(item));
+//            if(item!=null) //System.out.println(new Gson().toJson(item));
 //            else Log.e("item null","item is null");
             if (mStep != null) {
-                new bitmapfromstring(mStep.getWlist().getIcon(), icon, icondescription);
+          //      new bitmapfromstring(mStep.getWlist().getIcon(), icon, icondescription);
           //      Log.i("item temp",mStep.getWlist().getTemperature());
+                icon.setImageResource(new weatherIconMap().getWeatherResource(mStep.getWlist().getIcon()));
+                icondescription.setText(mStep.getWlist().getIcon());
                 temp.setText(String.format("%s°F", mStep.getWlist().getTemperature()));
                 time.setText(mStep.getArrtime());
             } else {
-                new bitmapfromstring(item.getWlist().getIcon(), icon, icondescription);
+            //    new bitmapfromstring(item.getWlist().getIcon(), icon, icondescription);
            //     Log.i("item temp",item.getWlist().getTemperature());
+                icon.setImageResource(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()));
+                icondescription.setText(item.getWlist().getIcon());
                 temp.setText(String.format("%s°F", item.getWlist().getTemperature()));
                 time.setText(item.getArrtime());
             }

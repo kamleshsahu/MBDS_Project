@@ -67,7 +67,7 @@ import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.bitmapfromstring;
+
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
@@ -509,7 +509,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 }
 
             }else{
-                System.out.println(" else part else part");
+                //System.out.println(" else part else part");
                 routechangeListener(pointf);
             }
 
@@ -518,11 +518,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
     void routechangeListener(PointF pointf){
- //       System.out.println("feature id not matching ");
+ //       //System.out.println("feature id not matching ");
         RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
         List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
         if(features1.size()>0){
- //           System.out.println("line data :"+features1.get(0).id());
+ //           //System.out.println("line data :"+features1.get(0).id());
             if(features1.get(0).id().startsWith("p")){
                 String id=features1.get(0).id();
                 selectedroute=Integer.parseInt(id.substring(1));
@@ -549,7 +549,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
             if (msg.obj != null) {
-                System.out.println("received interm weather data :");
+                //System.out.println("received interm weather data :");
                 Resp resp = (Resp) msg.obj;
                 Item item=resp.getIntermediatePointData();
                 if (item != null) {
@@ -620,7 +620,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
             if (msg.obj != null) {
-                System.out.println("received step weather data :");
+                //System.out.println("received step weather data :");
 
                 Resp resp=(Resp)msg.obj;
                 MStep mstep = resp.getmStep();
@@ -806,7 +806,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
         layeridCreated = false;
-        System.out.println("all removed");
+        //System.out.println("all removed");
         layeridlist=new ArrayList<>();
         markersourcelist=new ArrayList<>();
     }
@@ -950,7 +950,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                       System.out.println(" display error dialog dismiss");
+                       //System.out.println(" display error dialog dismiss");
                        dialog.dismiss();
                        bld = null;
                    }

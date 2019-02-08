@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 travelmode=DirectionsCriteria.PROFILE_DRIVING_TRAFFIC;
                 resetresult();
                 resetrestrictions();
-                System.out.println("travelmode :"+travelmode);
+                //System.out.println("travelmode :"+travelmode);
             }
         });
 
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 travelmode=DirectionsCriteria.PROFILE_WALKING;
                 resetrestrictions();
                 resetresult();
-                System.out.println("travelmode :"+travelmode);
+                //System.out.println("travelmode :"+travelmode);
             }
         });
         findViewById(R.id.d).setOnClickListener(new View.OnClickListener() {
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 travelmode=DirectionsCriteria.PROFILE_CYCLING;
                 resetrestrictions();
                 resetresult();
-                System.out.println("travelmode :"+travelmode);
+                //System.out.println("travelmode :"+travelmode);
             }
         });
 
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE1) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
-            System.out.println("feature text :"+feature.text());
+            //System.out.println("feature text :"+feature.text());
 
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
 
@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
         }else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE2) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
-            System.out.println("feature text :"+feature.text());
+            //System.out.println("feature text :"+feature.text());
 
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
 

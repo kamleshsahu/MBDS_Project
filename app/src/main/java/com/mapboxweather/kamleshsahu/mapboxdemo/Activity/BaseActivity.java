@@ -222,8 +222,8 @@ public class BaseActivity extends AppCompatActivity implements  IabBroadcastRece
     }
 
     void haveTrialorSubs(){
-        System.out.println(havetrial);
-        System.out.println(mSubscribedToInfiniteGas);
+        //System.out.println(havetrial);
+        //System.out.println(mSubscribedToInfiniteGas);
         if(!havetrial && !mSubscribedToInfiniteGas) {
             startActivity(new Intent(BaseActivity.this, Subscription.class));
             finish();

@@ -53,8 +53,8 @@ public class RouteFinder {
        new RouteFinder(sp, dp, travelmode,avoid, new Callback<DirectionsResponse>() {
            @Override
            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-               System.out.println("response");
-               System.out.println(response.body());
+               //System.out.println("response");
+               //System.out.println(response.body());
            }
 
            @Override

@@ -73,16 +73,16 @@ public class WeatherFinder {
         Callback<Darkskyapi2> darkskyapiCallback=new Callback<Darkskyapi2>() {
             @Override
             public void onResponse(Call<Darkskyapi2> call, Response<Darkskyapi2> response) {
-                System.out.println("response:");
-                System.out.println(response.code());
-                System.out.println(response.raw());
-                System.out.println(new Gson().toJson(response.body()));
+                //System.out.println("response:");
+                //System.out.println(response.code());
+                //System.out.println(response.raw());
+                //System.out.println(new Gson().toJson(response.body()));
             }
 
             @Override
             public void onFailure(Call<Darkskyapi2> call, Throwable t) {
-                System.out.println("error:");
-                System.out.println(t.getStackTrace());
+                //System.out.println("error:");
+                //System.out.println(t.getStackTrace());
                 t.printStackTrace();
             }
         };
@@ -133,7 +133,7 @@ public class WeatherFinder {
 
                         if(response.isSuccessful()){
                         Darkskyapi resp = response.body();
-                        System.out.println("item weather resp :" + new Gson().toJson(resp));
+                        //System.out.println("item weather resp :" + new Gson().toJson(resp));
 
                         int k = pos;
 
@@ -157,7 +157,7 @@ public class WeatherFinder {
                         }else {
                             Log.e("error","response not success,on response,item weather caller,matrixcall enque");
 
-                            System.out.println(response.errorBody());
+                            //System.out.println(response.errorBody());
                             Message message = new Message();
                             message.obj = new Resp(new mError(ErrorHead_Weather, response.message()));
                             SimpleMapViewActivity.myItemhandler.sendMessage(message);

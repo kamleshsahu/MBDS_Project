@@ -65,7 +65,7 @@
 //        interms.add(dp);
 //        interms.add(dp1);
 //        // MatrixResponse response = new DistMatrixFinder(sp,interms,1).getMatrix();
-//        // System.out.println(new Gson().toJson(response));
+//        // //System.out.println(new Gson().toJson(response));
 //    }
 //
 ////
@@ -131,8 +131,8 @@
 //
 //
 //                if (response.isSuccessful()) {
-//                    System.out.println(response.code());
-//                    System.out.println(response.raw());
+//                    //System.out.println(response.code());
+//                    //System.out.println(response.raw());
 //                    MatrixResponse distanceMatrix = response.body();
 //                    for (int k = 0; k < distanceMatrix.destinations().size(); k++) {
 //
@@ -141,7 +141,7 @@
 //
 //                        long arrival_time_millis = dep_time_millis + duration * 1000;
 //                        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-//                        //  System.out.println("timezone id :"+timezoneid);
+//                        //  //System.out.println("timezone id :"+timezoneid);
 //                        //   if(timezoneid!=null)
 //
 //                        sdf.setTimeZone(TimeZone.getTimeZone(timezoneid));

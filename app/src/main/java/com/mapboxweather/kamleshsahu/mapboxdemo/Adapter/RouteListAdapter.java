@@ -41,8 +41,8 @@ public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.View
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                System.out.println("hre is position "+position);
-//                System.out.println(route.summary);
+//                //System.out.println("hre is position "+position);
+//                //System.out.println(route.summary);
                 Intent intent=new Intent(context, SimpleMapViewActivity.class);
                 MainActivity.selectedroute=finalpos;
                 intent.putExtra("selectedroute",finalpos);
@@ -56,7 +56,7 @@ public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.View
   //      holder.itemView.
   //      setScaleAnimation(holder.itemView);
 
-     //  System.out.println("AdapterList,on bind view ");
+     //  //System.out.println("AdapterList,on bind view ");
         holder.route.setText(route.legs().get(0).summary());
         holder.distance.setText(new unitConverter().metertoMiles(route.distance().longValue()));
        // holder.time.setText(route.legs[0].durationInTraffic!=null?route.legs[0].durationInTraffic.humanReadable: route.legs[0].duration.humanReadable);

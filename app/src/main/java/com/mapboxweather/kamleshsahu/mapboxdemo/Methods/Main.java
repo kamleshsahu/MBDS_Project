@@ -57,8 +57,8 @@ public class Main {
 //        new RouteFinder(sp, dp, profile, new Callback<DirectionsResponse>() {
 //            @Override
 //            public void onResponse(Call<DirectionsResponse> call, Resp<DirectionsResponse> response) {
-//                System.out.println("response");
-//                System.out.println(response.body());
+//                //System.out.println("response");
+//                //System.out.println(response.body());
 //
 //
 //                new Main(response.body().routes().get(0)).execute();
@@ -135,14 +135,14 @@ public class Main {
                 for (int i = 20; i < points.size(); i += 20) {
                     olddist = dist;
                     dist += new DistanceCalculator().distance(points.get(i).getLatitude(), points.get(i - 20).getLatitude(), points.get(i).getLongitude(), points.get(i - 20).getLongitude(), 0, 0);
-                    //       System.out.println(olddist+" --> "+dist);
+                    //       //System.out.println(olddist+" --> "+dist);
                     while (dist > next) {
                         LatLng p1 = points.get(i - 20);
                         LatLng p2 = points.get(i);
                         int m = (next - olddist) / (dist - olddist);
                         LatLng currpos = new LatLng(p1.getLatitude() + (p2.getLatitude() - p1.getLatitude()) * m, p1.getLongitude() + (p2.getLongitude() - p1.getLongitude()) * m);
                         interms.add(Point.fromLngLat(currpos.getLongitude(), currpos.getLatitude()));
-                        //           System.out.println("interm added to list");
+                        //           //System.out.println("interm added to list");
                         next += (int) interval;
                     }
                 }

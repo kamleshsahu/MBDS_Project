@@ -34,10 +34,10 @@ public class TimeZoneOfOrigin {
         Callback<TimeZoneApiResponse> timeZoneApiResponseCallback=new Callback<TimeZoneApiResponse>() {
             @Override
             public void onResponse(Call<TimeZoneApiResponse> call, Response<TimeZoneApiResponse> response) {
-                System.out.println("response:");
-                System.out.println(response.raw());
-                System.out.println(response.code());
-                System.out.println(response.body().getTimeZoneId());
+                //System.out.println("response:");
+                //System.out.println(response.raw());
+                //System.out.println(response.code());
+                //System.out.println(response.body().getTimeZoneId());
             }
 
             @Override

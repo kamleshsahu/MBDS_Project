@@ -42,7 +42,8 @@ public class weatherIconMap {
     }
 
     public int getWeatherResource(String icon) {
-        if (iconMap.get(icon) != null) {
+
+        if (icon!=null && iconMap.get(icon) != null) {
             return iconMap.get(icon);
         } else {
             //   return R.drawable.maneuver_starting;
