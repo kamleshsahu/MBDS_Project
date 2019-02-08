@@ -447,7 +447,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
             if(i!=selectedroute)
             addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute));
         }
-        addPolyline(directionapiresp.routes().get(i).geometry(),"p"+selectedroute,getResources().getColor(R.color.seletedRoute));
+        addPolyline(directionapiresp.routes().get(selectedroute).geometry(),"p"+selectedroute,getResources().getColor(R.color.seletedRoute));
 
 //        addMarkers(R.drawable.pina,"img1","sp",sp,"sp","sp");
 //        addMarkers(R.drawable.pinb,"img2","dp",dp,"dp","dp");
@@ -919,9 +919,16 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                // weatherApi = new WeatherApi();
                // weatherApi.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 //               Toast.makeText(this, "Fetching Weather...", Toast.LENGTH_SHORT).show();
+                mapboxMap.clear();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                     //   drawRoute();
+                        showWeather(null);
+                    }
+                },500);
 
-                drawRoute();
-                showWeather(null);
+
                 return true;
 
             case R.id.action_clr:
