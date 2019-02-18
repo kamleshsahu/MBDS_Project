@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -46,6 +47,7 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeZoneOfOrigin;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_travel_with);
         tv_source=findViewById(R.id.source);
         tv_dstn=findViewById(R.id.destination);

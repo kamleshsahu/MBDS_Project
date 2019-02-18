@@ -15,6 +15,10 @@ public class unitConverter {
         return String.format("%.2f mi",distance*0.00062137);
     }
 
+    public String metertoKM(double distance){
+        return String.format("%.2f Km",distance/1000);
+    }
+
     public String durationBeautify(long duration){
 
         if(duration>=3600) {
