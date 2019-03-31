@@ -3,7 +3,6 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 import android.os.Message;
 
 import com.mapbox.api.directions.v5.DirectionsCriteria;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.LegStep;
 import com.mapbox.core.constants.Constants;
@@ -22,16 +21,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity.progress;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkSky_BaseURL;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_MainFunction;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_STEP;
 
 
 public class Main {
@@ -148,7 +143,7 @@ public class Main {
                 }
 
                 if (interms.size() > 0) {
-                    new ALLIntermsWeatherFinder(steps.get(k).maneuver().location(), interms, travelmode, timezoneid, jstarttime, aft_duration).call();
+                    new WeatherFinderforPoints(steps.get(k).maneuver().location(), interms, travelmode, timezoneid, jstarttime, aft_duration).call();
                 }
             }
 

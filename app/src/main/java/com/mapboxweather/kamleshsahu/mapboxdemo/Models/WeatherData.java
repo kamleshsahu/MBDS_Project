@@ -1,19 +1,19 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Models;
 
-public class Wdata{
+public class WeatherData {
     String imgurl;
     String wtime;
     String wx;
     String temp;
 
-    public Wdata(String wtime,String wx,String temp,String imgurl) {
+    public WeatherData(String wtime, String wx, String temp, String imgurl) {
     this.imgurl=imgurl;
     this.temp=temp;
     this.wtime=wtime;
     this.wx=wx;
     }
 
-    public Wdata() {
+    public WeatherData() {
         super();
     }
 

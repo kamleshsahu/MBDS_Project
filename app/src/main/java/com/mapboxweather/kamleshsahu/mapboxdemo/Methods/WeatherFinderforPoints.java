@@ -1,44 +1,31 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
 
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.matrix.v1.MapboxMatrix;
 import com.mapbox.api.matrix.v1.models.MatrixResponse;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi2;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MyDistMatrixResponse;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
-
 
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_IntermFunction;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_STEP;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
-
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.strDays;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.getMax_API_Count;
 
 
-public class ALLIntermsWeatherFinder  {
+public class WeatherFinderforPoints {
     private Point origin=null;
     private long jstarttime;
     private String timezoneid;
@@ -50,14 +37,13 @@ public class ALLIntermsWeatherFinder  {
     private List<List<Point>> intermsInParts=new ArrayList<>();
 
 
-     ALLIntermsWeatherFinder(Point origin, List<Point> interms,String travelmode, String timezoneid, long jstarttime, long aft_duration) {
+     WeatherFinderforPoints(Point origin, List<Point> interms, String travelmode, String timezoneid, long jstarttime, long aft_duration) {
       this.origin=origin;
       this.jstarttime=jstarttime;
       this.timezoneid=timezoneid;
       this.aft_duration=aft_duration;
       this.interms=interms;
       this.travelmode=travelmode;
-
      }
 
 
@@ -148,21 +134,4 @@ public class ALLIntermsWeatherFinder  {
            }
 
     }
-
-    int getMax_API_Count(String travelmode){
-
-         switch (travelmode){
-             case DirectionsCriteria.PROFILE_DRIVING_TRAFFIC :return 9;
-             case DirectionsCriteria.PROFILE_DRIVING :return 24;
-             case DirectionsCriteria.PROFILE_CYCLING :return 24;
-             case DirectionsCriteria.PROFILE_WALKING :return 24;
-
-             default:return 9;
-         }
-
-    }
-
-
-
-
 }

@@ -76,5 +76,16 @@ public class Constants {
 //      max_Api_Count.put(DirectionsCriteria.PROFILE_WALKING,24);
 //   }
 
+ public static int getMax_API_Count(String travelmode){
 
+      switch (travelmode){
+         case DirectionsCriteria.PROFILE_DRIVING_TRAFFIC :return 9;
+         case DirectionsCriteria.PROFILE_DRIVING :return 24;
+         case DirectionsCriteria.PROFILE_CYCLING :return 24;
+         case DirectionsCriteria.PROFILE_WALKING :return 24;
+
+         default:return 9;
+      }
+
+   }
 }
