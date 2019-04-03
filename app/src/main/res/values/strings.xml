@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MapboxDemo</string>
+    <string name="app_name">RouteWeather</string>
     <string name="FasttestRoute">Fastest route, despite the usual traffic</string>
 
     <string name="subscription_period_prompt">Select your subscription period</string>
