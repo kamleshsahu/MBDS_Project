@@ -166,7 +166,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         progress=new ProgressDialog(this);
         ////////////////////////////////////////////////////////////
         //menu
-        setTitle("MapView");
+  
         editor = getSharedPreferences("distance", MODE_PRIVATE).edit();
         SharedPreferences prefs = getSharedPreferences("distance", MODE_PRIVATE);
         int a = prefs.getInt("10", 0);
