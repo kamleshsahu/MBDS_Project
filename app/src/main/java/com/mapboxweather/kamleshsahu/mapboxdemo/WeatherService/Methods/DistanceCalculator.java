@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 public class DistanceCalculator {
 

@@ -13,9 +13,11 @@ import android.widget.TextView;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MainActivity;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
+
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
+//import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
 
 public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.ViewHolder>{
         private Context context;

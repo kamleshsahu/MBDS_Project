@@ -12,9 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
+
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
 public class CustomDialogClass extends Dialog implements
         android.view.View.OnClickListener {
@@ -25,8 +26,8 @@ public class CustomDialogClass extends Dialog implements
     public TextView temp;
     public TextView time;
     public TextView icondescription;
-    MStep mStep;
-    Item item;
+    mStep mstep;
+    mPoint item;
 
     public CustomDialogClass(Activity a) {
         super(a);
@@ -34,18 +35,18 @@ public class CustomDialogClass extends Dialog implements
         this.c = a;
     }
 
-    public CustomDialogClass(Activity a,Item item) {
+    public CustomDialogClass(Activity a,mPoint item) {
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
         this.item=item;
     }
 
-    public CustomDialogClass(Activity a,MStep mstep) {
+    public CustomDialogClass(Activity a,mStep mstep) {
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
-        this.mStep=mstep;
+        this.mstep=mstep;
     }
 
     @Override
@@ -63,20 +64,20 @@ public class CustomDialogClass extends Dialog implements
 //            else Log.e("mstep null","mstep is null");
 //            if(item!=null) //System.out.println(new Gson().toJson(item));
 //            else Log.e("item null","item is null");
-            if (mStep != null) {
+            if (mstep != null) {
           //      new bitmapfromstring(mStep.getWlist().getIcon(), icon, icondescription);
           //      Log.i("item temp",mStep.getWlist().getTemperature());
-                icon.setImageResource(new weatherIconMap().getWeatherResource(mStep.getWlist().getIcon()));
-                icondescription.setText(mStep.getWlist().getIcon());
-                temp.setText(String.format("%s°F", mStep.getWlist().getTemperature()));
-                time.setText(mStep.getArrtime());
+                icon.setImageResource(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()));
+                icondescription.setText(mstep.getWeatherdata().getIcon());
+                temp.setText(String.format("%s°F", mstep.getWeatherdata().getTemperature()));
+                time.setText(mstep.getDisplay_arrtime());
             } else {
             //    new bitmapfromstring(item.getWlist().getIcon(), icon, icondescription);
            //     Log.i("item temp",item.getWlist().getTemperature());
-                icon.setImageResource(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()));
-                icondescription.setText(item.getWlist().getIcon());
-                temp.setText(String.format("%s°F", item.getWlist().getTemperature()));
-                time.setText(item.getArrtime());
+                icon.setImageResource(new weatherIconMap().getWeatherResource(item.getWeather_data().getIcon()));
+                icondescription.setText(item.getWeather_data().getIcon());
+                temp.setText(String.format("%s°F", item.getWeather_data().getTemperature()));
+                time.setText(item.getDisplay_arrtime());
             }
         }catch (Exception e){
             e.printStackTrace();

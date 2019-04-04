@@ -5,19 +5,14 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.FeatureGroupInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,38 +21,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Annotation;
-import com.mapbox.mapboxsdk.annotations.Icon;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.constants.MapboxConstants;
-import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.style.expressions.Expression;
-import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
@@ -66,26 +49,19 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.Main;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Item;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
+
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.WeatherService;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.vipul.hp_hp.library.Layout_to_Image;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
-import static com.mapbox.geojson.LineString.fromJson;
-import static com.mapbox.geojson.LineString.fromLngLats;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.fastest_route;
 
@@ -97,7 +73,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
     private MapView mapView;
     public static Handler myItemhandler,myStephandler;
-
+    Task getWeatherTask;
 
 
     Point sp=MainActivity.sp,dp=MainActivity.dp;
@@ -108,11 +84,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     String travelmode=MainActivity.travelmode;
     long jstarttime=MainActivity.jstart_date_millis+MainActivity.jstart_time_millis;
 
-     android.app.AlertDialog.Builder bld;
+     AlertDialog.Builder bld;
 
     List<PolylineOptions> polylineOptionsList;
-    List<Item> items;
-    List<MStep> mSteps;
+    List<mPoint> mpoints;
+    List<mStep> msteps;
     List<Polyline> polylines;
     List<Marker> markersInterm;
     List<Marker> markersSteps;
@@ -156,8 +132,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         layeridCreated = false;
         linelayerids=new String[directionapiresp.routes().size()];
         layeridlist=new ArrayList<>();
-        items = new ArrayList<>();
-        mSteps = new ArrayList<>();
+        mpoints = new ArrayList<>();
+        msteps = new ArrayList<>();
         polylineOptionsList = new ArrayList<>();
         markersSteps = new ArrayList<>();
         markersInterm = new ArrayList<>();
@@ -326,9 +302,9 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         });
 
 
-        myItemhandler = new Handler(myIntermediatePointsCallback);
-
-        myStephandler = new Handler(myStepsHandlerCallback);
+//        myItemhandler = new Handler(myIntermediatePointsCallback);
+//
+//        myStephandler = new Handler(myStepsHandlerCallback);
 
 
 
@@ -363,81 +339,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
         );
 
-//        Bitmap icon1 = BitmapFactory.decodeResource(
-//                SimpleMapViewActivity.this.getResources(), R.drawable.pina);
-//
-//        Bitmap icon2 = BitmapFactory.decodeResource(
-//                SimpleMapViewActivity.this.getResources(),R.drawable.pinb);
-
-
-
-
         layeridCreated = false;
 
         linelayerids=new String[directionapiresp.routes().size()];
 
         setCameraWithCoordinationBounds();
-        //add route(s) to the map.
-
-//        MapActivity.distance.setText("(" + directionapi.routes[selectedroute].legs[0].distance.humanReadable+ ")");
-//        MapActivity.duration.setText(directionapi.routes[selectedroute].legs[0].durationInTraffic!=null?directionapi.routes[selectedroute].legs[0].durationInTraffic.humanReadable:directionapi.routes[selectedroute].legs[0].duration.humanReadable);
-//        if (directionapi.routes[selectedroute].legs[0].duration.humanReadable != null) {
-//            slidingUpPanelLayout.setPanelHeight(context.getResources().getDimensionPixelSize(R.dimen.dragupsize));
-//        }
-
-//        Polyline selectedPolyline = null;
-//        PolylineOptions SelectedpolyOptions = null;
-//        polylines=new ArrayList<>();
-//
-//        for (int i = 0; i < directionapiresp.routes().size(); i++) {
-//            if (i != selectedroute) {
-//
-//                List<LatLng> points = new ArrayList<>();
-//                List<Point> coords = LineString.fromPolyline(directionapiresp.routes().get(i).geometry(), Constants.PRECISION_6).coordinates();
-//                //    new task().execute();
-//
-//                for (Point point : coords) {
-//                    points.add(new LatLng(point.latitude(), point.longitude()));
-//                }
-//
-//                PolylineOptions polyOptions = new PolylineOptions();
-//                polyOptions.color(getApplicationContext().getResources().getColor(R.color.alternateRoute));
-//                polyOptions.width(7);
-//                polyOptions.addAll(points);
-//
-//                Polyline polyline =mapboxMap.addPolyline(polyOptions);
-//                polylines.add(polyline);
-//
-//                polylineOptionsList.add(polyOptions);
-//            }else {
-//                List<LatLng> points = new ArrayList<>();
-//                List<Point> coords = LineString.fromPolyline(directionapiresp.routes().get(i).geometry(), Constants.PRECISION_6).coordinates();
-//                //    new task().execute();
-//
-//                for (Point point : coords) {
-//                    points.add(new LatLng(point.latitude(), point.longitude()));
-//                }
-//
-//
-//                SelectedpolyOptions = new PolylineOptions();
-//                SelectedpolyOptions.color(getApplicationContext().getResources().getColor(R.color.seletedRoute));
-//                SelectedpolyOptions.width(9);
-//                SelectedpolyOptions.addAll(points);
-//                polylineOptionsList.add(SelectedpolyOptions);
-//
-//            }
-//        }
-//
-//        if(SelectedpolyOptions !=null) {
-//            selectedPolyline = mapboxMap.addPolyline(SelectedpolyOptions);
-//            polylines.add(selectedPolyline);
-//       }
-//
-//        polylineOptionsList.add(SelectedpolyOptions);
-//        mapboxMap.addPolylines(polylineOptionsList);
-
-
-
 
         for(int i=0;i<directionapiresp.routes().size();i++){
             String id="p"+i;
@@ -480,11 +386,11 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 if (feature.id().startsWith("S")) {
                     Log.i("marker clicked :", "step marker clicked");
                     int index = Integer.parseInt(feature.id().substring(1));
-                    new CustomDialogClass(SimpleMapViewActivity.this, mSteps.get(index)).show();
+                    new CustomDialogClass(SimpleMapViewActivity.this, msteps.get(index)).show();
                 } else if (feature.id().startsWith("I")) {
                     Log.i("marker clicked :", "item marker clicked");
                     int index = Integer.parseInt(feature.id().substring(1));
-                    new CustomDialogClass(SimpleMapViewActivity.this, items.get(index)).show();
+                    new CustomDialogClass(SimpleMapViewActivity.this, mpoints.get(index)).show();
 //                }else if(feature.id().startsWith("p")){
 //                            String id=features.get(0).id();
 //                            selectedroute=Integer.parseInt(id.substring(1));
@@ -542,201 +448,99 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         }
     }
 
-    Handler.Callback myIntermediatePointsCallback=new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-
-
-            if (msg.obj != null) {
-                //System.out.println("received interm weather data :");
-                Resp resp = (Resp) msg.obj;
-                Item item=resp.getIntermediatePointData();
-                if (item != null) {
-                    items.add(item);
-                    MarkerOptions options = new MarkerOptions();
-                    options.setPosition(item.getPoint());
-
-                    LinearLayout relativeLayout = findViewById(R.id.show);
-//                    TextView time = findViewById(R.id.step_time);
-                    TextView weather = findViewById(R.id.step_weather);
-                    ImageView step_icon = findViewById(R.id.step_icon);
-//                    TextView location_name = findViewById(R.id.location_name);
-                    Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
-
-
-//                    String time_data[] = item.getArrtime().split(",", 2);
-//                    if (time_data.length >= 2)
-//                        time.setText(time_data[0] + "\n" + time_data[1]);
-//                    else time.setText(item.getArrtime());
-//                    if (item.getLname() != null) {
-//                        String lname[] = item.getLname().split(",");
-//                        if (lname.length >= 2)
-//                            location_name.setText(lname[0].length() < 20 ? lname[0] : lname[0].substring(0, 19) + "..,\n" + lname[1]);
-//                        else {
-//                            location_name.setText(lname[0]);
-//                        }
-//                    }
-
-//                    ImageView image = step_icon;
-//                    new bitmapfromstring(item.getWlist().getIcon(), image, weather);
-//                    Bitmap bitmap = layout_to_image.convert_layout();
-//
-////                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-////                            .fromBitmap(bitmap);
-//                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-//                            .fromResource(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()));
-//
-//                    options.setIcon(icon);
-//                    Marker marker= mapboxMap.addMarker(options);
-//                      markersInterm.add(marker);
-//                   // marker.setId(markersInterm.indexOf(marker));
-//                    marker.setTitle("I"+markersInterm.indexOf(marker));
-
-                    String id="I"+items.indexOf(item);
-                    layeridlist.add(id);
-                    addMarkers(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()),id,id,Point.fromLngLat(item.getPoint().getLongitude(),item.getPoint().getLatitude()),id,id);
-
-                }else {
-                    Log.e("error","item null,item handler");
-                    progress.dismiss();
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    displayError(resp.getError().getHeading(),resp.getError().getMessage());
-                }
-            }else{
-                Log.e("error","message obj null,item handler");
-                progress.dismiss();
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                displayError("unknown error","error while finding weather");
-            }
-
-            return false;
-        }
-    };
-
-    Handler.Callback myStepsHandlerCallback=new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-
-
-            if (msg.obj != null) {
-                //System.out.println("received step weather data :");
-
-                Resp resp=(Resp)msg.obj;
-                MStep mstep = resp.getmStep();
-
-                if (mstep != null) {
-                    mSteps.add(mstep);
-
-                    MarkerOptions options = new MarkerOptions();
-                    options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
-                    LinearLayout relativeLayout = findViewById(R.id.show);
-//                    TextView time = findViewById(R.id.step_time);
-                    TextView weather = findViewById(R.id.step_weather);
-                    ImageView step_icon = findViewById(R.id.step_icon);
-//                   TextView location_name = findViewById(R.id.location_name);
-                    Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
-//
-//
-////                    String time_data[] = mstep.getArrtime().split(",", 2);
-////                    if (time_data.length >= 2)
-////                        time.setText(time_data[0] + "\n" + time_data[1]);
-////                    else time.setText(mstep.getArrtime());
-//
-//
-
-//                    ImageView image = step_icon;
-//                    new bitmapfromstring(mstep.getWlist().getIcon(), image, weather);
-//                    Bitmap bitmap = layout_to_image.convert_layout();
-////
-//                    Icon icon = IconFactory.getInstance(SimpleMapViewActivity.this)
-//                            .fromResource(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()));
-//
-//                    options.setIcon(icon);
-//                    Marker marker= mapboxMap.addMarker(options);
-//                    markersSteps.add(marker);
-//
-//                    marker.setTitle("S"+markersSteps.indexOf(marker));
-                     String id="S"+mstep.getPos();
-                     layeridlist.add(id);
-                     addMarkers(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()),id,id,mstep.getStep().maneuver().location(),id,id);
-
-                    if (--stepcount <= 0) {
-                        Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
-                        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
-                      new Handler().postDelayed(new Runnable() {
-                          @Override
-                          public void run() {
-                              progress.dismiss();
-                              getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                          }
-                      },1000);
-
-                    }
-
-                }else {
-                    if(progress.isShowing()){
-                        progress.dismiss();
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    try {
-//
-//                        displayError(resp.getError().getHeading(), resp.getError().getMessage());
-//                    }catch (Exception e){
-//                        Log.e("diplay error :","mstep obj is coming null");
-//                        e.printStackTrace();
-//                    }
-                    }
-                }
-            }
-
-            return false;
-        }
-    };
-
-
-//    MapboxMap.OnPolylineClickListener polylineClickListener=new MapboxMap.OnPolylineClickListener() {
+//    Handler.Callback myIntermediatePointsCallback=new Handler.Callback() {
 //        @Override
-//        public void onPolylineClick(@NonNull Polyline polyline) {
-//            int val=0;
+//        public boolean handleMessage(Message msg) {
 //
-//            for(int k=0;k<polylines.size();k++){
-//                if(polylines.get(k).equals(polyline)){
-//                    val=k;
+//
+//            if (msg.obj != null) {
+//                //System.out.println("received interm weather data :");
+//                Resp resp = (Resp) msg.obj;
+//                Item item=resp.getIntermediatePointData();
+//                if (item != null) {
+//                    items.add(item);
+//                    MarkerOptions options = new MarkerOptions();
+//                    options.setPosition(item.getPoint());
+//
+//                    LinearLayout relativeLayout = findViewById(R.id.show);
+////                    TextView time = findViewById(R.id.step_time);
+//                    TextView weather = findViewById(R.id.step_weather);
+//                    ImageView step_icon = findViewById(R.id.step_icon);
+////                    TextView location_name = findViewById(R.id.location_name);
+//                    Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
+//
+//
+//                    String id="I"+items.indexOf(item);
+//                    layeridlist.add(id);
+//                    addMarkers(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()),id,id,Point.fromLngLat(item.getPoint().getLongitude(),item.getPoint().getLatitude()),id,id);
+//
+//                }else {
+//                    Log.e("error","item null,item handler");
+//                    progress.dismiss();
+//                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                    displayError(resp.getError().getHeading(),resp.getError().getMessage());
+//                }
+//            }else{
+//                Log.e("error","message obj null,item handler");
+//                progress.dismiss();
+//                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                displayError("unknown error","error while finding weather");
+//            }
+//
+//            return false;
+//        }
+//    };
+//
+//    Handler.Callback myStepsHandlerCallback=new Handler.Callback() {
+//        @Override
+//        public boolean handleMessage(Message msg) {
+//
+//
+//            if (msg.obj != null) {
+//                //System.out.println("received step weather data :");
+//
+//                Resp resp=(Resp)msg.obj;
+//                MStep mstep = resp.getmStep();
+//
+//                if (mstep != null) {
+//                    mSteps.add(mstep);
+//
+//                    MarkerOptions options = new MarkerOptions();
+//                    options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
+//                    LinearLayout relativeLayout = findViewById(R.id.show);
+//
+//                    TextView weather = findViewById(R.id.step_weather);
+//                    ImageView step_icon = findViewById(R.id.step_icon);
+//
+//                    Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
+//
+//                     String id="S"+mstep.getPos();
+//                     layeridlist.add(id);
+//                     addMarkers(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()),id,id,mstep.getStep().maneuver().location(),id,id);
+//
+//                    if (--stepcount <= 0) {
+//                        Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
+//                        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
+//                      new Handler().postDelayed(new Runnable() {
+//                          @Override
+//                          public void run() {
+//                              progress.dismiss();
+//                              getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                          }
+//                      },1000);
+//
+//                    }
+//
+//                }else {
+//                    if(progress.isShowing()){
+//                        progress.dismiss();
+//                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//
+//                    }
 //                }
 //            }
 //
-//            if(selectedroute!=val) {
-//                for (int k = 0; k < polylines.size(); k++) {
-//                    polylines.get(k).remove();
-//                    if (!polylines.get(k).equals(polyline)) {
-//                        polylineOptionsList.get(k).color(getResources().getColor(R.color.alternateRoute));
-//                        polylineOptionsList.get(k).width(7);
-//                        Polyline p = mapboxMap.addPolyline(polylineOptionsList.get(k));
-//                        polylines.set(k, p);
-//                    }
-//                }
-//
-//                int prevroute = selectedroute;
-//                selectedroute = val;
-//                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
-//                routeadapter.notifyDataSetChanged();
-//
-//                polylineOptionsList.get(val).color(getResources().getColor(R.color.seletedRoute));
-//                polylineOptionsList.get(val).width(9);
-//                Polyline selectedPolyline = mapboxMap.addPolyline(polylineOptionsList.get(val));
-//                polylines.set(val, selectedPolyline);
-//
-//
-//                Update_dragUpHeadline();
-//
-//                if (selectedroute != prevroute) {
-//                    for (int k = 0; k < markersSteps.size(); k++) {
-//                        markersSteps.get(k).remove();
-//                    }
-//                    for (int k = 0; k < markersInterm.size(); k++) {
-//                        markersInterm.get(k).remove();
-//                    }
-//                }
-//            }
+//            return false;
 //        }
 //    };
 
@@ -780,10 +584,12 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
         removeWeatherIcons();
 
+
+        getWeatherTask = new Task();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                new Task().execute();
+                getWeatherTask.execute();
             }
         },500);
 
@@ -810,12 +616,52 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         markersourcelist=new ArrayList<>();
     }
 
-    class Task extends AsyncTask<Object,Object,Object>{
+    class Task extends AsyncTask<Object,Object,List<mStep>>{
 
         @Override
-        protected Object doInBackground(Object[] objects) {
-            new Main(directionapiresp.routes().get(selectedroute),travelmode,timezone,jstarttime,interval).execute();
-            return null;
+        protected List<mStep> doInBackground(Object[] objects) {
+            WeatherService weatherServiceCall;
+            weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,jstarttime,interval,travelmode);
+            return weatherServiceCall.calc_data();
+        }
+
+        @Override
+        protected void onPostExecute(List<mStep> steps) {
+            msteps=steps;
+            progress.dismiss();
+            link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), steps));
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            for(int i=0;i<steps.size();i++) {
+
+                mStep mstep = steps.get(i);
+                if (mstep != null) {
+                    MarkerOptions options = new MarkerOptions();
+                    options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
+                    LinearLayout relativeLayout = findViewById(R.id.show);
+
+                    String id = "S" + mstep.getPos();
+                    layeridlist.add(id);
+                    addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
+
+                    List<mPoint> step_mPoints = mstep.getInterms();
+                    mpoints.addAll(step_mPoints);
+
+                    for (int j = 0; j < step_mPoints.size(); j++) {
+
+                        mPoint mpoint = step_mPoints.get(i);
+
+                        if (mpoint != null) {
+                            String pid = "I" + mpoints.indexOf(mpoint);
+                            layeridlist.add(pid);
+                            addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), id, id,
+                                    Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), id, id);
+
+                        }
+                    }
+
+                }
+            }
+
         }
     }
     // Add the mapView lifecycle to the activity's lifecycle methods
@@ -835,6 +681,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mapView.onStop();
+//        getWeatherTask.cancel(true);
     }
 
     @Override

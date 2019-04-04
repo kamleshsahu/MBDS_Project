@@ -15,8 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.MStep;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
 import java.util.List;
 
@@ -30,11 +30,11 @@ public class DragupListAdapter_weather extends RecyclerView.Adapter<DragupListAd
 
     private weatherIconMap iconInstance;
     private Context context;
-    private List<MStep> mSteps;
+    private List<mStep> msteps;
     unitConverter converter;
-    public DragupListAdapter_weather(Context context, List<MStep> mSteps){
+    public DragupListAdapter_weather(Context context, List<mStep> mSteps){
         this.context=context;
-        this.mSteps=mSteps;
+        this.msteps=mSteps;
         this.iconInstance=new weatherIconMap();
         this.converter=new unitConverter();
     }
@@ -50,7 +50,7 @@ public class DragupListAdapter_weather extends RecyclerView.Adapter<DragupListAd
 
     @Override
     public void onBindViewHolder(PnrViewHolder holder, int position) {
-        MStep mStep =mSteps.get(position);
+        mStep mstep =msteps.get(position);
        // Glide.with(holder.image.getContext()).load(passengerList.getLink()).into(holder.image);
 
         setScaleAnimation(holder.itemView);
@@ -60,20 +60,20 @@ public class DragupListAdapter_weather extends RecyclerView.Adapter<DragupListAd
 //        }else {
 //            holder.instr.setText(Html.fromHtml(mStep.getStep().htmlInstructions));
 //        }
-             holder.instr.setText(mStep.getStep().maneuver().instruction());
+             holder.instr.setText(mstep.getStep().maneuver().instruction());
 //        holder.distance.setText("Traveled : "+mStep.getAft_distance()/(long)1000+" km");
 //        holder.arrtime.setText("Start time:"+mStep.getArrtime());
         try {
 
 
 
-            String arrtime=mStep.getArrtime().split(",",2)[0];
+            String arrtime=mstep.getDisplay_arrtime().split(",",2)[0];
             holder.arrtime.setText(arrtime);
-            holder.weather.setText(mStep.getWlist().getSummary());
-            holder.temp.setText(mStep.getWlist().getTemperature() + "°F");
+            holder.weather.setText(mstep.getWeatherdata().getSummary());
+            holder.temp.setText(mstep.getWeatherdata().getTemperature() + "°F");
 
-            holder.distance.setText(converter.metertoMiles2(mStep.getAft_distance()));
-            holder.stepLength.setText(converter.metertoMiles2(mStep.getStep().duration()));
+            holder.distance.setText(converter.metertoMiles2(mstep.getAft_distance()));
+            holder.stepLength.setText(converter.metertoMiles2(mstep.getStep().duration()));
 //            if(DistanceUnit ==2) {
 //                holder.distance.setText(String.format("%.2f", (float) mStep.getAft_distance() / (float) 1000 ) + " km");
 //                holder.stepLength.setText(String.format("%.2f", (float) mStep.getStep().distance.inMeters / (float) 1000 ) + " km");
@@ -82,7 +82,7 @@ public class DragupListAdapter_weather extends RecyclerView.Adapter<DragupListAd
 //                holder.stepLength.setText(String.format("%.2f", (float) mStep.getStep().distance.inMeters / (float) 1000 * (0.621371)) + " mi");
 //            }
 
-            Drawable icon = context.getResources().getDrawable( iconInstance.getWeatherResource(mStep.getWlist().getIcon()) );
+            Drawable icon = context.getResources().getDrawable( iconInstance.getWeatherResource(mstep.getWeatherdata().getIcon()) );
 
          //   new w(icon,context,mStep);
 
@@ -104,7 +104,7 @@ public class DragupListAdapter_weather extends RecyclerView.Adapter<DragupListAd
 
    @Override
     public int getItemCount() {
-      return mSteps.size();
+      return msteps.size();
     }
 
     public class PnrViewHolder extends RecyclerView.ViewHolder {

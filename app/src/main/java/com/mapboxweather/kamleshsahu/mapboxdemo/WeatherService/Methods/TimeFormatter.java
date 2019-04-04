@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +31,15 @@ public class TimeFormatter {
     }
 
    static public String getSDFtime(long arrival_time_millis,String timezoneid){
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        sdf.setTimeZone(TimeZone.getTimeZone(timezoneid));
+        String time = sdf.format(arrival_time_millis);
+        return time;
+    }
+
+    static public String getSDFtime(long jstarttime,long aft_duration,String timezoneid){
+
+        long arrival_time_millis = jstarttime + aft_duration * 1000;
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         sdf.setTimeZone(TimeZone.getTimeZone(timezoneid));
         String time = sdf.format(arrival_time_millis);

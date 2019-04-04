@@ -1,9 +1,11 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Models;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models;
 
 import com.mapbox.api.directions.v5.models.LegStep;
 import com.mapbox.geojson.Point;
 
 import java.util.List;
+
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.getSDFtime;
 
 /**
  * Created by k on 3/28/2019.
@@ -127,5 +129,9 @@ public class mStep {
 
     public void setInterms(List<mPoint> interms) {
         this.interms = interms;
+    }
+
+    public String getSDFTime(){
+        return getSDFtime(jstarttime,aft_duration,timezoneid);
     }
 }

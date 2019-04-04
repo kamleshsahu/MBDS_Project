@@ -1,30 +1,21 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 
-import android.os.Message;
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.mapbox.api.matrix.v1.MapboxMatrix;
 import com.mapbox.api.matrix.v1.models.MatrixResponse;
 import com.mapbox.geojson.Point;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mPoint;
 
-import java.text.SimpleDateFormat;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_IntermFunction;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.getMax_API_Count;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeFormatter.getSDFtime;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.getSDFtime;
 
 
 public class PointMatrix {
@@ -37,6 +28,7 @@ public class PointMatrix {
     private long dep_time_millis;
     private String travelmode;
     private List<List<Point>> intermsInParts;
+
 
 
     PointMatrix(Point origin, List<mPoint> interms, String travelmode, String timezoneid, long jstarttime, long aft_duration) {
@@ -111,19 +103,19 @@ public class PointMatrix {
 
 
                             /* check for data match*/
-                            interms.get(finalI*max_Api_Count+FinalK).setDs_arr_time(getSDFtime(arrival_time_millis,timezoneid));
+                            interms.get(finalI*max_Api_Count+FinalK).setDs_arr_time(TimeFormatter.getSDFtime(arrival_time_millis,timezoneid));
                             interms.get(finalI*max_Api_Count+FinalK).setLocation_name(distanceMatrix.destinations().get(FinalK).name());
 
-//                            new WeatherFinder(FinalK, intermsInParts.get(finalI).get(FinalK), distanceMatrix, time).fetchWeather();
+//                            new WeatherFinder_old(FinalK, intermsInParts.get(finalI).get(FinalK), distanceMatrix, time).fetchWeather();
 
                             }
                     } else {
-                        Log.e("error","request not successful,matrixcall enque");
-                        Log.e("error body ",new Gson().toJson(response.raw()));
-                        Log.e("error url :",response.raw().request().url().toString());
-                        Message message = new Message();
-                        message.obj = new Resp(new mError(ErrorHead_IntermFunction, response.message()));
-                        SimpleMapViewActivity.myItemhandler.sendMessage(message);
+//                        Log.e("error","request not successful,matrixcall enque");
+//                        Log.e("error body ",new Gson().toJson(response.raw()));
+//                        Log.e("error url :",response.raw().request().url().toString());
+//                        Message message = new Message();
+//                        message.obj = new Resp(new mError(ErrorHead_IntermFunction, response.message()));
+//                        SimpleMapViewActivity.myItemhandler.sendMessage(message);
 
                     }
                 }
@@ -131,11 +123,11 @@ public class PointMatrix {
                 @Override
                 public void onFailure(Call<MatrixResponse> call, Throwable t) {
 
-                    Log.e("error","onfailture,matrixcall enque");
-                    t.printStackTrace();
-                    Message message = new Message();
-                    message.obj = new Resp(new mError(ErrorHead_IntermFunction, t.getMessage()));
-                    SimpleMapViewActivity.myItemhandler.sendMessage(message);
+//                    Log.e("error","onfailture,matrixcall enque");
+//                    t.printStackTrace();
+//                    Message message = new Message();
+//                    message.obj = new Resp(new mError(ErrorHead_IntermFunction, t.getMessage()));
+//                    SimpleMapViewActivity.myItemhandler.sendMessage(message);
                 }
             });
 

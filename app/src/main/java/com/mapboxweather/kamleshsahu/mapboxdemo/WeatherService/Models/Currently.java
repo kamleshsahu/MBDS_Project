@@ -1,5 +1,5 @@
 
-package com.mapboxweather.kamleshsahu.mapboxdemo.Models;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models;
 
 import java.io.Serializable;
 import com.google.gson.annotations.Expose;

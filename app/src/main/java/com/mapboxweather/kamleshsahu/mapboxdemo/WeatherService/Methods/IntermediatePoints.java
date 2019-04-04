@@ -1,6 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
-
-import android.os.Message;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.LegStep;
@@ -8,18 +6,13 @@ import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Resp;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mError;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mPoint;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_MainFunction;
 
 /**
  * Created by k on 3/27/2019.
@@ -42,7 +35,7 @@ public class IntermediatePoints {
         this.stepList_request_forWeathers=new ArrayList<>();
     }
 
-    static public void extractListofPoints(){
+    public List<mStep> extractListofPoints(){
         try {
         List<LegStep> steps = routedata.legs().get(0).steps();
 
@@ -96,18 +89,16 @@ public class IntermediatePoints {
                 }
         }
 
+
+            return stepList_request_forWeathers;
         }catch (Exception e){
-            e.printStackTrace();
-            Message message = new Message();
-            message.obj = new Resp(new mError(ErrorHead_MainFunction,e.getMessage()));
-            SimpleMapViewActivity.myStephandler.sendMessage(message);
+//            e.printStackTrace();
+//            Message message = new Message();
+//            message.obj = new Resp(new mError(ErrorHead_MainFunction,e.getMessage()));
+//            SimpleMapViewActivity.myStephandler.sendMessage(message);
 
         }
-
-    }
-
-    public static List<mStep> getStepList_request_forWeathers() {
-        return stepList_request_forWeathers;
+       return null;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Models;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models;
 
 import com.mapbox.geojson.Point;
 
