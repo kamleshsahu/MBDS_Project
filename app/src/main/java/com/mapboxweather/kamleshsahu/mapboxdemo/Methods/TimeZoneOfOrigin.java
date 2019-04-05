@@ -2,7 +2,7 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
 import com.mapbox.geojson.Point;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.ApiInterface;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.Darkskyapi2;
+
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
 
 import java.util.TimeZone;
