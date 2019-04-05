@@ -7,8 +7,14 @@ import com.mapbox.geojson.Point;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.IntermediatePoints;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.WeatherService;
 
+import junit.framework.TestCase;
+import junit.framework.TestResult;
+
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runners.JUnit4;
 
 import java.util.Calendar;
 import java.util.List;
@@ -17,18 +23,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Created by k on 4/5/2019.
  */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-     //   assertEquals(4, 2 + 2);
 
+public class WeatherServiceTest {
+
+    public static void main(String[] args) {
         Point sp=Point.fromLngLat(-105.2705, 40.015);
         Point dp=Point.fromLngLat(-104.9653, 39.7348);
         String profile= DirectionsCriteria.PROFILE_DRIVING;
@@ -69,4 +74,6 @@ public class ExampleUnitTest {
         });
         rf.find();
     }
+
+
 }

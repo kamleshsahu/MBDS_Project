@@ -22,18 +22,21 @@ public class PointMatrixForAll {
     public void calc(){
         for(int i=0;i<msteps.size();i++){
             List<mPoint> mpoints=msteps.get(i).getInterms();
-            String timezoneid=msteps.get(i).getTimezoneid();
-            long jstarttime=msteps.get(i).getJstarttime();
 
-            PointMatrix pointMatrix=new PointMatrix(
-                    msteps.get(i).getStep_StartPoint(),
-                    mpoints,
-                    travelmode,
-                    timezoneid,
-                    jstarttime,
-                    msteps.get(i).getAft_duration()
-            );
-            pointMatrix.calc();
+            if(mpoints!=null && mpoints.size()>0) {
+                String timezoneid = msteps.get(i).getTimezoneid();
+                long jstarttime = msteps.get(i).getJstarttime();
+
+                PointMatrix pointMatrix = new PointMatrix(
+                        msteps.get(i).getStep_StartPoint(),
+                        mpoints,
+                        travelmode,
+                        timezoneid,
+                        jstarttime,
+                        msteps.get(i).getAft_duration()
+                );
+                mpoints=pointMatrix.calc();
+            }
         }
     }
 }

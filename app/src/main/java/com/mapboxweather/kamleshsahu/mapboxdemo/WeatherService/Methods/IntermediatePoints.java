@@ -53,8 +53,6 @@ public class IntermediatePoints {
             }
 
             stepList_request_forWeathers.add(new mStep(k,steps.get(k).maneuver().location(),jstarttime, aft_duration, aft_distance, timezoneid, steps.get(k)));
-//                new stepapiscaller(k, jstarttime, aft_duration, aft_distance, timezoneid, steps.get(k)).call();
-//                if(progress!=null) progress.setProgress((int)(90/totalsteps)* k);
             List<LatLng> points = new ArrayList<>();
             List<Point> coords = LineString.fromPolyline(steps.get(k).geometry(), Constants.PRECISION_6).coordinates();
 
@@ -85,18 +83,13 @@ public class IntermediatePoints {
 
                 if (interms.size() > 0) {
                     stepList_request_forWeathers.get(k).setInterms(interms);
-//                    new WeatherFinderforPoints(steps.get(k).maneuver().location(), interms, travelmode, timezoneid, jstarttime, aft_duration).call();
                 }
         }
 
 
             return stepList_request_forWeathers;
         }catch (Exception e){
-//            e.printStackTrace();
-//            Message message = new Message();
-//            message.obj = new Resp(new mError(ErrorHead_MainFunction,e.getMessage()));
-//            SimpleMapViewActivity.myStephandler.sendMessage(message);
-
+            e.printStackTrace();
         }
        return null;
     }

@@ -45,4 +45,17 @@ public class TimeFormatter {
         String time = sdf.format(arrival_time_millis);
         return time;
     }
+
+    static public String formatTimeforDisp(String time,String timezone){
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone(timezone));
+        c.setTimeInMillis(Long.parseLong(time) * 1000);
+        int mHour = c.get(Calendar.HOUR_OF_DAY);
+        int mMinute = c.get(Calendar.MINUTE);
+
+        String sHour = mHour < 10 ? "0" + mHour : "" + mHour;
+        String sMinute = mMinute < 10 ? "0" + mMinute : "" + mMinute;
+        String stn_arrtime = sHour + ":" + sMinute + " ," + strDays[c.get(Calendar.DAY_OF_WEEK) - 1] + " ," + c.get(Calendar.DAY_OF_MONTH) + " " + month[c.get(Calendar.MONTH)] + " " + String.valueOf(c.get(Calendar.YEAR)).substring(2);
+       return stn_arrtime;
+    }
 }

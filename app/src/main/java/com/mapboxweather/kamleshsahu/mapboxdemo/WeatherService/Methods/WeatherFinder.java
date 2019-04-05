@@ -9,8 +9,8 @@ import java.util.Calendar;
 import retrofit2.Call;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkskyKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.Retrofit_darksky_instance.apiService;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.getSDFtime;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.Retrofit_darksky_instance.getApiServiceInstance;
+
 
 public class WeatherFinder {
 
@@ -72,7 +72,7 @@ public class WeatherFinder {
 
 
 
-        Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt);
+        Call<Darkskyapi> call = getApiServiceInstance().getweather(DarkskyKey,llt);
 
 
         try {

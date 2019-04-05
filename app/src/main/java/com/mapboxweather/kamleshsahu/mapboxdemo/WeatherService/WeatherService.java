@@ -37,40 +37,6 @@ public class WeatherService {
         this.travelmode = travelmode;
     }
 
-    public static void main(String... args){
-
-        Point sp=Point.fromLngLat(-105.2705, 40.015);
-        Point dp=Point.fromLngLat(-104.9653, 39.7348);
-        String profile=DirectionsCriteria.PROFILE_DRIVING;
- //       jstarttime=System.currentTimeMillis();
-        Calendar calendar=Calendar.getInstance();
-
-       String timezoneid=calendar.getTimeZone().getID();
-
-        new RouteFinder(sp, dp, profile, "", new Callback<DirectionsResponse>() {
-            @Override
-            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                System.out.println(response.body());
-               DirectionsRoute routedata=response.body().routes().get(0);
-   //             startTimer();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-    //                    stopTimer();
-                    }
-                }).start();
-
-
-            }
-
-            @Override
-            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
-            }
-        }).find();
-    }
-
 
    public List<mStep> calc_data(){
 
@@ -85,6 +51,56 @@ public class WeatherService {
 
         return msteps;
     }
+    public static void main(String[] args) {
+        Point sp=Point.fromLngLat(-105.2705, 40.015);
+        Point dp=Point.fromLngLat(-104.9653, 39.7348);
+        String profile= DirectionsCriteria.PROFILE_DRIVING;
+        //       jstarttime=System.currentTimeMillis();
+        Calendar calendar=Calendar.getInstance();
 
+        String timezoneid=calendar.getTimeZone().getID();
+        long jstarttime=calendar.getTimeInMillis();
+        String travelmode= DirectionsCriteria.PROFILE_DRIVING;
+
+        long interval=10000;
+
+
+        RouteFinder rf=new RouteFinder(sp, dp, profile, "", new Callback<DirectionsResponse>() {
+            @Override
+            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                System.out.println(response.body());
+                DirectionsRoute routedata=response.body().routes().get(0);
+
+
+                WeatherService service;
+                service = new WeatherService(routedata,timezoneid,interval,jstarttime,travelmode);
+                List<mStep> list=service.calc_data();
+
+//                IntermediatePoints fn= new IntermediatePoints(interval,routedata,timezoneid,jstarttime,travelmode);
+//                List<mStep> msteps= fn.extractListofPoints();
+//
+//                System.out.println(msteps);
+//
+//                PointMatrixForAll pointMatrixs=new PointMatrixForAll(msteps,travelmode);
+//                pointMatrixs.calc();
+//
+//                System.out.println(msteps);
+//
+//                WeatherForAllPoints weatherForAllPoints=new WeatherForAllPoints(msteps);
+//                weatherForAllPoints.calcWeather();
+//
+//                System.out.println(msteps);
+
+                System.out.println(list);
+            }
+
+            @Override
+            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                t.printStackTrace();
+                System.out.println(t.getMessage());
+            }
+        });
+        rf.find();
+    }
     
 }

@@ -621,7 +621,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         @Override
         protected List<mStep> doInBackground(Object[] objects) {
             WeatherService weatherServiceCall;
-            weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,jstarttime,interval,travelmode);
+            weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
             return weatherServiceCall.calc_data();
         }
 
@@ -644,21 +644,23 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
 
                     List<mPoint> step_mPoints = mstep.getInterms();
-                    mpoints.addAll(step_mPoints);
 
-                    for (int j = 0; j < step_mPoints.size(); j++) {
+                    if(step_mPoints!=null && step_mPoints.size()>0) {
+                        mpoints.addAll(step_mPoints);
 
-                        mPoint mpoint = step_mPoints.get(i);
+                        for (int j = 0; j < step_mPoints.size(); j++) {
 
-                        if (mpoint != null) {
-                            String pid = "I" + mpoints.indexOf(mpoint);
-                            layeridlist.add(pid);
-                            addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), id, id,
-                                    Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), id, id);
+                            mPoint mpoint = step_mPoints.get(j);
 
+                            if (mpoint != null) {
+                                String pid = "I" + mpoints.indexOf(mpoint);
+                                layeridlist.add(pid);
+                                addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
+                                        Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
+
+                            }
                         }
                     }
-
                 }
             }
 
@@ -688,6 +690,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         mapView.onPause();
+        if(progress!=null)
+        progress.dismiss();
     }
 
     @Override
@@ -699,7 +703,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if(progress!=null)
+            progress.dismiss();
         mapView.onDestroy();
     }
 
