@@ -268,35 +268,6 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 
                 mapboxMap.addOnMapClickListener(mapClickListener);
-
-//                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
-//                    @Override
-//                    public boolean onMarkerClick(@NonNull Marker marker) {
-//
-//                        marker.getPosition();
-//                        marker.hideInfoWindow();
-//                       Log.i("marker id ",marker.getId()+"");
-////                        if(marker.getId()>=1000){
-////                            Log.i("marker clicked","step marker clicked");
-////                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get((int)marker.getId()-1000)).show();
-////                        }else{
-////                            Log.i("marker clicked","item marker clicked");
-////                            new CustomDialogClass(SimpleMapViewActivity.this,items.get((int)marker.getId())).show();
-////                            }
-//
-//                        if(marker.getTitle().startsWith("S")){
-//                            Log.i("marker clicked","step marker clicked");
-//                            int index= Integer.parseInt(marker.getTitle().substring(1));
-//                            new CustomDialogClass(SimpleMapViewActivity.this,mSteps.get(index)).show();
-//                        }else if(marker.getTitle().startsWith("I")){
-//                            Log.i("marker clicked","item marker clicked");
-//                            int index= Integer.parseInt(marker.getTitle().substring(1));
-//                            new CustomDialogClass(SimpleMapViewActivity.this,items.get(index)).show();
-//                        }
-//                        return false;
-//                    }
-//                });
-//                mapboxMap.setOnPolylineClickListener(polylineClickListener);
             }
 
         });
@@ -391,22 +362,6 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                     Log.i("marker clicked :", "item marker clicked");
                     int index = Integer.parseInt(feature.id().substring(1));
                     new CustomDialogClass(SimpleMapViewActivity.this, mpoints.get(index)).show();
-//                }else if(feature.id().startsWith("p")){
-//                            String id=features.get(0).id();
-//                            selectedroute=Integer.parseInt(id.substring(1));
-//
-//                            for(int i=0;i<directionapiresp.routes().size();i++){
-//                                if(selectedroute!=i) {
-//                                    mapboxMap.getLayer("p" + i).setProperties(
-//                                            PropertyFactory.lineWidth(7f),
-//                                            PropertyFactory.lineColor(getResources().getColor(R.color.alternateRoute)));
-//                                }
-//                            }
-//
-//                            mapboxMap.getLayer(id).setProperties(
-//                                    PropertyFactory.lineWidth(8f),
-//                                    PropertyFactory.lineColor(getResources().getColor(R.color.seletedRoute)));
-////
                }
 
                 else{
@@ -447,102 +402,6 @@ public class SimpleMapViewActivity extends AppCompatActivity {
             }
         }
     }
-
-//    Handler.Callback myIntermediatePointsCallback=new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(Message msg) {
-//
-//
-//            if (msg.obj != null) {
-//                //System.out.println("received interm weather data :");
-//                Resp resp = (Resp) msg.obj;
-//                Item item=resp.getIntermediatePointData();
-//                if (item != null) {
-//                    items.add(item);
-//                    MarkerOptions options = new MarkerOptions();
-//                    options.setPosition(item.getPoint());
-//
-//                    LinearLayout relativeLayout = findViewById(R.id.show);
-////                    TextView time = findViewById(R.id.step_time);
-//                    TextView weather = findViewById(R.id.step_weather);
-//                    ImageView step_icon = findViewById(R.id.step_icon);
-////                    TextView location_name = findViewById(R.id.location_name);
-//                    Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
-//
-//
-//                    String id="I"+items.indexOf(item);
-//                    layeridlist.add(id);
-//                    addMarkers(new weatherIconMap().getWeatherResource(item.getWlist().getIcon()),id,id,Point.fromLngLat(item.getPoint().getLongitude(),item.getPoint().getLatitude()),id,id);
-//
-//                }else {
-//                    Log.e("error","item null,item handler");
-//                    progress.dismiss();
-//                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    displayError(resp.getError().getHeading(),resp.getError().getMessage());
-//                }
-//            }else{
-//                Log.e("error","message obj null,item handler");
-//                progress.dismiss();
-//                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                displayError("unknown error","error while finding weather");
-//            }
-//
-//            return false;
-//        }
-//    };
-//
-//    Handler.Callback myStepsHandlerCallback=new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(Message msg) {
-//
-//
-//            if (msg.obj != null) {
-//                //System.out.println("received step weather data :");
-//
-//                Resp resp=(Resp)msg.obj;
-//                MStep mstep = resp.getmStep();
-//
-//                if (mstep != null) {
-//                    mSteps.add(mstep);
-//
-//                    MarkerOptions options = new MarkerOptions();
-//                    options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
-//                    LinearLayout relativeLayout = findViewById(R.id.show);
-//
-//                    TextView weather = findViewById(R.id.step_weather);
-//                    ImageView step_icon = findViewById(R.id.step_icon);
-//
-//                    Layout_to_Image layout_to_image = new Layout_to_Image(getApplicationContext(), relativeLayout);
-//
-//                     String id="S"+mstep.getPos();
-//                     layeridlist.add(id);
-//                     addMarkers(new weatherIconMap().getWeatherResource(mstep.getWlist().getIcon()),id,id,mstep.getStep().maneuver().location(),id,id);
-//
-//                    if (--stepcount <= 0) {
-//                        Collections.sort(mSteps, (o1, o2) -> o1.getPos().compareTo(o2.getPos()));
-//                        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), mSteps));
-//                      new Handler().postDelayed(new Runnable() {
-//                          @Override
-//                          public void run() {
-//                              progress.dismiss();
-//                              getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                          }
-//                      },1000);
-//
-//                    }
-//
-//                }else {
-//                    if(progress.isShowing()){
-//                        progress.dismiss();
-//                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//
-//                    }
-//                }
-//            }
-//
-//            return false;
-//        }
-//    };
 
 
     void setCameraWithCoordinationBounds() {
