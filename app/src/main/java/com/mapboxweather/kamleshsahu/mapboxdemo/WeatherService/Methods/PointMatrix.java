@@ -2,19 +2,27 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 
 import com.mapbox.api.matrix.v1.MapboxMatrix;
+import com.mapbox.api.matrix.v1.MatrixAdapterFactory;
 import com.mapbox.api.matrix.v1.models.MatrixResponse;
 import com.mapbox.geojson.Point;
 
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.PointMatrixListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.Request;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.getMax_API_Count;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.SplitInParts.split_in_parts;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.getSDFtime;
 
 
@@ -23,49 +31,38 @@ public class PointMatrix {
     private long jstarttime;
     private String timezoneid;
     private long aft_duration;
-    private List<mPoint> interms;
+    private Map<Integer,mPoint> interms;
     MatrixResponse distanceMatrix;
     private long dep_time_millis;
     private String travelmode;
-    private List<List<Point>> intermsInParts;
 
+    int max_Api_Count;
+    int step_id;
 
-
-    PointMatrix(Point origin, List<mPoint> interms, String travelmode, String timezoneid, long jstarttime, long aft_duration) {
+    PointMatrix(int step_id,Point origin, Map<Integer,mPoint> interms, String travelmode, String timezoneid, long jstarttime, long aft_duration) {
       this.origin=origin;
       this.jstarttime=jstarttime;
       this.timezoneid=timezoneid;
       this.aft_duration=aft_duration;
       this.interms=interms;
       this.travelmode=travelmode;
-      intermsInParts = new ArrayList<>();
+      this.step_id=step_id;
      }
 
+     PointMatrixListener matrixListener=null;
 
-    public List<mPoint> calc() {
+     void calc() {
 
         dep_time_millis = jstarttime + aft_duration * 1000;
 
+        max_Api_Count = getMax_API_Count(travelmode);
 
-        int max_Api_Count=getMax_API_Count(travelmode);
-        for (int from = 0; from < interms.size(); from += max_Api_Count) {
-            int to = from + max_Api_Count;
-            if (to > interms.size())
-                to = interms.size();
+        List<List<Point>> intermsInParts=split_in_parts(interms,max_Api_Count);
 
-            ArrayList<Point> temp=new ArrayList<>();
-            for(int i=from;i<to;i++){
-                temp.add(interms.get(i).getPoint());
-            }
-       //     intermsInParts.add(new ArrayList<>(interms.subList(from, to)));
-            intermsInParts.add(temp);
-        }
 
         for (int i = 0; i < intermsInParts.size(); i++) {
 
             int finalI = i;
-
-
 
             Integer arr[] = new Integer[intermsInParts.get(finalI).size()];
             for (int k = 0; k < intermsInParts.get(finalI).size(); k++) {
@@ -83,56 +80,72 @@ public class PointMatrix {
 
 
 
-            matrixcall.enqueueCall(new retrofit2.Callback<MatrixResponse>() {
+            matrixcall.setCallFactory(new okhttp3.Call.Factory() {
                 @Override
-                public void onResponse(Call<MatrixResponse> call, Response<MatrixResponse> response) {
+                public okhttp3.Call newCall(Request request) {
+                    request = request.newBuilder().tag(new Integer[]{null}).build();
 
+                    okhttp3.Call call =newCall(request);
 
-                    if (response.isSuccessful()) {
-                        //System.out.println(response.code());
-                        //System.out.println(response.raw());
-                        distanceMatrix = response.body();
-                        for (int k = 0; k < distanceMatrix.destinations().size(); k++) {
-
-
-                            long duration = distanceMatrix.durations().get(0)[k].intValue();
-
-                            long arrival_time_millis = dep_time_millis + duration * 1000;
-
-                            final int FinalK = k;
-
-
-                            /* check for data match*/
-                            interms.get(finalI*max_Api_Count+FinalK).setDs_arr_time(TimeFormatter.getSDFtime(arrival_time_millis,timezoneid));
-                            interms.get(finalI*max_Api_Count+FinalK).setLocation_name(distanceMatrix.destinations().get(FinalK).name());
-
-//                            new WeatherFinder_old(FinalK, intermsInParts.get(finalI).get(FinalK), distanceMatrix, time).fetchWeather();
-
-                            }
-                    } else {
-//                        Log.e("error","request not successful,matrixcall enque");
-//                        Log.e("error body ",new Gson().toJson(response.raw()));
-//                        Log.e("error url :",response.raw().request().url().toString());
-//                        Message message = new Message();
-//                        message.obj = new Resp(new mError(ErrorHead_IntermFunction, response.message()));
-//                        SimpleMapViewActivity.myItemhandler.sendMessage(message);
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<MatrixResponse> call, Throwable t) {
-
-//                    Log.e("error","onfailture,matrixcall enque");
-//                    t.printStackTrace();
-//                    Message message = new Message();
-//                    message.obj = new Resp(new mError(ErrorHead_IntermFunction, t.getMessage()));
-//                    SimpleMapViewActivity.myItemhandler.sendMessage(message);
+                    // We set the element to the call, to (at least) keep some consistency
+                    // If you want to only have Strings, create a String array and put the default value to null;
+                    ((Integer[])request.tag())[0] = finalI;
+                    ((Integer[])request.tag())[1] =step_id;
+                    return call;
                 }
             });
 
+            matrixcall.enqueueCall(listener);
+
            }
 
-           return interms;
+
     }
+
+    public void setMatrixListener(PointMatrixListener matrixListener) {
+        this.matrixListener = matrixListener;
+    }
+
+    Callback<MatrixResponse> listener=new retrofit2.Callback<MatrixResponse>() {
+        @Override
+        public void onResponse(Call<MatrixResponse> call, Response<MatrixResponse> response) {
+
+
+            Integer arr[]=((Integer[]) call.request().tag());
+            int finalI=arr[0];
+            int step_id=arr[1];
+
+            if (response.isSuccessful()) {
+
+                distanceMatrix = response.body();
+                for (int k = 0; k < distanceMatrix.destinations().size(); k++) {
+
+
+                    long duration = distanceMatrix.durations().get(0)[k].intValue();
+
+                    long arrival_time_millis = dep_time_millis + duration * 1000;
+
+                    final int FinalK = k+1;
+
+                    int curr=step_id+finalI*max_Api_Count+FinalK;
+
+                            /* check for data match*/
+                    interms.get(curr).setDs_arr_time(TimeFormatter.getSDFtime(arrival_time_millis,timezoneid));
+                    interms.get(curr).setLocation_name(distanceMatrix.destinations().get(k).name());
+
+                    if(matrixListener!=null)
+                        matrixListener.OnPointMatrixCalculated(curr);
+
+                }
+            } else {
+
+            }
+        }
+
+        @Override
+        public void onFailure(Call<MatrixResponse> call, Throwable t) {
+            if(matrixListener!=null)
+                matrixListener.onError("Point Matrix",t.getLocalizedMessage());
+        }
+    };
 }

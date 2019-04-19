@@ -4,6 +4,7 @@ import com.mapbox.api.directions.v5.models.LegStep;
 import com.mapbox.geojson.Point;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.getSDFtime;
 
@@ -27,7 +28,7 @@ public class mStep {
 
     private Point step_StartPoint=null;
 
-    private List<mPoint> interms;
+    private Map<Integer,mPoint> interms;
 
 
     public mStep(int k, Point location, long jstarttime, long aft_duration, long aft_distance, String timezoneid, LegStep legStep) {
@@ -123,11 +124,11 @@ public class mStep {
         this.step_StartPoint = step_StartPoint;
     }
 
-    public List<mPoint> getInterms() {
+    public Map<Integer,mPoint> getInterms() {
         return interms;
     }
 
-    public void setInterms(List<mPoint> interms) {
+    public void setInterms(Map<Integer,mPoint> interms) {
         this.interms = interms;
     }
 

@@ -16,6 +16,7 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkSky_BaseURL
 
 public class Retrofit_darksky_instance {
     public static ApiInterface apiService;
+    public static Retrofit retrofit;
     public Retrofit_darksky_instance() {
         super();
 
@@ -29,17 +30,28 @@ public class Retrofit_darksky_instance {
                 //.addInterceptor(loggingInterceptor)
                 //.addNetworkInterceptor(networkInterceptor)
                 .build();
-        Retrofit retrofit = new Retrofit.Builder()
+
+        retrofit = new Retrofit.Builder()
                 .baseUrl(DarkSky_BaseURL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
+
                 .build();
-        apiService = retrofit.create(ApiInterface.class);
+
+
+  //      apiService = retrofit.create(ApiInterface.class);
+
     }
 
-    public static ApiInterface getApiServiceInstance() {
-        if(apiService==null)
+//    public static ApiInterface getApiServiceInstance() {
+//        if(apiService==null)
+//            createInstance();
+//        return apiService;
+//    }
+
+    public static Retrofit getRetrofitInstance() {
+        if(retrofit==null)
             createInstance();
-        return apiService;
+        return retrofit;
     }
 }

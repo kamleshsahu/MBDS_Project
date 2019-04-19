@@ -1,41 +1,52 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.PointMatrixListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by k on 4/4/2019.
  */
 
 public class PointMatrixForAll {
-    List<mStep> msteps;
 
-    String travelmode;
-
-    public PointMatrixForAll(List<mStep> mSteps,String travelmode) {
-        this.msteps = mSteps;
-        this.travelmode=travelmode;
+    PointMatrixListener matrixListener=null;
+    public PointMatrixForAll(PointMatrixListener matrixListener) {
+        this.matrixListener = matrixListener;
     }
 
-    public void calc(){
-        for(int i=0;i<msteps.size();i++){
-            List<mPoint> mpoints=msteps.get(i).getInterms();
+    public void setMatrixListener(PointMatrixListener matrixListener) {
+        this.matrixListener = matrixListener;
+    }
+
+    public void calc(Map<Integer,mStep> msteps, String travelmode){
+
+        Iterator<Map.Entry<Integer,mStep>> iterator=msteps.entrySet().iterator();
+
+        while(iterator.hasNext()){
+            Map.Entry<Integer,mStep> currstep= iterator.next();
+
+            Map<Integer,mPoint> mpoints=currstep.getValue().getInterms();
 
             if(mpoints!=null && mpoints.size()>0) {
-                String timezoneid = msteps.get(i).getTimezoneid();
-                long jstarttime = msteps.get(i).getJstarttime();
+                String timezoneid = currstep.getValue().getTimezoneid();
+                long jstarttime = currstep.getValue().getJstarttime();
 
                 PointMatrix pointMatrix = new PointMatrix(
-                        msteps.get(i).getStep_StartPoint(),
+                        currstep.getKey(),
+                        currstep.getValue().getStep_StartPoint(),
                         mpoints,
                         travelmode,
                         timezoneid,
                         jstarttime,
-                        msteps.get(i).getAft_duration()
+                        currstep.getValue().getAft_duration()
                 );
-                mpoints=pointMatrix.calc();
+                pointMatrix.setMatrixListener(matrixListener);
+                pointMatrix.calc();
             }
         }
     }

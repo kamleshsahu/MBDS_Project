@@ -54,25 +54,32 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherServiceListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.WeatherService;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.fastest_route;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptolist;
 
 
 /**
  * The most basic example of adding a map to an activity.
  */
-public class SimpleMapViewActivity extends AppCompatActivity {
+public class SimpleMapViewActivity extends AppCompatActivity
+
+    implements WeatherServiceListener
+{
 
     private MapView mapView;
-    public static Handler myItemhandler,myStephandler;
+ //   public static Handler myItemhandler,myStephandler;
     Task getWeatherTask;
 
 
@@ -87,8 +94,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
      AlertDialog.Builder bld;
 
     List<PolylineOptions> polylineOptionsList;
-    List<mPoint> mpoints;
-    List<mStep> msteps;
+    Map<Integer,mPoint> mpoints;
+    Map<Integer,mStep> msteps;
     List<Polyline> polylines;
     List<Marker> markersInterm;
     List<Marker> markersSteps;
@@ -132,8 +139,8 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         layeridCreated = false;
         linelayerids=new String[directionapiresp.routes().size()];
         layeridlist=new ArrayList<>();
-        mpoints = new ArrayList<>();
-        msteps = new ArrayList<>();
+        mpoints = new HashMap<>();
+        msteps = new HashMap<>();
         polylineOptionsList = new ArrayList<>();
         markersSteps = new ArrayList<>();
         markersInterm = new ArrayList<>();
@@ -250,7 +257,7 @@ public class SimpleMapViewActivity extends AppCompatActivity {
 
 //        sp = Point.fromLngLat(-105.2705, 40.015);
 //        dp = Point.fromLngLat(-104.9653, 39.7348);
-///////////////////////////////////////////////////////////////// /
+//////////////////////////////////////////////////////////////////
 
 
         mapView = (MapView) findViewById(R.id.mapView);
@@ -475,55 +482,75 @@ public class SimpleMapViewActivity extends AppCompatActivity {
         markersourcelist=new ArrayList<>();
     }
 
-    class Task extends AsyncTask<Object,Object,List<mStep>>{
+    @Override
+    public void onError(String etitle, String emsg) {
+         displayError(etitle,emsg);
+    }
 
-        @Override
-        protected List<mStep> doInBackground(Object[] objects) {
-            WeatherService weatherServiceCall;
-            weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
-            return weatherServiceCall.calc_data();
-        }
+    @Override
+    public void OnWeatherDataListReady(Map<Integer, mStep> msteps) {
 
-        @Override
-        protected void onPostExecute(List<mStep> steps) {
-            msteps=steps;
-            progress.dismiss();
-            link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), steps));
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            for(int i=0;i<steps.size();i++) {
+        this.msteps=msteps;
+        progress.dismiss();
+        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), maptolist(msteps)));
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-                mStep mstep = steps.get(i);
-                if (mstep != null) {
-                    MarkerOptions options = new MarkerOptions();
-                    options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
-                    LinearLayout relativeLayout = findViewById(R.id.show);
+        for(Map.Entry<Integer,mStep> mstep_:msteps.entrySet()){
+            mStep mstep=mstep_.getValue();
+            MarkerOptions options = new MarkerOptions();
+            options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
 
-                    String id = "S" + mstep.getPos();
-                    layeridlist.add(id);
-                    addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
 
-                    List<mPoint> step_mPoints = mstep.getInterms();
+            String id = mstep_.getKey()+"";
+            layeridlist.add(id);
+            addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
 
-                    if(step_mPoints!=null && step_mPoints.size()>0) {
-                        mpoints.addAll(step_mPoints);
+            Map<Integer,mPoint> step_mpoints=mstep.getInterms();
 
-                        for (int j = 0; j < step_mPoints.size(); j++) {
 
-                            mPoint mpoint = step_mPoints.get(j);
+            if(step_mpoints!=null && step_mpoints.size()>0) {
+                mpoints.putAll(step_mpoints);
 
-                            if (mpoint != null) {
-                                String pid = "I" + mpoints.indexOf(mpoint);
-                                layeridlist.add(pid);
-                                addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
-                                        Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
+                for(Map.Entry<Integer,mPoint> mpoint_:step_mpoints.entrySet()){
 
-                            }
-                        }
+                    mPoint mpoint=mpoint_.getValue();
+
+                    if (mpoint != null) {
+                        String pid = mpoint_.getKey()+"";
+                        layeridlist.add(pid);
+                        addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
+                                Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
+
                     }
                 }
             }
 
         }
+    }
+
+    @Override
+    public void onWeatherDataListProgressChange(int value) {
+          progress.setProgress(value);
+    }
+
+
+    class Task extends AsyncTask<Object,Object,Object>{
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            WeatherService weatherServiceCall;
+            weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
+            weatherServiceCall.setListener(SimpleMapViewActivity.this);
+            weatherServiceCall.calc_data();
+
+            return null;
+        }
+
+//        @Override
+//        protected void onPostExecute(List<mStep> steps) {
+//
+//
+//        }
     }
     // Add the mapView lifecycle to the activity's lifecycle methods
     @Override
