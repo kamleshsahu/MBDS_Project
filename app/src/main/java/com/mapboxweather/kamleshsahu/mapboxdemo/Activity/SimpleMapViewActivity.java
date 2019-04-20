@@ -490,6 +490,8 @@ public class SimpleMapViewActivity extends AppCompatActivity
          displayError(etitle,emsg);
     }
 
+
+
     @Override
     public void OnWeatherDataListReady(Map<Integer, mStep> msteps) {
 
@@ -540,6 +542,11 @@ public class SimpleMapViewActivity extends AppCompatActivity
     class Task extends AsyncTask<Object,Object,Object>{
 
         @Override
+        protected void onProgressUpdate(Object... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
         protected Object doInBackground(Object[] objects) {
             WeatherService weatherServiceCall;
             weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
@@ -549,11 +556,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
             return null;
         }
 
-//        @Override
-//        protected void onPostExecute(List<mStep> steps) {
-//
-//
-//        }
     }
     // Add the mapView lifecycle to the activity's lifecycle methods
     @Override
