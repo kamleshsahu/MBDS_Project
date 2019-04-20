@@ -1,11 +1,13 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 
+import com.google.gson.Gson;
 import com.mapbox.api.matrix.v1.MapboxMatrix;
 import com.mapbox.api.matrix.v1.MatrixAdapterFactory;
 import com.mapbox.api.matrix.v1.models.MatrixResponse;
 import com.mapbox.geojson.Point;
 
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.IntermediatePointListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.PointMatrixListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 
@@ -19,6 +21,7 @@ import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.getMax_API_Count;
@@ -76,24 +79,10 @@ public class PointMatrix {
                     .coordinates(intermsInParts.get(finalI))
                     .sources(0)
                     .destinations(arr)
+                    .clientAppName(step_id+"."+finalI)
                     .build();
 
 
-
-            matrixcall.setCallFactory(new okhttp3.Call.Factory() {
-                @Override
-                public okhttp3.Call newCall(Request request) {
-                    request = request.newBuilder().tag(new Integer[]{null}).build();
-
-                    okhttp3.Call call =newCall(request);
-
-                    // We set the element to the call, to (at least) keep some consistency
-                    // If you want to only have Strings, create a String array and put the default value to null;
-                    ((Integer[])request.tag())[0] = finalI;
-                    ((Integer[])request.tag())[1] =step_id;
-                    return call;
-                }
-            });
 
             matrixcall.enqueueCall(listener);
 
@@ -110,10 +99,20 @@ public class PointMatrix {
         @Override
         public void onResponse(Call<MatrixResponse> call, Response<MatrixResponse> response) {
 
+//            System.out.println("call");
+//            System.out.println(new Gson().toJson(call));
+//            System.out.println("resp");
+//            System.out.println(new Gson().toJson(response));
 
-            Integer arr[]=((Integer[]) call.request().tag());
-            int finalI=arr[0];
-            int step_id=arr[1];
+
+            String id= response.raw().request().headers().value(0).split(" ")[0];
+
+ //           Integer arr[]=((Integer[]) call.request().tag());
+            int finalI=Integer.parseInt(id.split("\\.")[1]);
+            int step_id=Integer.parseInt(id.split("\\.")[0]);
+
+
+
 
             if (response.isSuccessful()) {
 

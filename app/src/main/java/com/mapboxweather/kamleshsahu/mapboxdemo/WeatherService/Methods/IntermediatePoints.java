@@ -51,7 +51,7 @@ public class IntermediatePoints {
                 aft_duration += steps.get(k - 1).duration();
             }
 
-            stepList_request_forWeathers.put(k*1000,new mStep(k,steps.get(k).maneuver().location(),jstarttime, aft_duration, aft_distance, timezoneid, steps.get(k)));
+            stepList_request_forWeathers.put((k+1)*1000,new mStep(k,steps.get(k).maneuver().location(),jstarttime, aft_duration, aft_distance, timezoneid, steps.get(k)));
             List<LatLng> points = new ArrayList<>();
             List<Point> coords = LineString.fromPolyline(steps.get(k).geometry(), Constants.PRECISION_6).coordinates();
 
@@ -82,7 +82,7 @@ public class IntermediatePoints {
             }
 
                 if (interms.size() > 0) {
-                    stepList_request_forWeathers.get(k*1000).setInterms(interms);
+                    stepList_request_forWeathers.get((k+1)*1000).setInterms(interms);
                 }
         }
 

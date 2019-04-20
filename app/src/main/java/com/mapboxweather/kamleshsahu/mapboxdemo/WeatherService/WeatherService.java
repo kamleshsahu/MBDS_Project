@@ -4,8 +4,12 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService;
 import android.app.Activity;
 import android.content.Context;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 
+import com.mapbox.geojson.Point;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.IntermediatePointListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.PointMatrixListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherServiceListener;
@@ -18,11 +22,16 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.Intermedi
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.PointMatrixForAll;
 
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.formatTimeforDisp;
 
@@ -146,56 +155,56 @@ public class WeatherService implements
 
 
 
-    //    public static void main(String[] args) {
-//        Point sp=Point.fromLngLat(-105.2705, 40.015);
-//        Point dp=Point.fromLngLat(-104.9653, 39.7348);
-//        String profile= DirectionsCriteria.PROFILE_DRIVING;
-//        //       jstarttime=System.currentTimeMillis();
-//        Calendar calendar=Calendar.getInstance();
+        public static void main(String[] args) {
+        Point sp=Point.fromLngLat(-105.2705, 40.015);
+        Point dp=Point.fromLngLat(-104.9653, 39.7348);
+        String profile= DirectionsCriteria.PROFILE_DRIVING;
+        //       jstarttime=System.currentTimeMillis();
+        Calendar calendar=Calendar.getInstance();
+
+        String timezoneid=calendar.getTimeZone().getID();
+        long jstarttime=calendar.getTimeInMillis();
+        String travelmode= DirectionsCriteria.PROFILE_DRIVING;
+
+        long interval=10000;
+
+
+        RouteFinder rf=new RouteFinder(sp, dp, profile, "", new Callback<DirectionsResponse>() {
+            @Override
+            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                System.out.println(response.body());
+                DirectionsRoute routedata=response.body().routes().get(0);
+
+
+                WeatherService service;
+                service = new WeatherService(routedata,timezoneid,interval,jstarttime,travelmode);
+                service.calc_data();
+
+//                IntermediatePoints fn= new IntermediatePoints(interval,routedata,timezoneid,jstarttime,travelmode);
+//                List<mStep> msteps= fn.extractListofPoints();
 //
-//        String timezoneid=calendar.getTimeZone().getID();
-//        long jstarttime=calendar.getTimeInMillis();
-//        String travelmode= DirectionsCriteria.PROFILE_DRIVING;
+//                System.out.println(msteps);
 //
-//        long interval=10000;
+//                PointMatrixForAll pointMatrixs=new PointMatrixForAll(msteps,travelmode);
+//                pointMatrixs.calc();
 //
+//                System.out.println(msteps);
 //
-//        RouteFinder rf=new RouteFinder(sp, dp, profile, "", new Callback<DirectionsResponse>() {
-//            @Override
-//            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                System.out.println(response.body());
-//                DirectionsRoute routedata=response.body().routes().get(0);
+//                WeatherForAllPoints weatherForAllPoints=new WeatherForAllPoints(msteps);
+//                weatherForAllPoints.calcWeather();
 //
-//
-//                WeatherService service;
-//                service = new WeatherService(routedata,timezoneid,interval,jstarttime,travelmode);
-//                List<mStep> list=service.calc_data();
-//
-////                IntermediatePoints fn= new IntermediatePoints(interval,routedata,timezoneid,jstarttime,travelmode);
-////                List<mStep> msteps= fn.extractListofPoints();
-////
-////                System.out.println(msteps);
-////
-////                PointMatrixForAll pointMatrixs=new PointMatrixForAll(msteps,travelmode);
-////                pointMatrixs.calc();
-////
-////                System.out.println(msteps);
-////
-////                WeatherForAllPoints weatherForAllPoints=new WeatherForAllPoints(msteps);
-////                weatherForAllPoints.calcWeather();
-////
-////                System.out.println(msteps);
-//
-//                System.out.println(list);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//                t.printStackTrace();
-//                System.out.println(t.getMessage());
-//            }
-//        });
-//        rf.find();
-//    }
+//                System.out.println(msteps);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                t.printStackTrace();
+                System.out.println(t.getMessage());
+            }
+        });
+        rf.find();
+    }
     
 }

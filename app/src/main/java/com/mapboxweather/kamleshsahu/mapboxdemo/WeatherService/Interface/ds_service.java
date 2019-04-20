@@ -10,7 +10,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ApiInterface {
+public interface ds_service {
     
     @Headers({"Content-Type: application/json",
             "Accept: application/json"})
