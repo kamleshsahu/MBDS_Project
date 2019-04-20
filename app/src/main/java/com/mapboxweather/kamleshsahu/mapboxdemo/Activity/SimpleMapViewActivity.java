@@ -361,19 +361,22 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
                 Log.i("featute id :", feature.id());
 
-                if (feature.id().startsWith("S")) {
+
+                if(feature.id().startsWith("p")){
+                    routechangeListener(pointf);
+                }
+                else if (Integer.parseInt(feature.id())%1000==0) {
                     Log.i("marker clicked :", "step marker clicked");
-                    int index = Integer.parseInt(feature.id().substring(1));
+                    int index = (Integer.parseInt(feature.id())/1000)*1000;
                     new CustomDialogClass(SimpleMapViewActivity.this, msteps.get(index)).show();
-                } else if (feature.id().startsWith("I")) {
+                } else if(Integer.parseInt(feature.id())%1000!=0){
                     Log.i("marker clicked :", "item marker clicked");
-                    int index = Integer.parseInt(feature.id().substring(1));
-                    new CustomDialogClass(SimpleMapViewActivity.this, mpoints.get(index)).show();
+                    int step_id = (Integer.parseInt(feature.id())/1000)*1000;
+                    int index= (Integer.parseInt(feature.id()));
+                    new CustomDialogClass(SimpleMapViewActivity.this, msteps.get(step_id).getInterms().get(index)).show();
                }
 
-                else{
-                      routechangeListener(pointf);
-                }
+
 
             }else{
                 //System.out.println(" else part else part");

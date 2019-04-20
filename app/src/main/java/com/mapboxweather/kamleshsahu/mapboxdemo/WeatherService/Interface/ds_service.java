@@ -6,6 +6,7 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.Darkskyapi
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -17,7 +18,7 @@ public interface ds_service {
 
 
     @GET("forecast/{DarkskyKey}/{llt}?exclude=hourly,daily,minutely,flags")
-    Call<Darkskyapi> getweather(@Path("DarkskyKey") String DarkskyKey, @Path("llt") String latlongtime);
+    Call<Darkskyapi> getweather(@Path("DarkskyKey") String DarkskyKey, @Path("llt") String latlongtime, @Header("token") String value);
 
 
 

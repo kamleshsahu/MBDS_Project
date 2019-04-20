@@ -56,7 +56,7 @@ public class WeatherService implements
     WeatherServiceListener listener;
     Set<Integer> queue;
     int totalpoints;
-
+    int count=0;
 
 
     public WeatherService( DirectionsRoute routedata, String timezoneid, long interval, long jstarttime, String travelmode) {
@@ -139,11 +139,12 @@ public class WeatherService implements
         }
 
         queue.remove(id);
+
         if(listener!=null)
         if(queue.size()==0){
             listener.OnWeatherDataListReady(msteps);
         }else{
-            listener.onWeatherDataListProgressChange((totalpoints-queue.size())/totalpoints*100);
+            listener.onWeatherDataListProgressChange((count++)/totalpoints*100);
         }
     }
 
