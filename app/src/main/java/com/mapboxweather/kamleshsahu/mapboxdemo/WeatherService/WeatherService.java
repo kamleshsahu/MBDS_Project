@@ -131,11 +131,16 @@ public class WeatherService implements
             mPoint mpoint = msteps.get(step_id).getInterms().get(id);
             mpoint.setWeather_data(response.getCurrently());
             mpoint.setDisplay_arrtime(formatTimeforDisp(response.getCurrently().getTime(),response.getTimezone()));
+
+            if(listener!=null)
+                listener.onWeatherOfPointReady(id,mpoint);
         }else{
            mStep mstep= msteps.get(step_id);
            mstep.setWeatherdata(response.getCurrently());
            mstep.setDisplay_arrtime(formatTimeforDisp(response.getCurrently()
                     .getTime(),response.getTimezone()));
+           if(listener!=null)
+               listener.onWeatherOfStepReady(step_id,mstep);
         }
 
         queue.remove(id);

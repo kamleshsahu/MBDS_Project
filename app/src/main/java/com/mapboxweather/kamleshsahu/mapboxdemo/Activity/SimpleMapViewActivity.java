@@ -487,8 +487,12 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
     @Override
     public void onError(String etitle, String emsg) {
+         progress.dismiss();
+
          displayError(etitle,emsg);
     }
+
+
 
 
 
@@ -500,38 +504,54 @@ public class SimpleMapViewActivity extends AppCompatActivity
         link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), maptolist(msteps)));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        for(Map.Entry<Integer,mStep> mstep_:msteps.entrySet()){
-            mStep mstep=mstep_.getValue();
-            MarkerOptions options = new MarkerOptions();
-            options.setPosition(new LatLng(mstep.getStep().maneuver().location().latitude(), mstep.getStep().maneuver().location().longitude()));
-
-
-            String id = mstep_.getKey()+"";
-            layeridlist.add(id);
-            addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
-
-            Map<Integer,mPoint> step_mpoints=mstep.getInterms();
-
-
-            if(step_mpoints!=null && step_mpoints.size()>0) {
-                mpoints.putAll(step_mpoints);
-
-                for(Map.Entry<Integer,mPoint> mpoint_:step_mpoints.entrySet()){
-
-                    mPoint mpoint=mpoint_.getValue();
-
-                    if (mpoint != null) {
-                        String pid = mpoint_.getKey()+"";
-                        layeridlist.add(pid);
-                        addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
-                                Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
-
-                    }
-                }
-            }
-
-        }
+//        for(Map.Entry<Integer,mStep> mstep_:msteps.entrySet()){
+//            mStep mstep=mstep_.getValue();
+//
+//
+//            String id = mstep_.getKey()+"";
+//            layeridlist.add(id);
+//            addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
+//
+//            Map<Integer,mPoint> step_mpoints=mstep.getInterms();
+//
+//
+//            if(step_mpoints!=null && step_mpoints.size()>0) {
+//                mpoints.putAll(step_mpoints);
+//
+//                for(Map.Entry<Integer,mPoint> mpoint_:step_mpoints.entrySet()){
+//
+//                    mPoint mpoint=mpoint_.getValue();
+//
+//                    if (mpoint != null) {
+//                        String pid = mpoint_.getKey()+"";
+//                        layeridlist.add(pid);
+//                        addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
+//                                Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
+//
+//                    }
+//                }
+//            }
+//
+//        }
     }
+
+    @Override
+    public void onWeatherOfPointReady(int id, mPoint mpoint) {
+        String pid =id+"";
+        layeridlist.add(pid);
+        addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
+                Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
+    }
+
+    @Override
+    public void onWeatherOfStepReady(int step_id, mStep mstep) {
+
+        String id=step_id+"";
+        layeridlist.add(id);
+        addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
+
+    }
+
 
     @Override
     public void onWeatherDataListProgressChange(int value) {
@@ -541,10 +561,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
     class Task extends AsyncTask<Object,Object,Object>{
 
-        @Override
-        protected void onProgressUpdate(Object... values) {
-            super.onProgressUpdate(values);
-        }
 
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -756,7 +772,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
     }
 
 
-    private void addPolyline(String poly, String LINE_LAYER_ID, int color) {
+    void addPolyline(String poly, String LINE_LAYER_ID, int color) {
         List<Feature> features = new ArrayList<>();
         /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
         //  features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));

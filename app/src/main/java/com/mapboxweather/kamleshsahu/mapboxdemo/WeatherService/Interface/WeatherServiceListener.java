@@ -1,5 +1,6 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface;
 
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
 import java.util.Map;
@@ -12,9 +13,9 @@ public interface WeatherServiceListener extends mError{
 
     void OnWeatherDataListReady(Map<Integer,mStep> msteps);
 
-//    void onWeatherOfPointReady();
+    void onWeatherOfPointReady(int id,mPoint mpoint);
 //
-//    void onWeatherOfStepReady(int step_id);
+    void onWeatherOfStepReady(int step_id,mStep mstep);
 
     void onWeatherDataListProgressChange(int progress);
 }
