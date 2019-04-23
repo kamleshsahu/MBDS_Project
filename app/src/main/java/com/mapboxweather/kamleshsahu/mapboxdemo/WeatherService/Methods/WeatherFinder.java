@@ -1,14 +1,10 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.ds_service;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.ApiInterface;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherofPointListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.Darkskyapi;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +49,7 @@ public class WeatherFinder {
         Retrofit retrofit=getRetrofitInstance();
 
 
-        ds_service apiService = retrofit.create(ds_service.class);
+        ApiInterface apiService = retrofit.create(ApiInterface.class);
 
         Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt,id+"");
 

@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.AsyncTask;
@@ -21,14 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -41,15 +35,12 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
-import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 
+import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.CustomLayer;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
 
@@ -75,17 +66,17 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptoli
  */
 public class SimpleMapViewActivity extends AppCompatActivity
 
-    implements WeatherServiceListener
+    implements WeatherServiceListener, OnMapReadyCallback
 {
 
     private MapView mapView;
- //   public static Handler myItemhandler,myStephandler;
+
     Task getWeatherTask;
 
 
     Point sp=MainActivity.sp,dp=MainActivity.dp;
     DirectionsResponse directionapiresp=MainActivity.directionapiresp;
-    int stepcount=0;
+
     int selectedroute=MainActivity.selectedroute;
     String timezone=MainActivity.timezone;
     String travelmode=MainActivity.travelmode;
@@ -113,13 +104,9 @@ public class SimpleMapViewActivity extends AppCompatActivity
     int totalsteps=0;
 
     public static ProgressDialog progress;
-//    static final SimpleMapViewActivity cont=SimpleMapViewActivity.this;
-
     Boolean AlreadyGotError=false;
 
-//    private static final String MARKER_SOURCE = "markers-source";
-//    private static final String MARKER_STYLE_LAYER = "markers-style-layer";
-//    private static final String MARKER_IMAGE = "custom-marker";
+     CustomLayer customLayer;
 
     String layerids[],linelayerids[];
     List<String> layeridlist;
@@ -151,98 +138,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
         //menu
         editor = getSharedPreferences("distance", MODE_PRIVATE).edit();
         SharedPreferences prefs = getSharedPreferences("distance", MODE_PRIVATE);
-        int a = prefs.getInt("10", 0);
-        switch (a) {
-            case 10:
-                //  Toast.makeText(mApp, "10", Toast.LENGTH_SHORT).show();
-
-                try {
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            MenuItem item = menu.findItem(R.id.km10);
-                            interval = 10000;
-                            i = 1;
-                            item.setChecked(true);
-                        }
-                    }, 2000);
-                } catch (Exception e) {
-
-                }
-                break;
-            case 20:
-                //  Toast.makeText(mApp, "20", Toast.LENGTH_SHORT).show();
-                try {
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            MenuItem item = menu.findItem(R.id.km20);
-                            item.setChecked(true);
-                            interval = 20000;
-                            i = 2;
-                        }
-                    }, 2000);
-                } catch (Exception e) {
-
-                }
-
-                break;
-            case 30:
-                //  Toast.makeText(mApp, "30", Toast.LENGTH_SHORT).show();
-                try {
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            MenuItem item = menu.findItem(R.id.km30);
-                            item.setChecked(true);
-                            interval = 30000;
-                            i = 3;
-                        }
-                    }, 2000);
-                } catch (Exception e) {
-
-                }
-                break;
-            case 40:
-                // Toast.makeText(mApp, "40", Toast.LENGTH_SHORT).show();
-                try {
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            MenuItem item = menu.findItem(R.id.km40);
-                            item.setChecked(true);
-                            interval = 40000;
-                            i = 4;
-                        }
-                    }, 2000);
-                } catch (Exception e) {
-
-                }
-                break;
-            case 50:
-                // Toast.makeText(mApp, "50", Toast.LENGTH_SHORT).show();
-                try {
-                    Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            MenuItem item = menu.findItem(R.id.km50);
-                            item.setChecked(true);
-                            interval = 50000;
-                            i = 5;
-                        }
-                    }, 2000);
-                } catch (Exception e) {
-
-                }
-                break;
-            default:
-                //   Toast.makeText(mApp, "0", Toast.LENGTH_SHORT).show();
-        }
+        setIntervalDefaultValOnDisp(prefs.getInt("10", 0));
 ////////////////////////////////////////////////////////////////////
 
 
@@ -255,34 +151,14 @@ public class SimpleMapViewActivity extends AppCompatActivity
         link = (RecyclerView) findViewById(R.id.dragup_list_recycler);
         link.setLayoutManager(new LinearLayoutManager(this));
 
-//        sp = Point.fromLngLat(-105.2705, 40.015);
-//        dp = Point.fromLngLat(-104.9653, 39.7348);
-//////////////////////////////////////////////////////////////////
+
 
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
+        mapView.getMapAsync(this);
 
 
-            @Override
-            public void onMapReady(final MapboxMap mapboxMap) {
-
-                // Customize map with markers, polylines, etc.
-
-                SimpleMapViewActivity.mapboxMap = mapboxMap;
-                drawRoute();
-
-
-                mapboxMap.addOnMapClickListener(mapClickListener);
-            }
-
-        });
-
-
-//        myItemhandler = new Handler(myIntermediatePointsCallback);
-//
-//        myStephandler = new Handler(myStepsHandlerCallback);
 
 
 
@@ -328,9 +204,9 @@ public class SimpleMapViewActivity extends AppCompatActivity
             linelayerids[i]=id;
        //     layeridlist.add(id);
             if(i!=selectedroute)
-            addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute));
+            customLayer.addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute),selectedroute);
         }
-        addPolyline(directionapiresp.routes().get(selectedroute).geometry(),"p"+selectedroute,getResources().getColor(R.color.seletedRoute));
+        customLayer.addPolyline(directionapiresp.routes().get(selectedroute).geometry(),"p"+selectedroute,getResources().getColor(R.color.seletedRoute),selectedroute);
 
 //        addMarkers(R.drawable.pina,"img1","sp",sp,"sp","sp");
 //        addMarkers(R.drawable.pinb,"img2","dp",dp,"dp","dp");
@@ -477,8 +353,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
             mapboxMap.removeSource(markersourcelist.get(i));
         }
 
-
-
         layeridCreated = false;
         //System.out.println("all removed");
         layeridlist=new ArrayList<>();
@@ -488,12 +362,8 @@ public class SimpleMapViewActivity extends AppCompatActivity
     @Override
     public void onError(String etitle, String emsg) {
          progress.dismiss();
-
-         displayError(etitle,emsg);
+        displayError(etitle,emsg);
     }
-
-
-
 
 
     @Override
@@ -504,42 +374,13 @@ public class SimpleMapViewActivity extends AppCompatActivity
         link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), maptolist(msteps)));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-//        for(Map.Entry<Integer,mStep> mstep_:msteps.entrySet()){
-//            mStep mstep=mstep_.getValue();
-//
-//
-//            String id = mstep_.getKey()+"";
-//            layeridlist.add(id);
-//            addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
-//
-//            Map<Integer,mPoint> step_mpoints=mstep.getInterms();
-//
-//
-//            if(step_mpoints!=null && step_mpoints.size()>0) {
-//                mpoints.putAll(step_mpoints);
-//
-//                for(Map.Entry<Integer,mPoint> mpoint_:step_mpoints.entrySet()){
-//
-//                    mPoint mpoint=mpoint_.getValue();
-//
-//                    if (mpoint != null) {
-//                        String pid = mpoint_.getKey()+"";
-//                        layeridlist.add(pid);
-//                        addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
-//                                Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
-//
-//                    }
-//                }
-//            }
-//
-//        }
     }
 
     @Override
     public void onWeatherOfPointReady(int id, mPoint mpoint) {
         String pid =id+"";
         layeridlist.add(pid);
-        addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
+        customLayer.addMarkers(new weatherIconMap().getWeatherResource(mpoint.getWeather_data().getIcon()), pid, pid,
                 Point.fromLngLat(mpoint.getPoint().longitude(), mpoint.getPoint().latitude()), pid, pid);
     }
 
@@ -548,7 +389,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
         String id=step_id+"";
         layeridlist.add(id);
-        addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
+        customLayer.addMarkers(new weatherIconMap().getWeatherResource(mstep.getWeatherdata().getIcon()), id, id, mstep.getStep().maneuver().location(), id, id);
 
     }
 
@@ -557,6 +398,17 @@ public class SimpleMapViewActivity extends AppCompatActivity
     public void onWeatherDataListProgressChange(int value) {
           progress.setProgress(value);
     }
+
+    @Override
+    public void onMapReady(MapboxMap mapboxMap) {
+  // Customize map with markers, polylines, etc.
+
+      SimpleMapViewActivity.mapboxMap = mapboxMap;
+        mapboxMap.addOnMapClickListener(mapClickListener);
+      customLayer = new CustomLayer(mapboxMap,getApplicationContext());
+        drawRoute();
+    }
+
 
 
     class Task extends AsyncTask<Object,Object,Object>{
@@ -674,10 +526,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
                 return true;
             case R.id.action_retry:
-               // weatherApi = new WeatherApi();
-               // weatherApi.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                //               Toast.makeText(this, "Fetching Weather...", Toast.LENGTH_SHORT).show();
-                mapboxMap.clear();
+             mapboxMap.clear();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -690,7 +539,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_clr:
-                //              Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
 
                 recreate();
                 return true;
@@ -724,94 +572,103 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
                Log.d("TAG", "Showing alert dialog: " + msg);
                Dialog dialog = bld.create();
-               //   dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 
                dialog.show();
            }
     };
 
+    void setIntervalDefaultValOnDisp(int a){
+        switch (a) {
+            case 10:
+                //  Toast.makeText(mApp, "10", Toast.LENGTH_SHORT).show();
 
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km10);
+                            interval = 10000;
+                            i = 1;
+                            item.setChecked(true);
+                        }
+                    }, 2000);
+                } catch (Exception e) {
 
+                }
+                break;
+            case 20:
+                //  Toast.makeText(mApp, "20", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km20);
+                            item.setChecked(true);
+                            interval = 20000;
+                            i = 2;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
 
-    private void addMarkers(int iconid,String MARKER_IMAGE,String MARKER_SOURCE,Point point,String MARKER_STYLE_LAYER,String index) {
-        List<Feature> features = new ArrayList<>();
-        /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
-      //  features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));
+                }
 
+                break;
+            case 30:
+                //  Toast.makeText(mApp, "30", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km30);
+                            item.setChecked(true);
+                            interval = 30000;
+                            i = 3;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
 
-        features.add(Feature.fromGeometry(point, null,index));
+                }
+                break;
+            case 40:
+                // Toast.makeText(mApp, "40", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km40);
+                            item.setChecked(true);
+                            interval = 40000;
+                            i = 4;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
 
+                }
+                break;
+            case 50:
+                // Toast.makeText(mApp, "50", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km50);
+                            item.setChecked(true);
+                            interval = 50000;
+                            i = 5;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
 
-        FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
-        GeoJsonSource source = new GeoJsonSource(MARKER_SOURCE, featureCollection);
-
-
-
-
-
-                  mapboxMap.removeSource(source.getId());
-                  mapboxMap.addSource(source);
-
-
-
-        /* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
-        SymbolLayer markerStyleLayer = new SymbolLayer(MARKER_STYLE_LAYER, MARKER_SOURCE)
-                .withProperties(
-                        PropertyFactory.iconAllowOverlap(true),
-                        PropertyFactory.iconImage(MARKER_IMAGE)
-
-
-                );
-
-        Bitmap icon = BitmapFactory.decodeResource(
-               SimpleMapViewActivity.this.getResources(),iconid);
-        mapboxMap.addLayer(markerStyleLayer);
-     //  mapboxMap.addLayerAbove(markerStyleLayer,"p"+selectedroute);
-        mapboxMap.addImage(MARKER_IMAGE,icon);
-
+                }
+                break;
+            default:
+                //   Toast.makeText(mApp, "0", Toast.LENGTH_SHORT).show();
+        }
     }
-
-
-    void addPolyline(String poly, String LINE_LAYER_ID, int color) {
-        List<Feature> features = new ArrayList<>();
-        /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
-        //  features.add(Feature.fromGeometry(Point.fromLngLat(-78.7448, 40.2489)));
-
-
-         features.add(Feature.fromGeometry(LineString.fromPolyline(poly, Constants.PRECISION_6), null, LINE_LAYER_ID));
-
-
-
-
-        FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
-        GeoJsonSource source = new GeoJsonSource(LINE_LAYER_ID, featureCollection);
-
-// The layer properties for our line. This is where we make the line dotted, set the
-// color, etc.
-           LineLayer lineLayer= new LineLayer(LINE_LAYER_ID, LINE_LAYER_ID);
-
-           if(LINE_LAYER_ID.equals("p"+selectedroute)){
-               lineLayer.withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                       PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                       PropertyFactory.lineOpacity(.9f),
-                       PropertyFactory.lineWidth(8f),
-                       PropertyFactory.lineColor(color));
-
-           }else {
-                    lineLayer.withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                            PropertyFactory.lineOpacity(.9f),
-                            PropertyFactory.lineWidth(7f),
-                            PropertyFactory.lineColor(color));
-
-           }
-
-
-  //      mapboxMap.addLayer(markerStyleLayer);
-
-          mapboxMap.addLayer(lineLayer);
-          mapboxMap.addSource(source);
-
-    }
-
+    
 }
