@@ -22,7 +22,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.CustomDialogClass;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.CustomDialogClass;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.DragUpChangeListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;

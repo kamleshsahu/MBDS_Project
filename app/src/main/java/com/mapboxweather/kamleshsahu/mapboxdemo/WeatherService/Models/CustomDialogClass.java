@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models;
 
 import android.app.Activity;
 import android.app.Dialog;

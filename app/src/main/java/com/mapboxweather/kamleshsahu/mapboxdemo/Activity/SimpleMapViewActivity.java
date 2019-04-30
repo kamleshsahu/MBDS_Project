@@ -206,7 +206,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
         for(int i=0;i<directionapiresp.routes().size();i++){
             String id="p"+i;
             linelayerids[i]=id;
-       //     layeridlist.add(id);
             if(i!=selectedroute)
             customLayer.addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute),selectedroute);
         }
