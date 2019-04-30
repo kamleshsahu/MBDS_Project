@@ -23,7 +23,8 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.CustomDialogClass;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.DragUpChangeListener;
+
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.myListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
@@ -31,10 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MainActivity.directionapiresp;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MainActivity.selectedroute;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity.layeridCreated;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity.linelayerids;
+
 
 /**
  * Created by k on 4/24/2019.
@@ -44,7 +42,8 @@ public class weatherUI_utils {
     Context context;
     MapboxMap mapboxMap;
     Activity activity;
-    DragUpChangeListener dragUpListener;
+    myListener listener;
+
     public weatherUI_utils(MapboxMap mapboxMap, Activity activity) {
         this.mapboxMap=mapboxMap;
        this.mapboxStyle=mapboxMap.getStyle();
@@ -52,8 +51,8 @@ public class weatherUI_utils {
        this.context=activity.getApplicationContext();
     }
 
-    public void setDragUpListener(DragUpChangeListener dragUpListener) {
-        this.dragUpListener = dragUpListener;
+    public void setListener(myListener listener) {
+        this.listener = listener;
     }
 
     public void addMarkers (int iconid, String MARKER_IMAGE, String MARKER_SOURCE, Point point, String
@@ -136,7 +135,8 @@ public class weatherUI_utils {
 
         }
 
-       layeridCreated = false;
+        if(listener!=null)
+          listener.MakerLayerIdListCreated(false);
         //System.out.println("all removed");
         layeridlist=new ArrayList<>();
         markersourcelist=new ArrayList<>();
@@ -148,9 +148,20 @@ public class weatherUI_utils {
         RectF rectF = new RectF(pointf.x - 10, pointf.y - 10, pointf.x + 10, pointf.y + 10);
         //        String layerids[] = {"S1", "S2","S3","S4","S5","S6","S7","S8","S9"};
         //        List<String> layeridlist=new ArrayList<>();
-        if (!layeridCreated) {
+        if (listener.makerLayerIdListCreadted()) {
             //               Collections.reverse(layeridlist);
-            layerids = layeridlist.toArray(new String[layeridlist.size()]);
+  //          layerids = layeridlist.toArray(new String[layeridlist.size()]);
+
+            int count=layeridlist.size()+listener.getLineLayerIds().length;
+            layerids=new String[count];
+
+            for(int i=0;i<layeridlist.size();i++){
+                layerids[i]=layeridlist.get(i);
+            }
+            for(int j=layeridlist.size();j<layerids.length;j++){
+                layerids[j]=listener.getLineLayerIds()[j];
+            }
+
         }
         List<Feature> features = mapboxMap.queryRenderedFeatures(rectF, layerids);
 
@@ -184,15 +195,15 @@ public class weatherUI_utils {
     void routechangeListener(PointF pointf){
         //       //System.out.println("feature id not matching ");
         RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
-        List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
+        List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,listener.getLineLayerIds());
         if(features1.size()>0){
             //           //System.out.println("line data :"+features1.get(0).id());
             if(features1.get(0).id().startsWith("p")){
                 String id=features1.get(0).id();
-                selectedroute=Integer.parseInt(id.substring(1));
+                listener.updateSelectedRoute(Integer.parseInt(id.substring(1)));
 
-                for(int i=0;i<directionapiresp.routes().size();i++){
-                    if(selectedroute!=i) {
+                for(int i=0;i<listener.getDirectionResp().routes().size();i++){
+                    if(listener.getSelectedRoute()!=i) {
                         mapboxStyle.getLayer("p" + i).setProperties(
                                 PropertyFactory.lineWidth(7f),
                                 PropertyFactory.lineColor(activity.getResources().getColor(R.color.alternateRoute)));
@@ -203,8 +214,8 @@ public class weatherUI_utils {
                         PropertyFactory.lineWidth(8f),
                         PropertyFactory.lineColor(activity.getResources().getColor(R.color.seletedRoute)));
 
-                if(dragUpListener!=null)
-                dragUpListener.OnDragUpHeadLineChange();
+                if(listener!=null)
+                listener.OnDragUpHeadLineChange();
 
             }
         }

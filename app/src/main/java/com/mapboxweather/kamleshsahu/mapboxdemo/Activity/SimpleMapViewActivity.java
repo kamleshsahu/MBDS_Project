@@ -37,7 +37,8 @@ import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.DragUpChangeListener;
+
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.myListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherUI_utils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
@@ -65,7 +66,7 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptoli
 public class SimpleMapViewActivity extends AppCompatActivity
 
     implements WeatherServiceListener, OnMapReadyCallback,Style.OnStyleLoaded,
-        DragUpChangeListener
+        myListener
 {
 
     private MapView mapView;
@@ -104,10 +105,10 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
      weatherUI_utils customLayer;
 
-    static String layerids[];
-    public static String[] linelayerids;
+    String layerids[];
+    public  String[] linelayerids;
     List<String> layeridlist;
-   public static Boolean layeridCreated;
+   public Boolean layeridCreated;
     List<Source> markersourcelist;
     private Style style;
 
@@ -206,7 +207,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
         for(int i=0;i<directionapiresp.routes().size();i++){
             String id="p"+i;
             linelayerids[i]=id;
-       //     layeridlist.add(id);
+      //      layeridlist.add(id);
             if(i!=selectedroute)
             customLayer.addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute),selectedroute);
         }
@@ -327,7 +328,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
     public void onStyleLoaded(@NonNull Style style) {
         this.style=style;
         customLayer = new weatherUI_utils(mapboxMap,SimpleMapViewActivity.this);
-        customLayer.setDragUpListener(this);
+        customLayer.setListener(this);
         drawRoute();
 
     }
@@ -341,8 +342,38 @@ public class SimpleMapViewActivity extends AppCompatActivity
         else ((TextView)findViewById(R.id.fastestroute)).setText("");
     }
 
+    @Override
+    public void MakerLayerIdListCreated(Boolean created) {
+        layeridCreated=created;
+    }
 
-//    class Task extends AsyncTask<Object,Object,Object>{
+    @Override
+    public Boolean makerLayerIdListCreadted() {
+        return layeridCreated;
+    }
+
+    @Override
+    public void updateSelectedRoute(int id) {
+           selectedroute=id;
+    }
+
+    @Override
+    public DirectionsResponse getDirectionResp() {
+        return directionapiresp;
+    }
+
+    @Override
+    public int getSelectedRoute() {
+        return selectedroute;
+    }
+
+    @Override
+    public String[] getLineLayerIds() {
+        return linelayerids;
+    }
+
+
+    //    class Task extends AsyncTask<Object,Object,Object>{
 //
 //
 //        @Override
