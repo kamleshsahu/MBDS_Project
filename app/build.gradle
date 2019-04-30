@@ -49,7 +49,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //mapbox places plugin
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places:0.6.0'
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.36.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.26.0'
 //   implementation files('libs/retrofit-2.4.0.jar')
 //    implementation files('libs/converter-gson-2.4.0.jar')
 

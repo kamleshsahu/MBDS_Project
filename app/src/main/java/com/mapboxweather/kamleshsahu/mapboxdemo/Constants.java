@@ -23,7 +23,6 @@ public class Constants {
    public static final String STEP_MANEUVER_MODIFIER_SHARP_LEFT = "sharp left";
 
 
-
    public static final String WEATHER_CLEAR_DAY = "clear-day";
    public static final String WEATHER_CLOUDY = "cloudy";
    public static final String WEATHER_CLEAR_NIGHT = "clear-night";

@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -32,13 +35,12 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.DragUpChangeListener;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherUI_utils;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.CustomLayer;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
 
@@ -64,8 +66,7 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptoli
  */
 public class SimpleMapViewActivity extends AppCompatActivity
 
-    implements WeatherServiceListener, OnMapReadyCallback,Style.OnStyleLoaded,
-        DragUpChangeListener
+    implements WeatherServiceListener, OnMapReadyCallback
 {
 
     private MapView mapView;
@@ -102,24 +103,20 @@ public class SimpleMapViewActivity extends AppCompatActivity
     public static ProgressDialog progress;
     Boolean AlreadyGotError=false;
 
-     weatherUI_utils customLayer;
+     CustomLayer customLayer;
 
-    static String layerids[];
-    public static String[] linelayerids;
+    String layerids[],linelayerids[];
     List<String> layeridlist;
-   public static Boolean layeridCreated;
+    Boolean layeridCreated;
     List<Source> markersourcelist;
-    private Style style;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mapbox.getInstance(this, MapboxKey);
         setContentView(R.layout.activity_basic_simple_mapview);
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
-
+        Mapbox.getInstance(this, MapboxKey);
 
         // This contains the MapView in XML and needs to be called after the access token is configured.
         markersourcelist=new ArrayList<>();
@@ -139,8 +136,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
         editor = getSharedPreferences("distance", MODE_PRIVATE).edit();
         SharedPreferences prefs = getSharedPreferences("distance", MODE_PRIVATE);
         setIntervalDefaultValOnDisp(prefs.getInt("10", 0));
-
-
 ////////////////////////////////////////////////////////////////////
 
 
@@ -171,7 +166,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
                 link.setAdapter(routeadapter);
                 if (directionapiresp.routes().get(selectedroute).legs().get(0).distance() != null) {
                     slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
-                    this.OnDragUpHeadLineChange();
+                    Update_dragUpHeadline();
                 }
 
 
@@ -183,8 +178,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
     }
 ///////////////////////////////////////////////////////////////
-
-
 
     void drawRoute(){
         mapboxMap.clear();
@@ -220,12 +213,78 @@ public class SimpleMapViewActivity extends AppCompatActivity
     MapboxMap.OnMapClickListener mapClickListener= new MapboxMap.OnMapClickListener() {
 
         @Override
-        public boolean onMapClick(@NonNull LatLng point) {
+        public void onMapClick(@NonNull LatLng point) {
             Log.d("map clicked", "map clicked");
-            customLayer.mapOnClick(point,layeridlist,layerids,msteps);
-            return false;
+// Convert LatLng coordinates to screen pixel and only query the rendered features.
+            final PointF pointf = mapboxMap.getProjection().toScreenLocation(point);
+
+            RectF rectF = new RectF(pointf.x - 10, pointf.y - 10, pointf.x + 10, pointf.y + 10);
+    //        String layerids[] = {"S1", "S2","S3","S4","S5","S6","S7","S8","S9"};
+    //        List<String> layeridlist=new ArrayList<>();
+            if(!layeridCreated) {
+ //               Collections.reverse(layeridlist);
+                layerids = layeridlist.toArray(new String[layeridlist.size()]);
+            }
+            List<Feature> features = mapboxMap.queryRenderedFeatures(rectF,layerids);
+
+
+
+            if (features.size() > 0) {
+                Feature feature = features.get(0);
+
+                Log.i("featute id :", feature.id());
+
+
+                if(feature.id().startsWith("p")){
+                    routechangeListener(pointf);
+                }
+                else if (Integer.parseInt(feature.id())%1000==0) {
+                    Log.i("marker clicked :", "step marker clicked");
+                    int index = (Integer.parseInt(feature.id())/1000)*1000;
+                    new CustomDialogClass(SimpleMapViewActivity.this, msteps.get(index)).show();
+                } else if(Integer.parseInt(feature.id())%1000!=0){
+                    Log.i("marker clicked :", "item marker clicked");
+                    int step_id = (Integer.parseInt(feature.id())/1000)*1000;
+                    int index= (Integer.parseInt(feature.id()));
+                    new CustomDialogClass(SimpleMapViewActivity.this, msteps.get(step_id).getInterms().get(index)).show();
+               }
+
+
+
+            }else{
+                //System.out.println(" else part else part");
+                routechangeListener(pointf);
+            }
+
         }
     };
+
+
+    void routechangeListener(PointF pointf){
+ //       //System.out.println("feature id not matching ");
+        RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
+        List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
+        if(features1.size()>0){
+ //           //System.out.println("line data :"+features1.get(0).id());
+            if(features1.get(0).id().startsWith("p")){
+                String id=features1.get(0).id();
+                selectedroute=Integer.parseInt(id.substring(1));
+
+                for(int i=0;i<directionapiresp.routes().size();i++){
+                    if(selectedroute!=i) {
+                        mapboxMap.getLayer("p" + i).setProperties(
+                                PropertyFactory.lineWidth(7f),
+                                PropertyFactory.lineColor(getResources().getColor(R.color.alternateRoute)));
+                    }
+                }
+
+                mapboxMap.getLayer(id).setProperties(
+                        PropertyFactory.lineWidth(8f),
+                        PropertyFactory.lineColor(getResources().getColor(R.color.seletedRoute)));
+                Update_dragUpHeadline();
+            }
+        }
+    }
 
 
     void setCameraWithCoordinationBounds() {
@@ -239,6 +298,17 @@ public class SimpleMapViewActivity extends AppCompatActivity
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
 
     }
+
+    void Update_dragUpHeadline(){
+        ((TextView)findViewById(R.id.route_name)).setText(directionapiresp.routes().get(selectedroute).legs().get(0).summary());
+        ((TextView)findViewById(R.id.duration)).setText(new unitConverter().durationBeautify(directionapiresp.routes().get(selectedroute).duration().longValue()));
+        ((TextView)findViewById(R.id.distance)).setText("("+new unitConverter().metertoMiles(directionapiresp.routes().get(selectedroute).distance().longValue())+")");
+        if(selectedroute==0)((TextView)findViewById(R.id.fastestroute)).setText(fastest_route);
+        else ((TextView)findViewById(R.id.fastestroute)).setText("");
+    }
+
+
+
 
     public void showWeather(View view){
         AlreadyGotError=false;
@@ -254,7 +324,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
         progress.show();
 
         totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
-        customLayer.removeWeatherIcons(layeridlist,markersourcelist);
+        removeWeatherIcons();
 
         WeatherService weatherServiceCall;
         weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
@@ -272,6 +342,23 @@ public class SimpleMapViewActivity extends AppCompatActivity
     }
 
 
+    void removeWeatherIcons(){
+
+        for(int i=0;i<layeridlist.size();i++) {
+            mapboxMap.removeLayer(layeridlist.get(i));
+            mapboxMap.removeImage(layeridlist.get(i));
+
+        }
+
+        for(int i=0;i<markersourcelist.size();i++){
+            mapboxMap.removeSource(markersourcelist.get(i));
+        }
+
+        layeridCreated = false;
+        //System.out.println("all removed");
+        layeridlist=new ArrayList<>();
+        markersourcelist=new ArrayList<>();
+    }
 
     @Override
     public void onError(String etitle, String emsg) {
@@ -318,28 +405,11 @@ public class SimpleMapViewActivity extends AppCompatActivity
   // Customize map with markers, polylines, etc.
 
       SimpleMapViewActivity.mapboxMap = mapboxMap;
-      mapboxMap.setStyle(Style.LIGHT,this);
         mapboxMap.addOnMapClickListener(mapClickListener);
-
-    }
-
-    @Override
-    public void onStyleLoaded(@NonNull Style style) {
-        this.style=style;
-        customLayer = new weatherUI_utils(mapboxMap,SimpleMapViewActivity.this);
-        customLayer.setDragUpListener(this);
+      customLayer = new CustomLayer(mapboxMap,getApplicationContext());
         drawRoute();
-
     }
 
-    @Override
-    public void OnDragUpHeadLineChange() {
-        ((TextView)findViewById(R.id.route_name)).setText(directionapiresp.routes().get(selectedroute).legs().get(0).summary());
-        ((TextView)findViewById(R.id.duration)).setText(new unitConverter().durationBeautify(directionapiresp.routes().get(selectedroute).duration().longValue()));
-        ((TextView)findViewById(R.id.distance)).setText("("+new unitConverter().metertoMiles(directionapiresp.routes().get(selectedroute).distance().longValue())+")");
-        if(selectedroute==0)((TextView)findViewById(R.id.fastestroute)).setText(fastest_route);
-        else ((TextView)findViewById(R.id.fastestroute)).setText("");
-    }
 
 
 //    class Task extends AsyncTask<Object,Object,Object>{
