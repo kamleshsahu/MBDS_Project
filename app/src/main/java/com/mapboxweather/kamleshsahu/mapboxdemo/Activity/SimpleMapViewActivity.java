@@ -65,7 +65,7 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptoli
 public class SimpleMapViewActivity extends AppCompatActivity
 
     implements WeatherServiceListener, OnMapReadyCallback,Style.OnStyleLoaded,
-        DragUpChangeListener
+        DragUpChangeListener,MapboxMap.OnMapClickListener
 {
 
     private MapView mapView;
@@ -204,27 +204,27 @@ public class SimpleMapViewActivity extends AppCompatActivity
         setCameraWithCoordinationBounds();
 
         for(int i=0;i<directionapiresp.routes().size();i++){
-            String id="p"+i;
+            String id=i+"";
             linelayerids[i]=id;
             if(i!=selectedroute)
             customLayer.addPolyline(directionapiresp.routes().get(i).geometry(),id,getResources().getColor(R.color.alternateRoute),selectedroute);
         }
-        customLayer.addPolyline(directionapiresp.routes().get(selectedroute).geometry(),"p"+selectedroute,getResources().getColor(R.color.seletedRoute),selectedroute);
+        customLayer.addPolyline(directionapiresp.routes().get(selectedroute).geometry(),""+selectedroute,getResources().getColor(R.color.seletedRoute),selectedroute);
 
 //        addMarkers(R.drawable.pina,"img1","sp",sp,"sp","sp");
 //        addMarkers(R.drawable.pinb,"img2","dp",dp,"dp","dp");
 
     }
 
-    MapboxMap.OnMapClickListener mapClickListener= new MapboxMap.OnMapClickListener() {
-
-        @Override
-        public boolean onMapClick(@NonNull LatLng point) {
-            Log.d("map clicked", "map clicked");
-            customLayer.mapOnClick(point,layeridlist,layerids,msteps);
-            return false;
-        }
-    };
+//    MapboxMap.OnMapClickListener mapClickListener= new MapboxMap.OnMapClickListener() {
+//
+//        @Override
+//        public boolean onMapClick(@NonNull LatLng point) {
+//            Log.d("map clicked", "map clicked");
+//            customLayer.mapOnClick(point,layeridlist,layerids,msteps);
+//            return false;
+//        }
+//    };
 
 
     void setCameraWithCoordinationBounds() {
@@ -318,7 +318,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
       SimpleMapViewActivity.mapboxMap = mapboxMap;
       mapboxMap.setStyle(Style.LIGHT,this);
-        mapboxMap.addOnMapClickListener(mapClickListener);
+      mapboxMap.addOnMapClickListener(this);
 
     }
 
@@ -597,5 +597,11 @@ public class SimpleMapViewActivity extends AppCompatActivity
                 //   Toast.makeText(mApp, "0", Toast.LENGTH_SHORT).show();
         }
     }
-    
+
+    @Override
+    public boolean onMapClick(@NonNull LatLng point) {
+                    Log.d("map clicked", "map clicked");
+            customLayer.mapOnClick(point,layeridlist,layerids,msteps);
+        return false;
+    }
 }

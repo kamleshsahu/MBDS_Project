@@ -8,6 +8,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
@@ -160,46 +161,48 @@ public class weatherUI_utils {
 
             Log.i("featute id :", feature.id());
 
+            int featureid=Integer.parseInt(feature.id());
 
-            if (feature.id().startsWith("p")) {
-                routechangeListener(pointf);
-            } else if (Integer.parseInt(feature.id()) % 1000 == 0) {
+            if (featureid<10) {
+                Log.i("marker clicked :", "polyline clicked");
+                routechangeListener(featureid);
+            } else if (featureid % 1000 == 0) {
                 Log.i("marker clicked :", "step marker clicked");
-                int index = (Integer.parseInt(feature.id()) / 1000) * 1000;
-                new CustomDialogClass(activity, msteps.get(index)).show();
-            } else if (Integer.parseInt(feature.id()) % 1000 != 0) {
+                int step_id = (featureid / 1000) * 1000;
+                new CustomDialogClass(activity, msteps.get(step_id)).show();
+            } else if (featureid % 1000 != 0) {
                 Log.i("marker clicked :", "item marker clicked");
-                int step_id = (Integer.parseInt(feature.id()) / 1000) * 1000;
-                int index = (Integer.parseInt(feature.id()));
+                int step_id = (featureid / 1000) * 1000;
+                int index = (featureid);
                 new CustomDialogClass(activity, msteps.get(step_id).getInterms().get(index)).show();
             }
 
 
         } else {
             //System.out.println(" else part else part");
-            routechangeListener(pointf);
+            RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
+            List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
+            if(features1.size()>0) {
+                int routeid = Integer.parseInt(features1.get(0).id());
+                routechangeListener( routeid);
+            }
         }
     }
 
-    void routechangeListener(PointF pointf){
-        //       //System.out.println("feature id not matching ");
-        RectF rectF1 = new RectF(pointf.x - 20, pointf.y - 20, pointf.x + 20, pointf.y + 20);
-        List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
-        if(features1.size()>0){
-            //           //System.out.println("line data :"+features1.get(0).id());
-            if(features1.get(0).id().startsWith("p")){
-                String id=features1.get(0).id();
-                selectedroute=Integer.parseInt(id.substring(1));
+    void routechangeListener(int routeid){
+        if(routeid<10){
+
+                selectedroute=routeid;
 
                 for(int i=0;i<directionapiresp.routes().size();i++){
                     if(selectedroute!=i) {
-                        mapboxStyle.getLayer("p" + i).setProperties(
+                        mapboxStyle.getLayer("" + i).setProperties(
                                 PropertyFactory.lineWidth(7f),
                                 PropertyFactory.lineColor(activity.getResources().getColor(R.color.alternateRoute)));
                     }
                 }
 
-                mapboxStyle.getLayer(id).setProperties(
+                mapboxStyle.getLayer(routeid+"").setProperties(
                         PropertyFactory.lineWidth(8f),
                         PropertyFactory.lineColor(activity.getResources().getColor(R.color.seletedRoute)));
 
@@ -207,7 +210,7 @@ public class weatherUI_utils {
                 dragUpListener.OnDragUpHeadLineChange();
 
             }
-        }
+
     }
  }
 
