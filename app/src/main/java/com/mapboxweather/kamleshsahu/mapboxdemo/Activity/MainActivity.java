@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
      static Point sp=null,dp=null;
 
      public static int selectedroute=0;
-     static DirectionsResponse directionapiresp;
+     public static DirectionsResponse directionapiresp;
 
 
     int tempYear,tempMonth,tempDay;
