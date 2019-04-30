@@ -70,9 +70,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
     private MapView mapView;
 
-    Task getWeatherTask;
-
-
     Point sp=MainActivity.sp,dp=MainActivity.dp;
     DirectionsResponse directionapiresp=MainActivity.directionapiresp;
 
@@ -259,14 +256,18 @@ public class SimpleMapViewActivity extends AppCompatActivity
         totalsteps=directionapiresp.routes().get(selectedroute).legs().get(0).steps().size();
         customLayer.removeWeatherIcons(layeridlist,markersourcelist);
 
+        WeatherService weatherServiceCall;
+        weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
+        weatherServiceCall.setListener(SimpleMapViewActivity.this);
+        weatherServiceCall.execute();
 
-        getWeatherTask = new Task();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getWeatherTask.execute();
-            }
-        },500);
+//        getWeatherTask = new Task();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                getWeatherTask.execute();
+//            }
+//        },500);
 
     }
 
@@ -341,20 +342,17 @@ public class SimpleMapViewActivity extends AppCompatActivity
     }
 
 
-    class Task extends AsyncTask<Object,Object,Object>{
-
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            WeatherService weatherServiceCall;
-            weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
-            weatherServiceCall.setListener(SimpleMapViewActivity.this);
-            weatherServiceCall.calc_data();
-
-            return null;
-        }
-
-    }
+//    class Task extends AsyncTask<Object,Object,Object>{
+//
+//
+//        @Override
+//        protected Object doInBackground(Object[] objects) {
+//
+//
+//            return null;
+//        }
+//
+//    }
     // Add the mapView lifecycle to the activity's lifecycle methods
     @Override
     public void onResume() {

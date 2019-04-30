@@ -1,42 +1,30 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService;
 
 
-import android.app.Activity;
-import android.content.Context;
+import android.os.AsyncTask;
 
-import com.mapbox.api.directions.v5.DirectionsCriteria;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
+
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
-
-import com.mapbox.geojson.Point;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.IntermediatePointListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.PointMatrixListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherServiceListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherofPointListener;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.IntermediatePoints;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.PointMatrixForAll;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.WeatherFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.Darkskyapi;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.IntermediatePoints;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.PointMatrixForAll;
 
-
-import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.formatTimeforDisp;
 
 
-public class WeatherService implements
+public class WeatherService extends AsyncTask<Void,Object,Void>
+        implements
         PointMatrixListener,
         WeatherofPointListener,
         IntermediatePointListener
@@ -59,7 +47,7 @@ public class WeatherService implements
     int count=0;
 
 
-    public WeatherService( DirectionsRoute routedata, String timezoneid, long interval, long jstarttime, String travelmode) {
+    public WeatherService(DirectionsRoute routedata, String timezoneid, long interval, long jstarttime, String travelmode) {
         this.routedata = routedata;
         this.timezoneid = timezoneid;
         this.interval = interval;
@@ -71,19 +59,6 @@ public class WeatherService implements
     public void setListener(WeatherServiceListener listener) {
         this.listener = listener;
     }
-
-    public void calc_data(){
-
-
-
-       fn = new IntermediatePoints(this);
-        pointMatrixs = new PointMatrixForAll(this);
-        wfs = new WeatherFinder(this);
-       fn.extractListofPoints(interval,routedata,timezoneid,jstarttime,travelmode);
-
-
-
-   }
 
     @Override
     public void OnIntermediatePointsCalculated(Map<Integer, mStep> msteps) {
@@ -160,8 +135,15 @@ public class WeatherService implements
     }
 
 
-
-//        public static void main(String[] args) {
+    @Override
+    protected Void doInBackground(Void... voids) {
+        fn = new IntermediatePoints(this);
+        pointMatrixs = new PointMatrixForAll(this);
+        wfs = new WeatherFinder(this);
+        fn.extractListofPoints(interval,routedata,timezoneid,jstarttime,travelmode);
+        return null;
+    }
+    //        public static void main(String[] args) {
 //        Point sp=Point.fromLngLat(-105.2705, 40.015);
 //        Point dp=Point.fromLngLat(-104.9653, 39.7348);
 //        String profile= DirectionsCriteria.PROFILE_DRIVING;
