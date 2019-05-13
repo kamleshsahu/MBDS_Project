@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -463,7 +464,10 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
 
                 return true;
-
+            case R.id.action_main_setting:
+                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent1);
+                return true;
             case R.id.action_clr:
 
                 recreate();

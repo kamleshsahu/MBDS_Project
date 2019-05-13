@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mapboxweather.kamleshsahu.mapboxdemo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,15 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.SimpleMapViewActivity">
-
-        </activity>
+        <activity android:name=".Activity.SimpleMapViewActivity"></activity>
         <activity android:name=".Activity.Subscription" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e748be179c7a242adf140bbde732b54e5aefde3f" />
+
+        <activity android:name=".Activity.SettingsActivity"></activity>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
