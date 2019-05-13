@@ -17,11 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.SimpleMapViewActivity">
-
-        </activity>
+        <activity android:name=".Activity.SimpleMapViewActivity"></activity>
         <activity android:name=".Activity.Subscription" />
-
+        <activity android:name=".Activity.SettingsActivity"></activity>
     </application>
 
 </manifest>

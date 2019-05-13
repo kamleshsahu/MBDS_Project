@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -734,6 +735,10 @@ public class SimpleMapViewActivity extends AppCompatActivity {
                 //              Toast.makeText(this, "clear", Toast.LENGTH_SHORT).show();
 
                 recreate();
+                return true;
+            case R.id.action_main_setting:
+                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent1);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

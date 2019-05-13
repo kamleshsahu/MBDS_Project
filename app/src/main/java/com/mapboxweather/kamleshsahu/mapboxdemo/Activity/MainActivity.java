@@ -386,6 +386,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(getApplicationContext(), Subscription.class);
                 startActivity(intent);
                 return true;
+
             case R.id.action_clr:
 
                 resetresult();
