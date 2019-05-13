@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService;
 
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 

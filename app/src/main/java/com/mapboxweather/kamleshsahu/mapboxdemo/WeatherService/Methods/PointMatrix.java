@@ -1,30 +1,22 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 
-import com.google.gson.Gson;
 import com.mapbox.api.matrix.v1.MapboxMatrix;
-import com.mapbox.api.matrix.v1.MatrixAdapterFactory;
 import com.mapbox.api.matrix.v1.models.MatrixResponse;
 import com.mapbox.geojson.Point;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.IntermediatePointListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.PointMatrixListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.getMax_API_Count;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.getMax_API_Count;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.SplitInParts.split_in_parts;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.TimeFormatter.getSDFtime;
 

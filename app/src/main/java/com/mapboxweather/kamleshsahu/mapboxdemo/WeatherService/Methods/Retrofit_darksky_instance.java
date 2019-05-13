@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkSky_BaseURL;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.DarkSky_BaseURL;
 
 /**
  * Created by k on 3/27/2019.

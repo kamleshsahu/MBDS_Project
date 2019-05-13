@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.strDays;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.month;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.strDays;
 
 /**
  * Created by k on 3/29/2019.

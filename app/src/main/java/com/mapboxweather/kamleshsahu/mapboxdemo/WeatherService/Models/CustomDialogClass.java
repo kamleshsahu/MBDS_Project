@@ -2,20 +2,15 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherIconMap;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
 public class CustomDialogClass extends Dialog implements
         android.view.View.OnClickListener {

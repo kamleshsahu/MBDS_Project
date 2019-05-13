@@ -10,7 +10,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.DarkskyKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.DarkskyKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.Retrofit_darksky_instance.getRetrofitInstance;
 
 

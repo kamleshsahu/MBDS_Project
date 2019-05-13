@@ -6,14 +6,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,14 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -38,7 +29,6 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter;
@@ -55,13 +45,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHead_StartDest_NotFilled;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorHeading;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.ErrorMsg_StartDest_NotFilled;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.REQUEST_CODE_AUTOCOMPLETE1;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.REQUEST_CODE_AUTOCOMPLETE2;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.month;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.ErrorHead_StartDest_NotFilled;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.ErrorHeading;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.ErrorMsg_StartDest_NotFilled;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE1;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE2;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.month;
 
 public class MainActivity extends AppCompatActivity {
 

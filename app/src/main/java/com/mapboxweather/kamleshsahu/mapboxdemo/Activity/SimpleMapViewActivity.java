@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -38,9 +37,9 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.DragUpChangeListener;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherUI_utils;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherUI_utils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherIconMap;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherServiceListener;
@@ -54,8 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.MapboxKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.fastest_route;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.fastest_route;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptolist;
 
 

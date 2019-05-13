@@ -5,7 +5,6 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.ApiInterface;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
 
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -16,7 +15,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.GoogleKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.GoogleKey;
 
 public class TimeZoneOfOrigin {
 

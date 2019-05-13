@@ -1,11 +1,11 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Constants.*;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.*;
 
 public class weatherIconMap {
 

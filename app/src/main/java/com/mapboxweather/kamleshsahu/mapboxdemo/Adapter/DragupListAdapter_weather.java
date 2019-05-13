@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.weatherIconMap;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
 
