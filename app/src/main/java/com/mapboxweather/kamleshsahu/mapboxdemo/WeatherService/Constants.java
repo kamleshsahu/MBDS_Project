@@ -68,6 +68,16 @@ public class Constants {
    public static final int REQUEST_CODE_AUTOCOMPLETE1=1001;
    public static final int REQUEST_CODE_AUTOCOMPLETE2=1002;
 
+ public static final String LIGHT= "LIGHT";
+ public static final String DARK= "DARK";
+ public static final String STREETS= "STREETS";
+ public static final String OUTDOORS ="OUTDOORS";
+ public static final String SATELLITE= "SATELLITE";
+ public static final String SATELLITE_STREETS ="SATELLITE STREETS";
+ public static final String TRAFFIC_DAY= "TRAFFIC DAY";
+ public static final String TRAFFIC_NIGHT= "TRAFFIC NIGHT";
+   public static final String MAP_STYLE="MAP_STYLE";
+
 //   public static Map<String,Integer> max_Api_Count=new HashMap<>();
 //
 //   public Constants() {

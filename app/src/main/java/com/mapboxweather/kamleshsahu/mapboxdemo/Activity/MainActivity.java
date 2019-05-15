@@ -403,6 +403,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(getIntent());
 
                 return true;
+            case R.id.action_main_setting:
+                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent1);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

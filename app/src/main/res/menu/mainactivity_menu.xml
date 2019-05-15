@@ -12,11 +12,16 @@
         android:id="@+id/action_clr"
         android:title="Clear"
         app:showAsAction="always" />
+
+    <item
+        android:fontFamily="sans-serif-thin"
+        android:id="@+id/action_main_setting"
+        android:title="Settings"
+        app:showAsAction="never" />
     <item
 
         android:fontFamily="sans-serif-thin"
         android:id="@+id/Subscription"
         android:title="Subscription"
         app:showAsAction="never" />
-
 </menu>

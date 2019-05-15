@@ -54,6 +54,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.LIGHT;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MAP_STYLE;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.fastest_route;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptolist;
@@ -315,9 +317,11 @@ public class SimpleMapViewActivity extends AppCompatActivity
     @Override
     public void onMapReady(MapboxMap mapboxMap) {
   // Customize map with markers, polylines, etc.
+        String MAP_THEME=getSharedPreferences("mapboxdemo", MODE_PRIVATE).getString(MAP_STYLE,style.LIGHT);
+        if(MAP_THEME==null || MAP_THEME.equals(""))MAP_THEME=style.LIGHT;
 
       SimpleMapViewActivity.mapboxMap = mapboxMap;
-      mapboxMap.setStyle(Style.LIGHT,this);
+      mapboxMap.setStyle(MAP_THEME,this);
       mapboxMap.addOnMapClickListener(this);
 
     }
@@ -464,10 +468,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
 
                 return true;
-            case R.id.action_main_setting:
-                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent1);
-                return true;
+
             case R.id.action_clr:
 
                 recreate();
