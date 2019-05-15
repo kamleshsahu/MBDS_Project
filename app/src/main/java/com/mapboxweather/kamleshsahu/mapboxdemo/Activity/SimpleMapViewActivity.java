@@ -362,7 +362,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-//        mapView.onStart();
+        mapView.onStart();
     }
 
     @Override
