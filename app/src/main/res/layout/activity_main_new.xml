@@ -50,6 +50,7 @@
 
     <include
         android:layout_below="@+id/appBar"
+        android:id="@+id/included"
         layout="@layout/activity_travel_with_new"
         bind:start="@{start}"
         bind:dstn="@{dstn}"

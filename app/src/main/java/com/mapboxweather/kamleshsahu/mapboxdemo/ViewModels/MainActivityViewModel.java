@@ -8,8 +8,11 @@ import android.arch.lifecycle.Observer;
 import android.databinding.Observable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapboxweather.kamleshsahu.mapboxdemo.BR;
 import com.mapboxweather.kamleshsahu.mapboxdemo.MLocation;
 import com.mapboxweather.kamleshsahu.mapboxdemo.MTime;
@@ -20,6 +23,8 @@ public class MainActivityViewModel extends AndroidViewModel {
       MutableLiveData<MLocation> dstnLiveData=new MutableLiveData<>();
 
       MTime mTime;
+
+
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
          mTime=new MTime();

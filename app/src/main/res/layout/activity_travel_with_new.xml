@@ -237,7 +237,8 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_weight="1"
-                android:id="@+id/a"
+                android:id="@+id/car"
+                android:saveEnabled="true"
                 android:padding="3dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp" />
@@ -249,13 +250,15 @@
             <!--android:layout_height="40dp" />-->
             <ImageView
                 android:layout_weight="1"
-                android:id="@+id/d"
+                android:id="@+id/bike"
+                android:saveEnabled="true"
                 android:padding="3dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp" />
             <ImageView
                 android:layout_weight="1"
-                android:id="@+id/c"
+                android:id="@+id/walk"
+                android:saveEnabled="true"
                 android:padding="3dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp" />
@@ -282,6 +285,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/option"
+            android:onClick="onOptionClick"
             android:textColor="@color/colorPrimary"
             android:textSize="13sp"
             android:textAllCaps="true"
@@ -338,6 +342,7 @@
                                     android:textSize="13sp"
                                     android:textAllCaps="true"
                                     android:text="Avoid"
+                                    android:saveEnabled="true"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
 
@@ -346,6 +351,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:padding="10dp"
+                                    android:saveEnabled="true"
                                     android:text="Highways"
                                     />
                                 <CheckBox
@@ -353,6 +359,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:padding="10dp"
+                                    android:saveEnabled="true"
                                     android:text="Tolls"
                                     />
                                 <CheckBox
@@ -360,6 +367,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:padding="10dp"
+                                    android:saveEnabled="true"
                                     android:text="Ferries"
                                     />
                             </LinearLayout>

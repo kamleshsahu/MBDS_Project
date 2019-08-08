@@ -13,11 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
@@ -32,14 +35,25 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.
 
 public class MainActivity_new extends AppCompatActivity {
 
-    ActivityMainNewBinding activityMainNewBinding;
-    MainActivityViewModel mainActivityViewModel;
+     ActivityMainNewBinding activityMainNewBinding;
+     MainActivityViewModel mainActivityViewModel;
+     String avoid=null;
+
+    CheckBox tolls,ferries,highway;
+    String travelmode= DirectionsCriteria.PROFILE_DRIVING;
+    ImageView car,bike,walk;
+    TextView option;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_new);
         activityMainNewBinding= DataBindingUtil.setContentView(this,R.layout.activity_main_new);
         mainActivityViewModel= ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        bindview();
+
 
         mainActivityViewModel.getmTimeMutableLiveData().observe(this, new Observer<MTime>() {
             @Override
@@ -61,7 +75,129 @@ public class MainActivity_new extends AppCompatActivity {
                 activityMainNewBinding.setDstn(mLocation);
             }
           });
+
+
+
+
+        car.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //  radioGroup.check(R.id._1);
+                car.setImageResource(R.drawable.car_on);
+                walk.setImageResource(R.drawable.walk_off);
+                bike.setImageResource(R.drawable.bike_off);
+
+                 highway.setVisibility(View.VISIBLE);
+                 tolls.setVisibility(View.VISIBLE);
+                 ferries.setVisibility(View.VISIBLE);
+
+                travelmode= DirectionsCriteria.PROFILE_DRIVING_TRAFFIC;
+
+            }
+        });
+
+        walk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                car.setImageResource(R.drawable.car_off);
+                walk.setImageResource(R.drawable.walk_on);
+                bike.setImageResource(R.drawable.bike_off);
+
+                 highway.setVisibility(View.INVISIBLE);
+                  tolls.setVisibility(View.INVISIBLE);
+                 ferries.setVisibility(View.INVISIBLE);
+
+                  travelmode=DirectionsCriteria.PROFILE_CYCLING;
+
+            }
+        });
+        bike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                car.setImageResource(R.drawable.car_off);
+                walk.setImageResource(R.drawable.walk_off);
+                bike.setImageResource(R.drawable.bike_on);
+
+                 highway.setVisibility(View.INVISIBLE);
+                 tolls.setVisibility(View.INVISIBLE);
+                 ferries.setVisibility(View.VISIBLE);
+
+                 travelmode=DirectionsCriteria.PROFILE_CYCLING;
+            }
+        });
+
+        option.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int a = findViewById(R.id.option_list).getVisibility();
+                if (a == 0) {
+                    findViewById(R.id.option_list).setVisibility(View.GONE);
+                } else {
+                    findViewById(R.id.option_list).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+
+        highway.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if( highway.isChecked()) {
+                    avoid = DirectionsCriteria.EXCLUDE_MOTORWAY;
+                }else  avoid=null;
+                if( tolls.isChecked()) tolls.setChecked(false);
+                if( ferries.isChecked()) ferries.setChecked(false);
+            }
+        });
+
+        tolls.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if( tolls.isChecked()) {
+                    avoid = DirectionsCriteria.EXCLUDE_TOLL;
+                }else  avoid=null;
+                if( highway.isChecked()) highway.setChecked(false);
+                if( ferries.isChecked()) ferries.setChecked(false);
+            }
+        });
+
+
+
+        ferries.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if( ferries.isChecked()) {
+                    avoid=DirectionsCriteria.EXCLUDE_FERRY;
+                }else  avoid=null;
+                if( highway.isChecked()) highway.setChecked(false);
+                if( tolls.isChecked()) tolls.setChecked(false);
+            }
+        });
+
+
     }
+
+
+   void bindview(){
+
+       tolls=activityMainNewBinding.included.tolls;
+       ferries=activityMainNewBinding.included.ferries;
+       highway=activityMainNewBinding.included.highway;
+       car=activityMainNewBinding.included.car;
+       bike=activityMainNewBinding.included.bike;
+       walk=activityMainNewBinding.included.walk;
+       option=activityMainNewBinding.included.option;
+
+       car.setImageResource(R.drawable.car_on);
+       walk.setImageResource(R.drawable.walk_off);
+       bike.setImageResource(R.drawable.bike_off);
+   }
 
     public void setTime(View view) {
            datePicker();
@@ -124,6 +260,16 @@ public class MainActivity_new extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE2);
 
     }
+
+    public void onOptionClick(View view) {
+            int option = findViewById(R.id.option_list).getVisibility();
+            if (option == 0) {
+                findViewById(R.id.option_list).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.option_list).setVisibility(View.VISIBLE);
+            }
+    }
+
 
 
     @Override
