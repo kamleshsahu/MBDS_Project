@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,17 +35,15 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
-
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.DragUpChangeListener;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherUI_utils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherIconMap;
-
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherServiceListener;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.WeatherService;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.WeatherServiceListener;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mPoint;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherUI_utils;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.WeatherService;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
@@ -54,11 +51,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.LIGHT;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MAP_STYLE;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.fastest_route;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptolist;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MAP_STYLE;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.fastest_route;
 
 
 /**
@@ -83,8 +79,8 @@ public class SimpleMapViewActivity extends AppCompatActivity
      AlertDialog.Builder bld;
 
     List<PolylineOptions> polylineOptionsList;
-    Map<Integer,mPoint> mpoints;
-    Map<Integer,mStep> msteps;
+    Map<Integer, mPoint> mpoints;
+    Map<Integer, mStep> msteps;
     List<Polyline> polylines;
     List<Marker> markersInterm;
     List<Marker> markersSteps;
@@ -112,6 +108,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
    public static Boolean layeridCreated;
     List<Source> markersourcelist;
     private Style style;
+
 
 
     @Override
@@ -246,7 +243,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
         WeatherService weatherServiceCall;
         weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
-        weatherServiceCall.setListener(SimpleMapViewActivity.this);
+        weatherServiceCall.setListener(this);
         weatherServiceCall.execute();
 
     }

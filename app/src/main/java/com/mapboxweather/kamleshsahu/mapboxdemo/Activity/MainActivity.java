@@ -7,8 +7,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -37,21 +36,22 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeZoneOfOrigin;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
-import io.fabric.sdk.android.Fabric;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.ErrorHead_StartDest_NotFilled;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.ErrorHeading;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.ErrorMsg_StartDest_NotFilled;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE1;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE2;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.month;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.ErrorHead_StartDest_NotFilled;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.ErrorHeading;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.ErrorMsg_StartDest_NotFilled;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE1;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE2;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.month;
+
 
 public class MainActivity extends AppCompatActivity {
 

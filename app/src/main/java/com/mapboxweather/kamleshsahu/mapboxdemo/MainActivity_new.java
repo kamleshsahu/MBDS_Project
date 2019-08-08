@@ -2,25 +2,19 @@ package com.mapboxweather.kamleshsahu.mapboxdemo;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -34,19 +28,17 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MainActivity;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeZoneOfOrigin;
 import com.mapboxweather.kamleshsahu.mapboxdemo.ViewModels.MainActivityViewModel;
 import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityMainNewBinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE1;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE2;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE1;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE2;
+
 
 public class MainActivity_new extends AppCompatActivity implements PermissionsListener {
 
@@ -294,7 +286,7 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
     }
 
     public void findRoute_onClick(View view){
-        Intent intent=new Intent(MainActivity_new.this,NavigationMapRouteActivity.class);
+        Intent intent=new Intent(MainActivity_new.this,NavigationLauncherActivity_Simulate.class);
         startActivity(intent);
     }
 

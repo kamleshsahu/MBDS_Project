@@ -32,7 +32,14 @@ import mehdi.sakout.fancybuttons.FancyButton;
 import static android.view.View.GONE;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.BaseActivity.havetrial;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.*;
+
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.SKU_INFINITE_GAS_HALFYEARLY;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.SKU_INFINITE_GAS_MONTHLY;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.SKU_INFINITE_GAS_QUATERLY;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.SKU_INFINITE_GAS_YEARLY;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.TRIALY_APP_KEY;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.TRIALY_SKU;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.base64EncodedPublicKey;
 import static io.trialy.library.Constants.STATUS_TRIAL_JUST_ENDED;
 import static io.trialy.library.Constants.STATUS_TRIAL_JUST_STARTED;
 import static io.trialy.library.Constants.STATUS_TRIAL_NOT_YET_STARTED;

@@ -36,7 +36,9 @@
             android:value="e748be179c7a242adf140bbde732b54e5aefde3f" />
 
         <activity android:name=".Activity.SettingsActivity" />
-
+        <activity android:name=".NavigationLauncherActivity_Simulate" android:configChanges="orientation|screenSize"/>
+        <activity android:name=".NavigationMapRouteActivity" android:configChanges="orientation|screenSize"></activity>
+        <activity android:name=".MapboxNavigationActivity" android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

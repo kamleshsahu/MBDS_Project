@@ -7,7 +7,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.month;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.month;
+
 
 public class MTime extends BaseObservable {
 

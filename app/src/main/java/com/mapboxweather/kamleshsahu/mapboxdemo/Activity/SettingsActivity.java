@@ -1,30 +1,28 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.style.light.Light;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mapbox.mapboxsdk.storage.Resource.STYLE;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.DARK;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.LIGHT;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MAP_STYLE;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.OUTDOORS;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.SATELLITE;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.SATELLITE_STREETS;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.STREETS;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.TRAFFIC_DAY;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.TRAFFIC_NIGHT;
+import static com.mapbox.mapboxsdk.maps.Style.DARK;
+import static com.mapbox.mapboxsdk.maps.Style.LIGHT;
+import static com.mapbox.mapboxsdk.maps.Style.MAPBOX_STREETS;
+import static com.mapbox.mapboxsdk.maps.Style.OUTDOORS;
+import static com.mapbox.mapboxsdk.maps.Style.SATELLITE;
+import static com.mapbox.mapboxsdk.maps.Style.SATELLITE_STREETS;
+import static com.mapbox.mapboxsdk.maps.Style.TRAFFIC_DAY;
+import static com.mapbox.mapboxsdk.maps.Style.TRAFFIC_NIGHT;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MAP_STYLE;
+
 
 public class SettingsActivity extends AppCompatActivity {
     Spinner month,year;
@@ -40,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
         List<String> list = new ArrayList<String>();
         list.add(LIGHT);
         list.add(DARK);
-        list.add(STREETS);
+        list.add(MAPBOX_STREETS);
         list.add(OUTDOORS);
         list.add(SATELLITE);
         list.add(SATELLITE_STREETS);
@@ -58,35 +56,35 @@ public class SettingsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (list.get(i).toString()){
                     case LIGHT:
-                        prefs.putString(MAP_STYLE, Style.LIGHT).apply();
+                        prefs.putString(MAP_STYLE, LIGHT).apply();
                         prefs.putInt("STYLE_INDEX",0).apply();
                         break;
                     case DARK:
-                        prefs.putString(MAP_STYLE,Style.DARK).apply();
+                        prefs.putString(MAP_STYLE, DARK).apply();
                         prefs.putInt("STYLE_INDEX",1).apply();
                         break;
-                    case STREETS:
-                        prefs.putString(MAP_STYLE,Style.MAPBOX_STREETS).apply();
+                    case MAPBOX_STREETS:
+                        prefs.putString(MAP_STYLE, MAPBOX_STREETS).apply();
                         prefs.putInt("STYLE_INDEX",2).apply();
                         break;
                     case SATELLITE:
-                        prefs.putString(MAP_STYLE,Style.SATELLITE).apply();
+                        prefs.putString(MAP_STYLE, SATELLITE).apply();
                         prefs.putInt("STYLE_INDEX",3).apply();
                         break;
                     case SATELLITE_STREETS:
-                        prefs.putString(MAP_STYLE,Style.SATELLITE_STREETS).apply();
+                        prefs.putString(MAP_STYLE, SATELLITE_STREETS).apply();
                         prefs.putInt("STYLE_INDEX",4).apply();
                         break;
                     case OUTDOORS:
-                        prefs.putString(MAP_STYLE,Style.OUTDOORS).apply();
+                        prefs.putString(MAP_STYLE, OUTDOORS).apply();
                         prefs.putInt("STYLE_INDEX",5).apply();
                         break;
                     case TRAFFIC_DAY:
-                        prefs.putString(MAP_STYLE,Style.TRAFFIC_DAY).apply();
+                        prefs.putString(MAP_STYLE, TRAFFIC_DAY).apply();
                         prefs.putInt("STYLE_INDEX",6).apply();
                         break;
                     case TRAFFIC_NIGHT:
-                        prefs.putString(MAP_STYLE,Style.TRAFFIC_NIGHT).apply();
+                        prefs.putString(MAP_STYLE, TRAFFIC_NIGHT).apply();
                         prefs.putInt("STYLE_INDEX",7).apply();
                         break;
                 }

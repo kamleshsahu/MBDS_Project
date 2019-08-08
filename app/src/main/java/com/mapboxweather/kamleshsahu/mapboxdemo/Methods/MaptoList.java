@@ -1,7 +1,6 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mStep;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -13,7 +13,8 @@ import com.mapbox.services.android.navigation.ui.v5.NavigationView;
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.weatherUtils;
-
+import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.msteps;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.activity;
 
 public class myNavigationView extends NavigationView implements MapboxMap.OnMapClickListener {
 

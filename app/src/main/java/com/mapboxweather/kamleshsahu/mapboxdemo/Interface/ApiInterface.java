@@ -3,8 +3,9 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Interface;
 
 
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.Darkskyapi;
+
 import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.Darkskyapi;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,7 +20,7 @@ public interface ApiInterface {
 
 
     @GET("forecast/{DarkskyKey}/{llt}?exclude=hourly,daily,minutely,flags")
-    Call<Darkskyapi> getweather(@Path("DarkskyKey") String DarkskyKey,@Path("llt") String latlongtime);
+    Call<Darkskyapi> getweather(@Path("DarkskyKey") String DarkskyKey, @Path("llt") String latlongtime);
 
 
 

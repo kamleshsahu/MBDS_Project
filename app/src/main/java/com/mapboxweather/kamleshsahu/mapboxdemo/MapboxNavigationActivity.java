@@ -15,7 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-7
+
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -32,12 +32,14 @@ import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOpti
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherServiceListener;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mPoint;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherIconMap;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherUI_utils;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.WeatherUpdateService;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.NextMilestoneSetter;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.WeatherServiceListener;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.StepCorrection;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mPoint;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherUI_utils;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.WeatherUpdateService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +48,10 @@ import java.util.Map;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.myUtils.getCorrection;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.myUtils.mycustomMilestone;
+
+
 
 
 /**
@@ -79,7 +85,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   static List<String> layeridlist;
 
-  static Map<Integer, mStep> msteps;
+  static  Map<Integer, mStep> msteps;
 
   WeatherUpdateService wus;
 

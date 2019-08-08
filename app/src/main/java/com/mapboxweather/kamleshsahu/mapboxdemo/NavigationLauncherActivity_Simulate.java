@@ -64,7 +64,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
+
 
 public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         implements OnMapReadyCallback,

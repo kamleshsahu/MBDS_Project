@@ -11,12 +11,11 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.bumptech.glide.Glide;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.UIutils.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mStep;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
 
 import java.util.List;
 

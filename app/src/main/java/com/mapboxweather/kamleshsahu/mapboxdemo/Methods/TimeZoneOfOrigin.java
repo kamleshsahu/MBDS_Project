@@ -14,8 +14,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.GoogleKey;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.GoogleKey;
 
 public class TimeZoneOfOrigin {
 
