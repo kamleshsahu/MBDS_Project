@@ -213,20 +213,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
         }
         customLayer.addPolyline(directionapiresp.routes().get(selectedroute).geometry(),""+selectedroute,getResources().getColor(R.color.seletedRoute),selectedroute);
 
-//        addMarkers(R.drawable.pina,"img1","sp",sp,"sp","sp");
-//        addMarkers(R.drawable.pinb,"img2","dp",dp,"dp","dp");
-
     }
-
-//    MapboxMap.OnMapClickListener mapClickListener= new MapboxMap.OnMapClickListener() {
-//
-//        @Override
-//        public boolean onMapClick(@NonNull LatLng point) {
-//            Log.d("map clicked", "map clicked");
-//            customLayer.mapOnClick(point,layeridlist,layerids,msteps);
-//            return false;
-//        }
-//    };
 
 
     void setCameraWithCoordinationBounds() {
@@ -261,14 +248,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
         weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
         weatherServiceCall.setListener(SimpleMapViewActivity.this);
         weatherServiceCall.execute();
-
-//        getWeatherTask = new Task();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                getWeatherTask.execute();
-//            }
-//        },500);
 
     }
 

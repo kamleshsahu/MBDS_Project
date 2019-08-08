@@ -1,7 +1,7 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.ApiInterface;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.DSWeatherService;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.WeatherofPointListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Models.Darkskyapi;
 
@@ -11,7 +11,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.DarkskyKey;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.Retrofit_darksky_instance.getRetrofitInstance;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods.Retrofit_darksky_instance.getService;
 
 
 public class WeatherFinder {
@@ -46,10 +46,8 @@ public class WeatherFinder {
 
         String llt=lat+","+lng+","+time;
 
-        Retrofit retrofit=getRetrofitInstance();
 
-
-        ApiInterface apiService = retrofit.create(ApiInterface.class);
+        DSWeatherService apiService = getService();
 
         Call<Darkskyapi> call = apiService.getweather(DarkskyKey,llt,id+"");
 
@@ -62,9 +60,6 @@ public class WeatherFinder {
      Callback<Darkskyapi> listener=new Callback<Darkskyapi>() {
          @Override
          public void onResponse(Call<Darkskyapi> call, Response<Darkskyapi> response) {
-
-
-
 
              int id=Integer.parseInt(response.raw().request().headers().get("token"));
              if(response.isSuccessful()){

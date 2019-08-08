@@ -17,6 +17,10 @@ repositories {
 
 android {
     compileSdkVersion 28
+
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.mapboxweather.kamleshsahu.mapboxdemo"
         minSdkVersion 19

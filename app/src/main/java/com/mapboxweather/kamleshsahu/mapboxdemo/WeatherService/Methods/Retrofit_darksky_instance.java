@@ -1,6 +1,7 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Methods;
 
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.ApiInterface;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Interface.DSWeatherService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,43 +16,32 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.
  */
 
 public class Retrofit_darksky_instance {
-    public static ApiInterface apiService;
+  
     public static Retrofit retrofit;
     public Retrofit_darksky_instance() {
         super();
 
     }
 
-    public static void createInstance(){
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                //.addInterceptor(loggingInterceptor)
-                //.addNetworkInterceptor(networkInterceptor)
-                .build();
+    public static DSWeatherService getService(){
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(DarkSky_BaseURL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
+        if(retrofit==null) {
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .build();
 
-                .build();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(DarkSky_BaseURL)
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+           }
 
-
-  //      apiService = retrofit.create(ApiInterface.class);
+           return retrofit.create(DSWeatherService.class);
 
     }
 
-//    public static ApiInterface getApiServiceInstance() {
-//        if(apiService==null)
-//            createInstance();
-//        return apiService;
-//    }
 
-    public static Retrofit getRetrofitInstance() {
-        if(retrofit==null)
-            createInstance();
-        return retrofit;
-    }
 }
