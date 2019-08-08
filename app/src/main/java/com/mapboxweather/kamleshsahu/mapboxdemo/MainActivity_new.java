@@ -7,11 +7,19 @@ import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -20,6 +28,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
@@ -29,11 +39,16 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeZoneOfOrigin;
 import com.mapboxweather.kamleshsahu.mapboxdemo.ViewModels.MainActivityViewModel;
 import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityMainNewBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE1;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService.Constants.REQUEST_CODE_AUTOCOMPLETE2;
 
-public class MainActivity_new extends AppCompatActivity {
+public class MainActivity_new extends AppCompatActivity implements PermissionsListener {
 
      ActivityMainNewBinding activityMainNewBinding;
      MainActivityViewModel mainActivityViewModel;
@@ -43,7 +58,7 @@ public class MainActivity_new extends AppCompatActivity {
     String travelmode= DirectionsCriteria.PROFILE_DRIVING;
     ImageView car,bike,walk;
     TextView option;
-
+    private PermissionsManager permissionsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +68,14 @@ public class MainActivity_new extends AppCompatActivity {
         activityMainNewBinding= DataBindingUtil.setContentView(this,R.layout.activity_main_new);
         mainActivityViewModel= ViewModelProviders.of(this).get(MainActivityViewModel.class);
         bindview();
+
+        // Check for location permission
+        permissionsManager = new PermissionsManager(this);
+        if (!PermissionsManager.areLocationPermissionsGranted(this)) {
+            permissionsManager.requestLocationPermissions(this);
+        } else {
+            requestPermissionIfNotGranted(WRITE_EXTERNAL_STORAGE);
+        }
 
 
         mainActivityViewModel.getmTimeMutableLiveData().observe(this, new Observer<MTime>() {
@@ -270,6 +293,11 @@ public class MainActivity_new extends AppCompatActivity {
             }
     }
 
+    public void findRoute_onClick(View view){
+        Intent intent=new Intent(MainActivity_new.this,NavigationMapRouteActivity.class);
+        startActivity(intent);
+    }
+
 
 
     @Override
@@ -289,4 +317,44 @@ public class MainActivity_new extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 0) {
+            permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        } else {
+            boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (!granted) {
+                Toast.makeText(this, "You didn't grant storage permissions.", Toast.LENGTH_LONG).show();
+            } else {
+
+            }
+        }
+    }
+
+    @Override
+    public void onExplanationNeeded(List<String> permissionsToExplain) {
+        Toast.makeText(this, "This app needs location and storage permissions"
+                + "in order to show its functionality.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        if (granted) {
+            requestPermissionIfNotGranted(WRITE_EXTERNAL_STORAGE);
+        } else {
+            Toast.makeText(this, "You didn't grant location permissions.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void requestPermissionIfNotGranted(String permission) {
+        List<String> permissionsNeeded = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(permission);
+            ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[0]), 10);
+        }
+    }
+
 }
+
+
