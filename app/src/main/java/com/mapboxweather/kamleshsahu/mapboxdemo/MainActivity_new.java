@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
@@ -51,7 +53,7 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
     ImageView car,bike,walk;
     TextView option;
     private PermissionsManager permissionsManager;
-
+    SharedPreferences prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,15 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
         activityMainNewBinding= DataBindingUtil.setContentView(this,R.layout.activity_main_new);
         mainActivityViewModel= ViewModelProviders.of(this).get(MainActivityViewModel.class);
         bindview();
+
+        prefs = getSharedPreferences("formdata", MODE_PRIVATE);
+
+        if(!prefs.getString("start","").isEmpty()){
+            mainActivityViewModel.setStart(new Gson().fromJson(prefs.getString("start",""),MLocation.class));
+        }
+        if(!prefs.getString("dstn","").isEmpty()){
+            mainActivityViewModel.setDstn(new Gson().fromJson(prefs.getString("dstn",""),MLocation.class));
+        }
 
         // Check for location permission
         permissionsManager = new PermissionsManager(this);
@@ -305,12 +316,16 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
             //System.out.println("feature text :"+feature.text());
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
             mainActivityViewModel.setStart(new MLocation(feature.placeName(),feature.center()));
+            prefs.edit().putString("start", new Gson().toJson(mainActivityViewModel.getStartLiveData().getValue())).apply();
+
 
         }else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE2) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             //System.out.println("feature text :"+feature.text());
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
             mainActivityViewModel.setDstn(new MLocation(feature.placeName(),feature.center()));
+            prefs.edit().putString("dstn", new Gson().toJson(mainActivityViewModel.getDstnLiveData().getValue())).apply();
+
         }
     }
 

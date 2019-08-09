@@ -292,6 +292,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     public boolean onMapClick(@NonNull LatLng point) {
         Log.d("map clicked", "map clicked");
         customLayer.mapOnClick(point,layeridlist.toArray(new String[layeridlist.size()]),msteps);
+        if(myPolyline!=null)
         myPolyline.mapOnClick(point);
         return false;
     }
