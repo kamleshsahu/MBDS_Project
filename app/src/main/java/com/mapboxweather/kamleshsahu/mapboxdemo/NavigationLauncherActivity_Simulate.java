@@ -34,7 +34,6 @@ import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.core.constants.Constants;
 import com.mapbox.core.utils.TextUtils;
 import com.mapbox.geojson.LineString;
@@ -55,8 +54,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
-import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-import com.mapbox.services.android.navigation.ui.v5.route.OnRouteSelectionChangeListener;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter_new;
@@ -88,7 +85,7 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation
 public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         implements OnMapReadyCallback,
   MapboxMap.OnMapLongClickListener,
-        OnRouteSelectionChangeListener, WeatherServiceListener, MapboxMap.OnMapClickListener {
+        WeatherServiceListener, MapboxMap.OnMapClickListener, selectedRouteChangedListener, routeChangedinList {
      Form form;
 
      int interval=5000;
@@ -109,7 +106,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     int totalsteps=0;
 
-    int selectedroute=0;
+   private int selectedroute=0;
 
   private static final int CAMERA_ANIMATION_DURATION = 1000;
   private static final int DEFAULT_CAMERA_ZOOM = 16;
@@ -120,12 +117,13 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
   private final NavigationLauncherLocationCallback callback = new NavigationLauncherLocationCallback(this);
   private LocationEngine locationEngine;
-  private NavigationMapRoute mapRoute;
+//  private NavigationMapRoute mapRoute;
+    private MPolyline myPolyline;
   private MapboxMap mapboxMap;
   private Marker currentMarker;
   private Point currentLocation;
   private Point destination;
-  private DirectionsRoute route;
+ // private DirectionsRoute route;
   private LocaleUtils localeUtils;
   private boolean locationFound;
 
@@ -278,6 +276,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
       mapboxMap.addOnMapLongClickListener(this);
       mapboxMap.addOnMapClickListener(this);
+        this.style=style;
       initializeLocationEngine();
       initializeLocationComponent(style);
       initializeMapRoute();
@@ -293,6 +292,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     public boolean onMapClick(@NonNull LatLng point) {
         Log.d("map clicked", "map clicked");
         customLayer.mapOnClick(point,layeridlist.toArray(new String[layeridlist.size()]),msteps);
+        myPolyline.mapOnClick(point);
         return false;
     }
 
@@ -308,10 +308,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     return false;
   }
 
-  @Override
-  public void onNewPrimaryRouteSelected(DirectionsRoute directionsRoute) {
-    route = directionsRoute;
-  }
+
 
   void updateCurrentLocation(Point currentLocation) {
     this.currentLocation = currentLocation;
@@ -347,8 +344,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
   }
 
   private void initializeMapRoute() {
-    mapRoute = new NavigationMapRoute(mapView, mapboxMap);
-    mapRoute.setOnRouteSelectionChangeListener(this);
+//    mapRoute = new NavigationMapRoute(mapView, mapboxMap);
+//    mapRoute.setOnRouteSelectionChangeListener(this);
 
   }
 
@@ -370,12 +367,12 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
             directionsResponse = response.body();
             showOnRecyclerView();
-            route = response.body().routes().get(0);
-          if (route.distance() > 25d) {
+
+          if (directionsResponse.routes().size()>0 && directionsResponse.routes().get(0).distance() > 25d) {
             launchRouteBtn.setEnabled(true);
-            mapRoute.addRoutes(response.body().routes());
-
-
+          //  mapRoute.addRoutes(response.body().routes());
+              myPolyline=new MPolyline(getApplicationContext(),mapboxMap,style,response.body(),0);
+              myPolyline.setListener(NavigationLauncherActivity_Simulate.this);
             boundCameraToRoute();
           } else {
             Snackbar.make(mapView, R.string.error_select_longer_route, Snackbar.LENGTH_SHORT).show();
@@ -442,7 +439,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
   }
 
   private void launchNavigationWithRoute() {
-    if (route == null) {
+    if (directionsResponse== null || directionsResponse.routes().size()<1) {
       Snackbar.make(mapView, R.string.error_route_not_available, Snackbar.LENGTH_SHORT).show();
       return;
     }
@@ -456,7 +453,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
       .zoom(INITIAL_ZOOM)
       .build();
     optionsBuilder.initialMapCameraPosition(initialPosition);
-    optionsBuilder.directionsRoute(route);
+    optionsBuilder.directionsRoute(directionsResponse.routes().get(selectedroute));
     String offlinePath = obtainOfflinePath();
     if (!TextUtils.isEmpty(offlinePath)) {
       optionsBuilder.offlineRoutingTilesPath(offlinePath);
@@ -479,8 +476,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
   }
 
   public void boundCameraToRoute() {
-    if (route != null) {
-      List<Point> routeCoords = LineString.fromPolyline(route.geometry(),
+    if (directionsResponse.routes().get(selectedroute) != null) {
+      List<Point> routeCoords = LineString.fromPolyline(directionsResponse.routes().get(selectedroute).geometry(),
         Constants.PRECISION_6).coordinates();
       List<LatLng> bboxPoints = new ArrayList<>();
       for (Point point : routeCoords) {
@@ -528,11 +525,23 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
       .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
       .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
       .build();
-
-
   }
 
-  private static class NavigationLauncherLocationCallback implements LocationEngineCallback<LocationEngineResult> {
+
+
+    @Override
+    public void onSelectedRouteChanged(int id) {
+        selectedroute=id;
+    }
+
+    @Override
+    public void selectedRouteChangedInList(int id) {
+        if(myPolyline!=null){
+            myPolyline.updateRoutesinMap(id);
+        }
+    }
+
+    private static class NavigationLauncherLocationCallback implements LocationEngineCallback<LocationEngineResult> {
 
     private final WeakReference<NavigationLauncherActivity_Simulate> activityWeakReference;
 
@@ -567,9 +576,10 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         recyclerView =activityNavigationLauncherBinding.rv;
         RouteListAdapter_new adapter = new RouteListAdapter_new(this,directionsResponse);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        adapter.setListener(this);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+
         adapter.notifyDataSetChanged();
 
     }

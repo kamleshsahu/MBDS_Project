@@ -13,12 +13,14 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
+import com.mapboxweather.kamleshsahu.mapboxdemo.routeChangedinList;
 //import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
 
 public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_new.ViewHolder>{
         private Context context;
     private DirectionsResponse data;
 
+    routeChangedinList listener;
     // RecyclerView recyclerView;
     public RouteListAdapter_new(Context context, DirectionsResponse data) {
         this.data=data;
@@ -29,7 +31,13 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem= layoutInflater.inflate(R.layout.listview_item_travelwithactivity, parent, false);
         ViewHolder viewHolder = new ViewHolder(listItem);
+
+        viewHolder.item.setSelected(true);
         return viewHolder;
+    }
+
+    public void setListener(routeChangedinList listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -39,6 +47,8 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                   if(listener!=null)
+                       listener.selectedRouteChangedInList(finalpos);
 
             }
         });

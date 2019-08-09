@@ -21,25 +21,33 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MainActivity.directionapiresp;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MainActivity.selectedroute;
 
-public class myPolyline {
+public class MPolyline {
     MapboxMap mapboxMap;
     Style mapboxStyle;
     List<DirectionsRoute> routes;
     Context context;
-
+    int selectedroute;
     public static String[] linelayerids;
-    public myPolyline(Context context,MapboxMap mapboxMap, Style style, DirectionsResponse response,int primary) {
+
+    selectedRouteChangedListener listener;
+
+    public MPolyline(Context context, MapboxMap mapboxMap, Style style, DirectionsResponse response, int primary) {
         this.mapboxMap = mapboxMap;
         this.routes=response.routes();
         this.mapboxStyle=style;
+        this.context=context;
+
         linelayerids=new String[routes.size()];
+        selectedroute=primary;
         addRoutes(routes,primary);
     }
 
-    void addRoutes(List<DirectionsRoute> routes,int selectedroute){
+    public void setListener(selectedRouteChangedListener listener) {
+        this.listener = listener;
+    }
+
+    void addRoutes(List<DirectionsRoute> routes, int selectedroute){
 
         for(int i=0;i<routes.size();i++){
             String id=i+"";
@@ -74,6 +82,7 @@ public class myPolyline {
             lineLayer.withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
                     PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
                     PropertyFactory.lineOpacity(.9f),
+
                     PropertyFactory.lineWidth(8f),
                     PropertyFactory.lineColor(color));
 
@@ -84,12 +93,13 @@ public class myPolyline {
                     PropertyFactory.lineWidth(7f),
                     PropertyFactory.lineColor(color));
 
+
         }
 
 
         //      mapboxStyle.addLayer(markerStyleLayer);
-        mapboxStyle.removeLayer(lineLayer);
-        mapboxStyle.removeSource(source);
+//        mapboxStyle.removeLayer(lineLayer.getId());
+//        mapboxStyle.removeSource(source.getId());
         mapboxStyle.addLayer(lineLayer);
         mapboxStyle.addSource(source);
 
@@ -102,17 +112,17 @@ public class myPolyline {
             List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
             if(features1.size()>0) {
                 int routeid = Integer.parseInt(features1.get(0).id());
-                routechangeListener( routeid);
+                updateRoutesinMap(routeid);
             }
      }
 
 
-    void routechangeListener(int routeid){
-        if(routeid<10){
+    void updateRoutesinMap(int routeid){
+        if(routeid<10 && selectedroute!=routeid){
 
             selectedroute=routeid;
 
-            for(int i=0;i<directionapiresp.routes().size();i++){
+            for(int i=0;i<routes.size();i++){
                 if(selectedroute!=i) {
                     mapboxStyle.getLayer("" + i).setProperties(
                             PropertyFactory.lineWidth(7f),
@@ -127,8 +137,12 @@ public class myPolyline {
 //            if(dragUpListener!=null)
 //                dragUpListener.OnDragUpHeadLineChange();
 
+            if(listener!=null)
+                listener.onSelectedRouteChanged(routeid);
+
         }
 
     }
+
 
 }
