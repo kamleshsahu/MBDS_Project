@@ -287,6 +287,11 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
 
     public void findRoute_onClick(View view){
         Intent intent=new Intent(MainActivity_new.this,NavigationLauncherActivity_Simulate.class);
+        Form form=new Form(mainActivityViewModel.getStartLiveData().getValue(),
+                mainActivityViewModel.getDstnLiveData().getValue(),
+                mainActivityViewModel.getmTimeMutableLiveData().getValue(),avoid,travelmode);
+        intent.putExtra("form",form);
+
         startActivity(intent);
     }
 

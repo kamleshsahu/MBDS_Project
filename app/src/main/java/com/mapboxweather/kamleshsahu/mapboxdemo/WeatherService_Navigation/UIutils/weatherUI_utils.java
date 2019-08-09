@@ -8,7 +8,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
-
 import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
@@ -122,7 +121,7 @@ public class weatherUI_utils {
     public void mapOnClick(LatLng point, String[] layerids, Map<Integer, mStep> msteps) {
 
         final PointF pointf = mapboxMap.getProjection().toScreenLocation(point);
-        RectF rectF = new RectF(pointf.x - 30, pointf.y - 30, pointf.x + 30, pointf.y +30);
+        RectF rectF = new RectF(pointf.x - 10, pointf.y - 10, pointf.x + 10, pointf.y +10);
         List<Feature> features = mapboxMap.queryRenderedFeatures(rectF, layerids);
 
         try {
@@ -133,11 +132,11 @@ public class weatherUI_utils {
 
                 int featureid = Integer.parseInt(feature.id());
 
-                if (featureid % 1000 == 0) {
+                if (featureid>=1000 && featureid % 1000 == 0) {
                     Log.i("marker clicked :", "step marker clicked");
                     int step_id = (featureid / 1000) * 1000;
                     new CustomDialogClass(activity, msteps.get(step_id)).show();
-                } else if (featureid % 1000 != 0) {
+                } else if (featureid>=1000 && featureid % 1000 != 0) {
                     Log.i("marker clicked :", "item marker clicked");
                     int step_id = (featureid / 1000) * 1000;
                     int index = (featureid);
@@ -164,6 +163,7 @@ public class weatherUI_utils {
 
 
         features.add(Feature.fromGeometry(LineString.fromPolyline(poly, Constants.PRECISION_6), null, LINE_LAYER_ID));
+
 
 
 

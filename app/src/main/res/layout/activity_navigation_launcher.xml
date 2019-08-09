@@ -1,48 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:sothree="http://schemas.android.com/tools">
 
-<android.support.design.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:keepScreenOn="true"
-    >
-
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:mapbox_uiAttribution="false"/>
+        android:keepScreenOn="true">
 
-    <ProgressBar
-        android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="visible"/>
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:id="@+id/rvParent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/test">
+            </android.support.v7.widget.RecyclerView>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-    <FrameLayout
-        android:id="@+id/launch_btn_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        android:background="@drawable/demo_switch_background"
-        android:elevation="2dp"
-        android:layout_gravity="center_horizontal|top">
 
-        <Button
-            android:id="@+id/launch_route_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:enabled="false"
-            android:onClick="onRouteLaunchClick"
-            android:text="Launch Navigation"/>
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_below="@id/rvParent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:mapbox_uiAttribution="false">
+            <android.support.design.widget.FloatingActionButton
+                android:backgroundTint="#ffffff"
+                sothree:backgroundTint="#ffffff"
+                sothree:borderWidth="0dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right|top"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:onClick="showWeather"
+                android:src="@drawable/ic_weather"/>
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="visible" />
+            <FrameLayout
+                android:id="@+id/launch_btn_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="8dp"
+                android:background="@drawable/demo_switch_background"
+                android:elevation="2dp"
+                android:padding="8dp">
+            <Button
+                android:id="@+id/launch_route_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:enabled="false"
+                android:onClick="onRouteLaunchClick"
+                android:text="Launch Navigation" />
+            </FrameLayout>
+        </com.mapbox.mapboxsdk.maps.MapView>
 
-    </FrameLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+
+
+
+    </RelativeLayout>
 </layout>

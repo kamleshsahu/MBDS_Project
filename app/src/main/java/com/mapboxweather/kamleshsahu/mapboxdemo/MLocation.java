@@ -13,16 +13,21 @@ public class MLocation extends BaseObservable implements Parcelable {
     private String name;
     private Point point;
 
+    String s_point;
+
     public MLocation(String name, Point point) {
         this.name = name;
         this.point = point;
+        this.s_point=point.toJson();
     }
 
     public MLocation() {
     }
 
+
     protected MLocation(Parcel in) {
         name = in.readString();
+        s_point = in.readString();
     }
 
     public static final Creator<MLocation> CREATOR = new Creator<MLocation>() {
@@ -37,15 +42,6 @@ public class MLocation extends BaseObservable implements Parcelable {
         }
     };
 
-    public Point getPoint() {
-        return point;
-    }
-
-    public void setPoint(Point point) {
-        this.point = point;
-
-    }
-
     @Bindable
     public String getName() {
         return name;
@@ -53,6 +49,19 @@ public class MLocation extends BaseObservable implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+
+    public Point getS_point() {
+       return Point.fromJson(s_point);
     }
 
     @Override
@@ -63,5 +72,6 @@ public class MLocation extends BaseObservable implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeString(s_point);
     }
 }

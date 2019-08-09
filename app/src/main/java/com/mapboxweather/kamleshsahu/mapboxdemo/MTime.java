@@ -1,6 +1,8 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo;
 
 import android.databinding.BaseObservable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
 import java.util.Calendar;
@@ -10,7 +12,7 @@ import java.util.TimeZone;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.month;
 
 
-public class MTime extends BaseObservable {
+public class MTime extends BaseObservable implements Parcelable {
 
      String timezone;
      int mYear, mMonth, mDay, mHour, mMinute;
@@ -30,6 +32,30 @@ public class MTime extends BaseObservable {
         resetDisp_time();
     }
 
+
+    protected MTime(Parcel in) {
+        timezone = in.readString();
+        mYear = in.readInt();
+        mMonth = in.readInt();
+        mDay = in.readInt();
+        mHour = in.readInt();
+        mMinute = in.readInt();
+        jstart_date_millis = in.readLong();
+        jstart_time_millis = in.readLong();
+        disp_time = in.readString();
+    }
+
+    public static final Creator<MTime> CREATOR = new Creator<MTime>() {
+        @Override
+        public MTime createFromParcel(Parcel in) {
+            return new MTime(in);
+        }
+
+        @Override
+        public MTime[] newArray(int size) {
+            return new MTime[size];
+        }
+    };
 
     public void setdate(int year, int monthOfYear, int dayOfMonth){
         Calendar cal = Calendar.getInstance();
@@ -66,4 +92,26 @@ public class MTime extends BaseObservable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(timezone);
+        dest.writeInt(mYear);
+        dest.writeInt(mMonth);
+        dest.writeInt(mDay);
+        dest.writeInt(mHour);
+        dest.writeInt(mMinute);
+        dest.writeLong(jstart_date_millis);
+        dest.writeLong(jstart_time_millis);
+        dest.writeString(disp_time);
+    }
+
+
+    public long gettime_millis() {
+        return jstart_date_millis+jstart_time_millis;
+    }
 }

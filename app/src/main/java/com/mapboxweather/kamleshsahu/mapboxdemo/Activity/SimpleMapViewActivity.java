@@ -77,10 +77,11 @@ public class SimpleMapViewActivity extends AppCompatActivity
     long jstarttime=MainActivity.jstart_date_millis+MainActivity.jstart_time_millis;
 
      AlertDialog.Builder bld;
+    Map<Integer, mStep> msteps;
 
     List<PolylineOptions> polylineOptionsList;
     Map<Integer, mPoint> mpoints;
-    Map<Integer, mStep> msteps;
+
     List<Polyline> polylines;
     List<Marker> markersInterm;
     List<Marker> markersSteps;
@@ -321,17 +322,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
     }
 
 
-//    class Task extends AsyncTask<Object,Object,Object>{
-//
-//
-//        @Override
-//        protected Object doInBackground(Object[] objects) {
-//
-//
-//            return null;
-//        }
-//
-//    }
+
     // Add the mapView lifecycle to the activity's lifecycle methods
     @Override
     public void onResume() {
@@ -484,6 +475,13 @@ public class SimpleMapViewActivity extends AppCompatActivity
            }
     };
 
+    @Override
+    public boolean onMapClick(@NonNull LatLng point) {
+        Log.d("map clicked", "map clicked");
+        customLayer.mapOnClick(point,layeridlist,layerids,msteps);
+        return false;
+    }
+
     void setIntervalDefaultValOnDisp(int a){
         switch (a) {
             case 10:
@@ -578,10 +576,6 @@ public class SimpleMapViewActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onMapClick(@NonNull LatLng point) {
-                    Log.d("map clicked", "map clicked");
-            customLayer.mapOnClick(point,layeridlist,layerids,msteps);
-        return false;
-    }
+
+
 }

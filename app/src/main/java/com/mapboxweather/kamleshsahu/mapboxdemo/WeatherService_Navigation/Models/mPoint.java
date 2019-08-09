@@ -1,12 +1,15 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.mapbox.geojson.Point;
 
 /**
  * Created by k on 3/28/2019.
  */
 
-public   class mPoint{
+public   class mPoint implements Parcelable {
     Point point;
     String ds_arr_time;
     String location_name;
@@ -18,6 +21,24 @@ public   class mPoint{
     public mPoint(Point point) {
         this.point = point;
     }
+
+    protected mPoint(Parcel in) {
+        ds_arr_time = in.readString();
+        location_name = in.readString();
+        display_arrtime = in.readString();
+    }
+
+    public static final Creator<mPoint> CREATOR = new Creator<mPoint>() {
+        @Override
+        public mPoint createFromParcel(Parcel in) {
+            return new mPoint(in);
+        }
+
+        @Override
+        public mPoint[] newArray(int size) {
+            return new mPoint[size];
+        }
+    };
 
     public Point getPoint() {
         return point;
@@ -62,5 +83,17 @@ public   class mPoint{
     @Override
     public String toString() {
         return "loc :"+location_name +",weather:"+weather_data.getSummary()+",time:"+display_arrtime;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ds_arr_time);
+        dest.writeString(location_name);
+        dest.writeString(display_arrtime);
     }
 }
