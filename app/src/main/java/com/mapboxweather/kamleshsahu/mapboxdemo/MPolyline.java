@@ -112,12 +112,12 @@ public class MPolyline {
             List<Feature> features1 = mapboxMap.queryRenderedFeatures(rectF1,linelayerids);
             if(features1.size()>0) {
                 int routeid = Integer.parseInt(features1.get(0).id());
-                updateRoutesinMap(routeid);
+                updateRoutesinMap(routeid,false);
             }
      }
 
 
-    void updateRoutesinMap(int routeid){
+    void updateRoutesinMap(int routeid,boolean updated){
         if(routeid<10 && selectedroute!=routeid){
 
             selectedroute=routeid;
@@ -137,7 +137,7 @@ public class MPolyline {
 //            if(dragUpListener!=null)
 //                dragUpListener.OnDragUpHeadLineChange();
 
-            if(listener!=null)
+            if(listener!=null && !updated)
                 listener.onSelectedRouteChanged(routeid);
 
         }

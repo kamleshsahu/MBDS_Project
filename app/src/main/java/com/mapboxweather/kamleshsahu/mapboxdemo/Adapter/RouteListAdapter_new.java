@@ -1,6 +1,8 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +21,7 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.routeChangedinList;
 public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_new.ViewHolder>{
         private Context context;
     private DirectionsResponse data;
-
+    public static int selectedPosition=0;
     routeChangedinList listener;
     // RecyclerView recyclerView;
     public RouteListAdapter_new(Context context, DirectionsResponse data) {
@@ -29,7 +31,7 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem= layoutInflater.inflate(R.layout.listview_item_travelwithactivity, parent, false);
+        View listItem= layoutInflater.inflate(R.layout.listview_item_travelwithactivity_new, parent, false);
         ViewHolder viewHolder = new ViewHolder(listItem);
 
         viewHolder.item.setSelected(true);
@@ -44,11 +46,24 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
     public void onBindViewHolder(ViewHolder holder, int position) {
         final DirectionsRoute route = data.routes().get(position);
         final int finalpos=position;
+
+        if(selectedPosition==position)
+            holder.cardView.setCardBackgroundColor(Color.parseColor("#773F51B5"));
+        else
+            holder.cardView.setCardBackgroundColor(Color.parseColor("#ffffff"));
+
+// ban gya hai ulta pulta mat krna aa k
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                selectedPosition=position;
+                notifyDataSetChanged();
+
                    if(listener!=null)
                        listener.selectedRouteChangedInList(finalpos);
+//
+
+//
 
             }
         });
@@ -76,6 +91,7 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView route,route_detail,time,distance;
+        CardView cardView;
         ImageView icon;LinearLayout item;
         public ViewHolder(View itemView) {
             super(itemView);
@@ -84,8 +100,8 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
                 route_detail = (TextView) itemView.findViewById(R.id.route_detail);
                 time = (TextView) itemView.findViewById(R.id.time);
                 distance = (TextView) itemView.findViewById(R.id.distance);
+                cardView=itemView.findViewById(R.id.item_card);
                 //   icon=itemView.findViewById(R.id.icon);
-
         }
 
 

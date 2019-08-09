@@ -105,7 +105,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     Map<Integer, mStep> msteps;
 
     int totalsteps=0;
-
+    RouteListAdapter_new adapter;
    private int selectedroute=0;
 
   private static final int CAMERA_ANIMATION_DURATION = 1000;
@@ -532,12 +532,15 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     @Override
     public void onSelectedRouteChanged(int id) {
         selectedroute=id;
+        adapter.selectedPosition=id;
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void selectedRouteChangedInList(int id) {
         if(myPolyline!=null){
-            myPolyline.updateRoutesinMap(id);
+            myPolyline.updateRoutesinMap(id,true);
+            selectedroute=id;
         }
     }
 
@@ -572,9 +575,9 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     private void showOnRecyclerView() {
 
-
         recyclerView =activityNavigationLauncherBinding.rv;
-        RouteListAdapter_new adapter = new RouteListAdapter_new(this,directionsResponse);
+
+        adapter = new RouteListAdapter_new(this,directionsResponse);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.setListener(this);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
