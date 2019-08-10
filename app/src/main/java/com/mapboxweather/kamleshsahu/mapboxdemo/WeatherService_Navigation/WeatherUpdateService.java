@@ -45,6 +45,9 @@ public class WeatherUpdateService extends AsyncTask<Void,Object,Void>
     int currStep=0;
     StepCorrection correction;
 
+
+
+
     public WeatherUpdateService(DirectionsRoute routedata, String timezoneid, long interval, long jstarttime, String travelmode, int currStep, StepCorrection correction) {
         this.routedata = routedata;
         this.timezoneid = timezoneid;
@@ -56,8 +59,12 @@ public class WeatherUpdateService extends AsyncTask<Void,Object,Void>
         queue=new HashSet<>();
     }
 
-    public void setListener(WeatherServiceListener listener) {
-        this.listener = listener;
+    public void subscribe(WeatherServiceListener listener) {
+        this.listener=listener;
+    }
+
+    public void unsubscribe() {
+        this.listener=null;
     }
 
     @Override

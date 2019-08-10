@@ -244,7 +244,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
         WeatherService weatherServiceCall;
         weatherServiceCall = new WeatherService(directionapiresp.routes().get(selectedroute),timezone,interval,jstarttime,travelmode);
-        weatherServiceCall.setListener(this);
+        weatherServiceCall.subscribe(this);
         weatherServiceCall.execute();
 
     }

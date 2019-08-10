@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -35,6 +36,8 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityMainNewBindi
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
@@ -57,6 +60,7 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         setContentView(R.layout.activity_main_new);
         activityMainNewBinding= DataBindingUtil.setContentView(this,R.layout.activity_main_new);

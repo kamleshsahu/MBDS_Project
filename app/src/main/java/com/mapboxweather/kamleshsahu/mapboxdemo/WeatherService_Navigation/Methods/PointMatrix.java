@@ -133,7 +133,7 @@ public class PointMatrix {
         @Override
         public void onFailure(Call<MatrixResponse> call, Throwable t) {
             if(matrixListener!=null)
-                matrixListener.onError("Point Matrix",t.getLocalizedMessage());
+                matrixListener.onError("Point Matrix",t.getMessage());
         }
     };
 }

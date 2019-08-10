@@ -1,9 +1,6 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
@@ -22,11 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -73,19 +69,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 
 
 public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         implements OnMapReadyCallback,
-  MapboxMap.OnMapLongClickListener,
-        WeatherServiceListener, MapboxMap.OnMapClickListener, selectedRouteChangedListener, routeChangedinList {
+        WeatherServiceListener, MapboxMap.OnMapClickListener, selectedRouteChangedListener, routeChangedinList
+      //  , View.OnTouchListener
+{
      Form form;
 
      int interval=5000;
@@ -95,13 +94,11 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     weatherUI_utils customLayer;
 
     static String layerids[];
-//    public static String[] linelayerids;
     List<String> layeridlist;
     public static Boolean layeridCreated;
     List<Source> markersourcelist;
     private Style style;
 
-    AlertDialog.Builder bld;
     Map<Integer, mStep> msteps;
 
     int totalsteps=0;
@@ -130,19 +127,21 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 //  @BindView(R.id.mapView)
   MapView mapView;
 //  @BindView(R.id.launch_route_btn)
-  Button launchRouteBtn;
+
 //  @BindView(R.id.loading)
   ProgressBar loading;
 //  @BindView(R.id.launch_btn_frame)
-  FrameLayout launchBtnFrame;
+
 
   ActivityNavigationLauncherBinding activityNavigationLauncherBinding;
 
     RecyclerView recyclerView;
     DirectionsResponse directionsResponse;
+    WeatherService weatherServiceCall;
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Fabric.with(this, new Crashlytics());
     Mapbox.getInstance(this,MapboxKey);
     setContentView(R.layout.activity_navigation_launcher);
 //    ButterKnife.bind(this);
@@ -154,8 +153,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
       mapView = activityNavigationLauncherBinding.mapView;
       loading=activityNavigationLauncherBinding.loading;
-      launchBtnFrame=activityNavigationLauncherBinding.launchBtnFrame;
-      launchRouteBtn=activityNavigationLauncherBinding.launchRouteBtn;
+
 
     mapView.onCreate(savedInstanceState);
     mapView.getMapAsync(this);
@@ -178,7 +176,6 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
       form=getIntent().getParcelableExtra("form");
 
     }
-
   }
 
 
@@ -272,9 +269,10 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
   public void onMapReady(MapboxMap mapboxMap) {
     this.mapboxMap = mapboxMap;
 
-
+   // mapView.setOnClickListener(this);
+  //  mapView.setOnTouchListener(this);
     mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
-      mapboxMap.addOnMapLongClickListener(this);
+
       mapboxMap.addOnMapClickListener(this);
         this.style=style;
       initializeLocationEngine();
@@ -297,17 +295,17 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         return false;
     }
 
-  @Override
-  public boolean onMapLongClick(@NonNull LatLng point) {
-    destination = Point.fromLngLat(point.getLongitude(), point.getLatitude());
-    launchRouteBtn.setEnabled(false);
-    loading.setVisibility(View.VISIBLE);
-    setCurrentMarkerPosition(point);
-    if (currentLocation != null) {
-      fetchRoute();
-    }
-    return false;
-  }
+//  @Override
+//  public boolean onMapLongClick(@NonNull LatLng point) {
+//    destination = Point.fromLngLat(point.getLongitude(), point.getLatitude());
+//    //launchRouteBtn.setEnabled(false);
+//    loading.setVisibility(View.VISIBLE);
+//    setCurrentMarkerPosition(point);
+//    if (currentLocation != null) {
+//      fetchRoute();
+//    }
+//    return false;
+//  }
 
 
 
@@ -370,7 +368,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             showOnRecyclerView();
 
           if (directionsResponse.routes().size()>0 && directionsResponse.routes().get(0).distance() > 25d) {
-            launchRouteBtn.setEnabled(true);
+            //launchRouteBtn.setEnabled(true);
           //  mapRoute.addRoutes(response.body().routes());
               myPolyline=new MPolyline(getApplicationContext(),mapboxMap,style,response.body(),0);
               myPolyline.setListener(NavigationLauncherActivity_Simulate.this);
@@ -488,7 +486,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         try {
           LatLngBounds bounds = new LatLngBounds.Builder().includes(bboxPoints).build();
           // left, top, right, bottom
-          int topPadding = launchBtnFrame.getHeight() * 2;
+        //  int topPadding = launchBtnFrame.getHeight() * 2;
+            int topPadding=0;
           animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[] {50, topPadding, 50, 100});
         } catch (InvalidLatLngBoundsException exception) {
           Toast.makeText(this, R.string.error_valid_route_not_found, Toast.LENGTH_SHORT).show();
@@ -545,6 +544,25 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         }
     }
 
+//    @Override
+//    public void onClick(View v) {
+//        findViewById(R.id.rv).setVisibility(View.GONE);
+//    }
+
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
+//
+//        return false;
+//    }
+
+    public void allRouteOnClick(View view) {
+
+      if(findViewById(R.id.rv).getVisibility()==View.GONE)
+         findViewById(R.id.rv).setVisibility(View.VISIBLE);
+      else  findViewById(R.id.rv).setVisibility(View.GONE);
+
+    }
+
     private static class NavigationLauncherLocationCallback implements LocationEngineCallback<LocationEngineResult> {
 
     private final WeakReference<NavigationLauncherActivity_Simulate> activityWeakReference;
@@ -589,7 +607,20 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     }
 
     public void showWeather(View view){
-        AlreadyGotError=false;
+
+        showCurrProgressOnProgressDialog();
+
+        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(0).steps().size();
+        customLayer.removeWeatherIcons(layeridlist,markersourcelist);
+
+
+        weatherServiceCall = new WeatherService(directionsResponse.routes().get(selectedroute),form.mTime.timezone,interval,form.mTime.gettime_millis(),form.travelmode);
+        weatherServiceCall.subscribe(this);
+        weatherServiceCall.execute();
+
+    }
+
+    void showCurrProgressOnProgressDialog(){
         progress=new ProgressDialog(this);
         progress.setTitle("Loading Weather Data...");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -601,30 +632,27 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         progress.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         progress.show();
 
-        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(0).steps().size();
-        customLayer.removeWeatherIcons(layeridlist,markersourcelist);
-
-        WeatherService weatherServiceCall;
-        weatherServiceCall = new WeatherService(directionsResponse.routes().get(selectedroute),form.mTime.timezone,interval,form.mTime.gettime_millis(),form.travelmode);
-        weatherServiceCall.setListener(this);
-        weatherServiceCall.execute();
-
     }
-
 
 
     @Override
     public void onError(String etitle, String emsg) {
-        progress.dismiss();
-        displayError(etitle,emsg);
+       if(progress!=null)
+       progress.dismiss();
+
+       weatherServiceCall.unsubscribe();
+        displayError(this,etitle,emsg);
     }
+
+
 
 
     @Override
     public void OnWeatherDataListReady(Map<Integer, mStep> msteps) {
 
         this.msteps=msteps;
-        progress.dismiss();
+        if(progress!=null)
+            progress.dismiss();
 
    //     link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), maptolist(msteps)));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -653,28 +681,6 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         progress.setProgress(value);
     }
 
-    void displayError(String title, String msg){
-        if(!AlreadyGotError) {
-            AlreadyGotError=true;
-            int maxLength = (msg.length() < 40) ? msg.length() : 40;
-            msg = msg.substring(0, maxLength);
-            bld = new AlertDialog.Builder(this);
-            bld.setMessage(msg);
-            bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //System.out.println(" display error dialog dismiss");
-                    dialog.dismiss();
-                    bld = null;
-                }
-            });
-            bld.setTitle(title);
 
-            Log.d("TAG", "Showing alert dialog: " + msg);
-            Dialog dialog = bld.create();
-
-            dialog.show();
-        }
-    };
 
 }

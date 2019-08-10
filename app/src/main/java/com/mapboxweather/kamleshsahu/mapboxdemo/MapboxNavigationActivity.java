@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -46,8 +47,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.myUtils.getCorrection;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.myUtils.mycustomMilestone;
 
@@ -87,7 +91,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   static  Map<Integer, mStep> msteps;
 
-  WeatherUpdateService wus;
+  WeatherUpdateService weatherUpdateService;
 
   DirectionsRoute directionsRoute;
 
@@ -102,6 +106,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
     activity=this;
     setTheme(com.mapbox.services.android.navigation.ui.v5.R.style.Theme_AppCompat_NoActionBar);
     super.onCreate(savedInstanceState);
+    Fabric.with(this, new Crashlytics());
     setContentView(R.layout.activity_navigation);
 
     navigationView = findViewById(R.id.navigationView);
@@ -188,6 +193,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   @Override
   protected void onDestroy() {
+    weatherUpdateService.unsubscribe();
     super.onDestroy();
     navigationView.onDestroy();
   }
@@ -246,7 +252,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   private void extractConfiguration(NavigationViewOptions.Builder options) {
     LocationEngine engine=new ReplayRouteLocationEngine();
-    ((ReplayRouteLocationEngine) engine).updateSpeed(200);
+    ((ReplayRouteLocationEngine) engine).updateSpeed(100);
     ((ReplayRouteLocationEngine) engine).assign(directionsRoute);
     options.locationEngine(engine);
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -314,10 +320,10 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   public void updateWeather(DirectionsRoute route, int currStep, StepCorrection correction){
     disablerefresh();
-    if(wus!=null)
-      Log.d("asynctask status:",wus.getStatus().name());
+    if(weatherUpdateService!=null)
+      Log.d("asynctask status:",weatherUpdateService.getStatus().name());
 
-    if(wus==null || wus.getStatus()!= AsyncTask.Status.RUNNING || wus.getStatus()!=AsyncTask.Status.PENDING) {
+    if(weatherUpdateService==null || weatherUpdateService.getStatus()!= AsyncTask.Status.RUNNING || weatherUpdateService.getStatus()!=AsyncTask.Status.PENDING) {
 
       Log.d("updating weather :",currStep+"");
       if (layeridlist.size() > 0) {
@@ -326,9 +332,9 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
       msteps = null;
       jstarttime = Calendar.getInstance().getTimeInMillis();
-      wus = new WeatherUpdateService(route, timezone, interval, jstarttime, travelmode, currStep,correction);
-      wus.setListener(this);
-      wus.execute();
+      weatherUpdateService = new WeatherUpdateService(route, timezone, interval, jstarttime, travelmode, currStep,correction);
+      weatherUpdateService.subscribe(this);
+      weatherUpdateService.execute();
     }else{
       System.out.println("weather update is already running/pending or weatherobj!=null");
       enablerefresh();
@@ -371,7 +377,10 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   @Override
   public void onError(String etitle, String emsg) {
-    System.out.printf("%s :%s",etitle,emsg);
+  //  System.out.printf("%s :%s",etitle,emsg);
+    
+    displayError(this,etitle,emsg);
+    weatherUpdateService.unsubscribe();
   }
 
 

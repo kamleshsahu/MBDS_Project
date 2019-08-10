@@ -45,6 +45,7 @@ public class WeatherService extends AsyncTask<Void,Object,Void>
     int count=0;
 
 
+
     public WeatherService(DirectionsRoute routedata, String timezoneid, long interval, long jstarttime, String travelmode) {
         this.routedata = routedata;
         this.timezoneid = timezoneid;
@@ -54,9 +55,15 @@ public class WeatherService extends AsyncTask<Void,Object,Void>
         queue=new HashSet<>();
     }
 
-    public void setListener(WeatherServiceListener listener) {
-        this.listener = listener;
+    public void subscribe(WeatherServiceListener listener) {
+      this.listener=listener;
     }
+    public void unsubscribe() {
+        this.listener=null;
+    }
+
+
+
 
     @Override
     public void OnIntermediatePointsCalculated(Map<Integer, mStep> msteps) {
@@ -141,56 +148,8 @@ public class WeatherService extends AsyncTask<Void,Object,Void>
         fn.extractListofPoints(interval,routedata,timezoneid,jstarttime,travelmode);
         return null;
     }
-    //        public static void main(String[] args) {
-//        Point sp=Point.fromLngLat(-105.2705, 40.015);
-//        Point dp=Point.fromLngLat(-104.9653, 39.7348);
-//        String profile= DirectionsCriteria.PROFILE_DRIVING;
-//        //       jstarttime=System.currentTimeMillis();
-//        Calendar calendar=Calendar.getInstance();
-//
-//        String timezoneid=calendar.getTimeZone().getID();
-//        long jstarttime=calendar.getTimeInMillis();
-//        String travelmode= DirectionsCriteria.PROFILE_DRIVING;
-//
-//        long interval=10000;
-//
-//
-//        RouteFinder rf=new RouteFinder(sp, dp, profile, "", new Callback<DirectionsResponse>() {
-//            @Override
-//            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                System.out.println(response.body());
-//                DirectionsRoute routedata=response.body().routes().get(0);
-//
-//
-//                com.example.mymapboxnavigation.WeatherService service;
-//                service = new com.example.mymapboxnavigation.WeatherService(routedata,timezoneid,interval,jstarttime,travelmode);
-//                service.calc_data();
-//
-////                IntermediatePoints fn= new IntermediatePoints(interval,routedata,timezoneid,jstarttime,travelmode);
-////                List<mStep> msteps= fn.extractListofPoints();
-////
-////                System.out.println(msteps);
-////
-////                PointMatrixForAll pointMatrixs=new PointMatrixForAll(msteps,travelmode);
-////                pointMatrixs.calc();
-////
-////                System.out.println(msteps);
-////
-////                WeatherForAllPoints weatherForAllPoints=new WeatherForAllPoints(msteps);
-////                weatherForAllPoints.calcWeather();
-////
-////                System.out.println(msteps);
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//                t.printStackTrace();
-//                System.out.println(t.getMessage());
-//            }
-//        });
-//        rf.find();
-//    }
+
+
+
     
 }
