@@ -134,13 +134,13 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     ProgressBar loading;
 //  @BindView(R.id.launch_btn_frame)
 
-
+    int map_topPadding=400;
     // ActivityNavigationLauncherBinding activityNavigationLauncherBinding;
 
     RecyclerView recyclerView;
     DirectionsResponse directionsResponse;
     WeatherService weatherServiceCall;
-
+    LatLngBounds bounds;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -332,7 +332,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     void onLocationFound(Location location) {
         if (!locationFound) {
             animateCamera(new LatLng(location.getLatitude(), location.getLongitude()));
-            Snackbar.make(mapView, R.string.explanation_long_press_waypoint, Snackbar.LENGTH_LONG).show();
+  //          Snackbar.make(mapView, R.string.explanation_long_press_waypoint, Snackbar.LENGTH_LONG).show();
             locationFound = true;
             hideLoading();
         }
@@ -501,10 +501,11 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             }
             if (bboxPoints.size() > 1) {
                 try {
-                    LatLngBounds bounds = new LatLngBounds.Builder().includes(bboxPoints).build();
+
+                    bounds = new LatLngBounds.Builder().includes(bboxPoints).build();
                     // left, top, right, bottom
                     //  int topPadding = launchBtnFrame.getHeight() * 2;
-                    int topPadding = 500;
+                    int topPadding =100;
                     animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[]{50, topPadding, 50, 100});
                 } catch (InvalidLatLngBoundsException exception) {
                     Toast.makeText(this, R.string.error_valid_route_not_found, Toast.LENGTH_SHORT).show();
@@ -517,6 +518,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         CameraPosition position = mapboxMap.getCameraForLatLngBounds(bounds, padding);
 
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), animationTime);
+
 
 
 
@@ -571,13 +573,16 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             YoYo.with(Techniques.SlideOutUp)
                     .duration(700)
                     .playOn(findViewById(R.id.rv));
+            int topPadding=400;
+            animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[]{50,topPadding, 50, 100});
 
         }else {
             ((ImageView)findViewById(R.id.route_arrow)).setImageResource(R.drawable.down_arrow);
             YoYo.with(Techniques.SlideInDown)
                     .duration(700)
                     .playOn(findViewById(R.id.rv));
-
+           // int topPadding=1200;
+            animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[]{50,map_topPadding+300, 50, 100});
         }
 
         allroute_visible=!allroute_visible;
@@ -625,6 +630,11 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         recyclerView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
+
+         recyclerView.post(() -> {
+                     map_topPadding =  recyclerView.getMeasuredHeight();
+             animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[]{50,map_topPadding+300, 50, 100});
+                 });
 
     }
 
