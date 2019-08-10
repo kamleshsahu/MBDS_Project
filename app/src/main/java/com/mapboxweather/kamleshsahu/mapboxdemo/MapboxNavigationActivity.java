@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.crashlytics.android.Crashlytics;
 import com.mapbox.android.core.location.LocationEngine;
@@ -99,6 +100,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
     nextMilestone = 0;
   }
   static Activity activity;
+  ProgressBar weather_progressbar;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,6 +112,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
     setContentView(R.layout.activity_navigation);
 
     navigationView = findViewById(R.id.navigationView);
+    weather_progressbar=findViewById(R.id.weather_progressbar);
   //  navigationView.setListener(this);
 
 
@@ -134,9 +137,12 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   void initialiseWeatherVariables(){
     timezone= Calendar.getInstance().getTimeZone().getID();
+
+
     travelmode= DirectionsCriteria.PROFILE_DRIVING;
     interval = 5000;
     selectedroute = 0;
+
     layeridlist=new ArrayList<>();
   }
 
@@ -193,6 +199,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   @Override
   protected void onDestroy() {
+    if(weatherUpdateService!=null)
     weatherUpdateService.unsubscribe();
     super.onDestroy();
     navigationView.onDestroy();
@@ -378,9 +385,10 @@ public class MapboxNavigationActivity extends AppCompatActivity
   @Override
   public void onError(String etitle, String emsg) {
   //  System.out.printf("%s :%s",etitle,emsg);
-    
+    if(weather_progressbar!=null)
+     enablerefresh();
     displayError(this,etitle,emsg);
-    weatherUpdateService.unsubscribe();
+
   }
 
 
@@ -390,7 +398,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
       @Override
       public void run() {
         weatherRefreshButton.setEnabled(true);
-        findViewById(R.id.weather_progressbar).setVisibility(GONE);
+        weather_progressbar.setVisibility(GONE);
         weatherRefreshButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(com.mapbox.services.android.navigation.ui.v5.R.color.mapbox_navigation_view_color_banner_background)));
       }
     }, 1000);
@@ -400,7 +408,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
 
   void disablerefresh(){
-    findViewById(R.id.weather_progressbar).setVisibility(VISIBLE);
+    weather_progressbar.setVisibility(VISIBLE);
     weatherRefreshButton.setEnabled(false);
     weatherRefreshButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BDBDBD")));
   }

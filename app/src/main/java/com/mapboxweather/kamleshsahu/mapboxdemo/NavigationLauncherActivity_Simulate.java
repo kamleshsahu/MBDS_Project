@@ -28,6 +28,7 @@ import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
+import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.core.constants.Constants;
@@ -250,7 +251,9 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
   @Override
   protected void onDestroy() {
-    super.onDestroy();
+    if(weatherServiceCall!=null)
+        weatherServiceCall.unsubscribe();
+      super.onDestroy();
     mapView.onDestroy();
   }
 
@@ -262,7 +265,18 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
  // @OnClick(R.id.launch_route_btn)
   public void onRouteLaunchClick(View view) {
-    launchNavigationWithRoute();
+
+      if(!PermissionsManager.areLocationPermissionsGranted(this)) {
+          Intent intent = new Intent(NavigationLauncherActivity_Simulate.this, MainActivity_new.class);
+          intent.putExtra("NolocationPermission",true);
+          startActivity(intent);
+      }else{
+          LocationEngine locationEngine;
+          
+
+      }
+          launchNavigationWithRoute();
+
   }
 
   @Override
@@ -280,6 +294,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
       initializeMapRoute();
         customLayer = new weatherUI_utils(mapboxMap, this);
          if(form!=null) {
+            // updateCurrentLocation(form.start.getS_point());
             fetchRoute();
          }
 
@@ -448,7 +463,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
             .shouldSimulateRoute(false);
     CameraPosition initialPosition = new CameraPosition.Builder()
-      .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
+        .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
+//      .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
       .zoom(INITIAL_ZOOM)
       .build();
     optionsBuilder.initialMapCameraPosition(initialPosition);
@@ -544,16 +560,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        findViewById(R.id.rv).setVisibility(View.GONE);
-//    }
 
-//    @Override
-//    public boolean onTouch(View v, MotionEvent event) {
-//
-//        return false;
-//    }
 
     public void allRouteOnClick(View view) {
 

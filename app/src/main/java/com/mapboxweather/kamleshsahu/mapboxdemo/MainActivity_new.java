@@ -77,13 +77,7 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
         }
 
         // Check for location permission
-        permissionsManager = new PermissionsManager(this);
-        if (!PermissionsManager.areLocationPermissionsGranted(this)) {
-            permissionsManager.requestLocationPermissions(this);
-        } else {
-            requestPermissionIfNotGranted(WRITE_EXTERNAL_STORAGE);
-        }
-
+           location_permission();
 
         mainActivityViewModel.getmTimeMutableLiveData().observe(this, new Observer<MTime>() {
             @Override
@@ -360,6 +354,15 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
             requestPermissionIfNotGranted(WRITE_EXTERNAL_STORAGE);
         } else {
             Toast.makeText(this, "You didn't grant location permissions.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void location_permission(){
+        permissionsManager = new PermissionsManager(this);
+        if (!PermissionsManager.areLocationPermissionsGranted(this)) {
+            permissionsManager.requestLocationPermissions(this);
+        } else {
+            requestPermissionIfNotGranted(WRITE_EXTERNAL_STORAGE);
         }
     }
 
