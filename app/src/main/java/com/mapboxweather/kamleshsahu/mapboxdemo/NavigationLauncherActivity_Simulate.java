@@ -3,7 +3,6 @@ package com.mapboxweather.kamleshsahu.mapboxdemo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,10 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -60,7 +62,6 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherUI_utils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.WeatherService;
-import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityNavigationLauncherBinding;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -86,11 +87,11 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         WeatherServiceListener, MapboxMap.OnMapClickListener, selectedRouteChangedListener, routeChangedinList
       //  , View.OnTouchListener
 {
-     Form form;
+    Form form;
 
-     int interval=5000;
+    int interval = 5000;
     public static ProgressDialog progress;
-    Boolean AlreadyGotError=false;
+    Boolean AlreadyGotError = false;
 
     weatherUI_utils customLayer;
 
@@ -102,106 +103,107 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     Map<Integer, mStep> msteps;
 
-    int totalsteps=0;
+    int totalsteps = 0;
     RouteListAdapter_new adapter;
-   private int selectedroute=0;
+    private int selectedroute = 0;
 
-  private static final int CAMERA_ANIMATION_DURATION = 1000;
-  private static final int DEFAULT_CAMERA_ZOOM = 16;
-  private static final int CHANGE_SETTING_REQUEST_CODE = 1;
-  private static final int INITIAL_ZOOM = 16;
-  private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
-  private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 500;
+    private static final int CAMERA_ANIMATION_DURATION = 1000;
+    private static final int DEFAULT_CAMERA_ZOOM = 4;
+    private static final int CHANGE_SETTING_REQUEST_CODE = 1;
+    private static final int INITIAL_ZOOM = 4;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 500;
 
-  private final NavigationLauncherLocationCallback callback = new NavigationLauncherLocationCallback(this);
-  private LocationEngine locationEngine;
-//  private NavigationMapRoute mapRoute;
+    private final NavigationLauncherLocationCallback callback = new NavigationLauncherLocationCallback(this);
+    private LocationEngine locationEngine;
+    //  private NavigationMapRoute mapRoute;
     private MPolyline myPolyline;
-  private MapboxMap mapboxMap;
-  private Marker currentMarker;
-  private Point currentLocation;
-  private Point destination;
- // private DirectionsRoute route;
-  private LocaleUtils localeUtils;
-  private boolean locationFound;
+    private MapboxMap mapboxMap;
+    private Marker currentMarker;
+    private Point currentLocation;
+    private Point destination;
+    // private DirectionsRoute route;
+    private LocaleUtils localeUtils;
+    private boolean locationFound;
 
-//  @BindView(R.id.mapView)
-  MapView mapView;
+    //  @BindView(R.id.mapView)
+    MapView mapView;
 //  @BindView(R.id.launch_route_btn)
 
-//  @BindView(R.id.loading)
-  ProgressBar loading;
+    //  @BindView(R.id.loading)
+    ProgressBar loading;
 //  @BindView(R.id.launch_btn_frame)
 
 
-  ActivityNavigationLauncherBinding activityNavigationLauncherBinding;
+    // ActivityNavigationLauncherBinding activityNavigationLauncherBinding;
 
     RecyclerView recyclerView;
     DirectionsResponse directionsResponse;
     WeatherService weatherServiceCall;
-  @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    Fabric.with(this, new Crashlytics());
-    Mapbox.getInstance(this,MapboxKey);
-    setContentView(R.layout.activity_navigation_launcher);
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+        Mapbox.getInstance(this, MapboxKey);
+        setContentView(R.layout.activity_navigation_launcher);
 //    ButterKnife.bind(this);
 
 
-
-      activityNavigationLauncherBinding= DataBindingUtil.setContentView(this,R.layout.activity_navigation_launcher);
-
-
-      mapView = activityNavigationLauncherBinding.mapView;
-      loading=activityNavigationLauncherBinding.loading;
+        //  activityNavigationLauncherBinding= DataBindingUtil.setContentView(this,R.layout.activity_navigation_launcher);
 
 
-    mapView.onCreate(savedInstanceState);
-    mapView.getMapAsync(this);
-    localeUtils = new LocaleUtils();
+        //   mapView = activityNavigationLauncherBinding.mapView;
+        //   loading=activityNavigationLauncherBinding.loading;
 
-      markersourcelist=new ArrayList<>();
-      layeridCreated = false;
+        mapView = findViewById(R.id.mapView);
+        loading = findViewById(R.id.loading);
+
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+        localeUtils = new LocaleUtils();
+
+        markersourcelist = new ArrayList<>();
+        layeridCreated = false;
 //      linelayerids=new String[directionsResponse.routes().size()];
-      layeridlist=new ArrayList<>();
- //     mpoints = new HashMap<>();
-      msteps = new HashMap<>();
+        layeridlist = new ArrayList<>();
+        //     mpoints = new HashMap<>();
+        msteps = new HashMap<>();
 //      polylineOptionsList = new ArrayList<>();
- //     markersSteps = new ArrayList<>();
- //     markersInterm = new ArrayList<>();
- //     polylines = new ArrayList<>();
-      AlreadyGotError=false;
-      progress=new ProgressDialog(this);
-    if(getIntent().getParcelableExtra("form")!=null){
+        //     markersSteps = new ArrayList<>();
+        //     markersInterm = new ArrayList<>();
+        //     polylines = new ArrayList<>();
+        AlreadyGotError = false;
+        progress = new ProgressDialog(this);
+        if (getIntent().getParcelableExtra("form") != null) {
 
-      form=getIntent().getParcelableExtra("form");
+            form = getIntent().getParcelableExtra("form");
 
+        }
     }
-  }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.navigation_view_activity_menu, menu);
+        return true;
+    }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.navigation_view_activity_menu, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 //      case R.id.settings:
 //        showSettings();
 //        return true;
-      default:
-        return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
-  }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 //    if (requestCode == CHANGE_SETTING_REQUEST_CODE && resultCode == RESULT_OK) {
 //      boolean shouldRefetch = data.getBooleanExtra(NavigationSettingsActivity.UNIT_TYPE_CHANGED, false)
 //        || data.getBooleanExtra(NavigationSettingsActivity.LANGUAGE_CHANGED, false);
@@ -209,104 +211,104 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 //        fetchRoute();
 //      }
 //    }
-  }
-
-  @Override
-  protected void onStart() {
-    super.onStart();
-    mapView.onStart();
-
-  }
-
-  @SuppressWarnings({"MissingPermission"})
-  @Override
-  public void onResume() {
-    super.onResume();
-    mapView.onResume();
-    if (locationEngine != null) {
-      locationEngine.requestLocationUpdates(buildEngineRequest(), callback, null);
     }
-  }
 
-  @Override
-  public void onPause() {
-    super.onPause();
-    mapView.onPause();
-    if (locationEngine != null) {
-      locationEngine.removeLocationUpdates(callback);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+
     }
-  }
 
-  @Override
-  public void onLowMemory() {
-    super.onLowMemory();
-    mapView.onLowMemory();
-  }
+    @SuppressWarnings({"MissingPermission"})
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+        if (locationEngine != null) {
+            locationEngine.requestLocationUpdates(buildEngineRequest(), callback, null);
+        }
+    }
 
-  @Override
-  protected void onStop() {
-    super.onStop();
-    mapView.onStop();
-  }
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+        if (locationEngine != null) {
+            locationEngine.removeLocationUpdates(callback);
+        }
+    }
 
-  @Override
-  protected void onDestroy() {
-    if(weatherServiceCall!=null)
-        weatherServiceCall.unsubscribe();
-      super.onDestroy();
-    mapView.onDestroy();
-  }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 
-  @Override
-  protected void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    mapView.onSaveInstanceState(outState);
-  }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
 
- // @OnClick(R.id.launch_route_btn)
-  public void onRouteLaunchClick(View view) {
+    @Override
+    protected void onDestroy() {
+        if (weatherServiceCall != null)
+            weatherServiceCall.unsubscribe();
+        super.onDestroy();
+        mapView.onDestroy();
+    }
 
-      if(!PermissionsManager.areLocationPermissionsGranted(this)) {
-          Intent intent = new Intent(NavigationLauncherActivity_Simulate.this, MainActivity_new.class);
-          intent.putExtra("NolocationPermission",true);
-          startActivity(intent);
-      }else{
-          LocationEngine locationEngine;
-          
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
 
-      }
-          launchNavigationWithRoute();
+    // @OnClick(R.id.launch_route_btn)
+    public void onRouteLaunchClick(View view) {
 
-  }
+        if (!PermissionsManager.areLocationPermissionsGranted(this)) {
+            Intent intent = new Intent(NavigationLauncherActivity_Simulate.this, MainActivity_new.class);
+            intent.putExtra("NolocationPermission", true);
+            startActivity(intent);
+        } else {
+            LocationEngine locationEngine;
 
-  @Override
-  public void onMapReady(MapboxMap mapboxMap) {
-    this.mapboxMap = mapboxMap;
 
-   // mapView.setOnClickListener(this);
-  //  mapView.setOnTouchListener(this);
-    mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+        }
+        launchNavigationWithRoute();
 
-      mapboxMap.addOnMapClickListener(this);
-        this.style=style;
-      initializeLocationEngine();
-      initializeLocationComponent(style);
-      initializeMapRoute();
-        customLayer = new weatherUI_utils(mapboxMap, this);
-         if(form!=null) {
-            // updateCurrentLocation(form.start.getS_point());
-            fetchRoute();
-         }
+    }
 
-    });
-  }
+    @Override
+    public void onMapReady(MapboxMap mapboxMap) {
+        this.mapboxMap = mapboxMap;
+
+        // mapView.setOnClickListener(this);
+        //  mapView.setOnTouchListener(this);
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+
+            mapboxMap.addOnMapClickListener(this);
+            this.style = style;
+            initializeLocationEngine();
+            initializeLocationComponent(style);
+            initializeMapRoute();
+            customLayer = new weatherUI_utils(mapboxMap, this);
+            if (form != null) {
+                // updateCurrentLocation(form.start.getS_point());
+                fetchRoute();
+            }
+
+        });
+    }
 
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         Log.d("map clicked", "map clicked");
-        customLayer.mapOnClick(point,layeridlist.toArray(new String[layeridlist.size()]),msteps);
-        if(myPolyline!=null)
-        myPolyline.mapOnClick(point);
+        customLayer.mapOnClick(point, layeridlist.toArray(new String[layeridlist.size()]), msteps);
+        if (myPolyline != null)
+            myPolyline.mapOnClick(point);
         return false;
     }
 
@@ -323,250 +325,262 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 //  }
 
 
-
-  void updateCurrentLocation(Point currentLocation) {
-    this.currentLocation = currentLocation;
-  }
-
-  void onLocationFound(Location location) {
-    if (!locationFound) {
-      animateCamera(new LatLng(location.getLatitude(), location.getLongitude()));
-      Snackbar.make(mapView, R.string.explanation_long_press_waypoint, Snackbar.LENGTH_LONG).show();
-      locationFound = true;
-      hideLoading();
+    void updateCurrentLocation(Point currentLocation) {
+        this.currentLocation = currentLocation;
     }
-  }
+
+    void onLocationFound(Location location) {
+        if (!locationFound) {
+            animateCamera(new LatLng(location.getLatitude(), location.getLongitude()));
+            Snackbar.make(mapView, R.string.explanation_long_press_waypoint, Snackbar.LENGTH_LONG).show();
+            locationFound = true;
+            hideLoading();
+        }
+    }
 
 //  private void showSettings() {
 //    startActivityForResult(new Intent(this, NavigationSettingsActivity.class), CHANGE_SETTING_REQUEST_CODE);
 //  }
 
-  @SuppressWarnings( {"MissingPermission"})
-  private void initializeLocationEngine() {
-    locationEngine = LocationEngineProvider.getBestLocationEngine(getApplicationContext());
-    LocationEngineRequest request = buildEngineRequest();
-    locationEngine.requestLocationUpdates(request, callback, null);
-    locationEngine.getLastLocation(callback);
-  }
+    @SuppressWarnings({"MissingPermission"})
+    private void initializeLocationEngine() {
+        locationEngine = LocationEngineProvider.getBestLocationEngine(getApplicationContext());
+        LocationEngineRequest request = buildEngineRequest();
+        locationEngine.requestLocationUpdates(request, callback, null);
+        locationEngine.getLastLocation(callback);
+    }
 
-  @SuppressWarnings( {"MissingPermission"})
-  private void initializeLocationComponent(Style style) {
-    LocationComponent locationComponent = mapboxMap.getLocationComponent();
-    locationComponent.activateLocationComponent(this, style, locationEngine);
-    locationComponent.setLocationComponentEnabled(true);
-    locationComponent.setRenderMode(RenderMode.COMPASS);
-  }
+    @SuppressWarnings({"MissingPermission"})
+    private void initializeLocationComponent(Style style) {
+        LocationComponent locationComponent = mapboxMap.getLocationComponent();
+        locationComponent.activateLocationComponent(this, style, locationEngine);
+        locationComponent.setLocationComponentEnabled(true);
+        locationComponent.setRenderMode(RenderMode.COMPASS);
+    }
 
-  private void initializeMapRoute() {
+    private void initializeMapRoute() {
 //    mapRoute = new NavigationMapRoute(mapView, mapboxMap);
 //    mapRoute.setOnRouteSelectionChangeListener(this);
 
-  }
+    }
 
-  private void fetchRoute() {
+    private void fetchRoute() {
 
-    NavigationRoute.Builder builder = NavigationRoute.builder(this)
-      .accessToken(Mapbox.getAccessToken())
-      //.origin(currentLocation)
-      .origin(form.start.getS_point())
-      .destination(form.dstn.getS_point())
-      .profile(getRouteProfileFromSharedPreferences())
-      .alternatives(true);
-    setFieldsFromSharedPreferences(builder);
-    builder.build().getRoute(new Callback<DirectionsResponse>() {
-      @Override
-      public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-        if (validRouteResponse(response)) {
-          hideLoading();
+        NavigationRoute.Builder builder = NavigationRoute.builder(this)
+                .accessToken(Mapbox.getAccessToken())
+                //.origin(currentLocation)
+                .origin(form.start.getS_point())
+                .destination(form.dstn.getS_point())
+                .profile(getRouteProfileFromSharedPreferences())
+                .alternatives(true);
+        setFieldsFromSharedPreferences(builder);
+        builder.build().getRoute(new Callback<DirectionsResponse>() {
+            @Override
+            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                if (validRouteResponse(response)) {
+                    hideLoading();
 
-            directionsResponse = response.body();
-            showOnRecyclerView();
+                    directionsResponse = response.body();
+                    showOnRecyclerView();
 
-          if (directionsResponse.routes().size()>0 && directionsResponse.routes().get(0).distance() > 25d) {
-            //launchRouteBtn.setEnabled(true);
-          //  mapRoute.addRoutes(response.body().routes());
-              myPolyline=new MPolyline(getApplicationContext(),mapboxMap,style,response.body(),0);
-              myPolyline.setListener(NavigationLauncherActivity_Simulate.this);
-            boundCameraToRoute();
-          } else {
-            Snackbar.make(mapView, R.string.error_select_longer_route, Snackbar.LENGTH_SHORT).show();
-          }
+                    if (directionsResponse.routes().size() > 0 && directionsResponse.routes().get(0).distance() > 25d) {
+                        //launchRouteBtn.setEnabled(true);
+                        //  mapRoute.addRoutes(response.body().routes());
+                        myPolyline = new MPolyline(getApplicationContext(), mapboxMap, style, response.body(), 0);
+                        myPolyline.setListener(NavigationLauncherActivity_Simulate.this);
+                        boundCameraToRoute();
+                    } else {
+                        Snackbar.make(mapView, R.string.error_select_longer_route, Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+            }
+        });
+        loading.setVisibility(View.VISIBLE);
+    }
+
+    private void setFieldsFromSharedPreferences(NavigationRoute.Builder builder) {
+        builder
+                .language(getLanguageFromSharedPreferences())
+                .voiceUnits(getUnitTypeFromSharedPreferences());
+    }
+
+    private String getUnitTypeFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String defaultUnitType = getString(R.string.default_unit_type);
+        String unitType = sharedPreferences.getString(getString(R.string.unit_type_key), defaultUnitType);
+        if (unitType.equals(defaultUnitType)) {
+            unitType = localeUtils.getUnitTypeForDeviceLocale(this);
         }
-      }
 
-      @Override
-      public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
-      }
-    });
-    loading.setVisibility(View.VISIBLE);
-  }
-
-  private void setFieldsFromSharedPreferences(NavigationRoute.Builder builder) {
-    builder
-      .language(getLanguageFromSharedPreferences())
-      .voiceUnits(getUnitTypeFromSharedPreferences());
-  }
-
-  private String getUnitTypeFromSharedPreferences() {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    String defaultUnitType = getString(R.string.default_unit_type);
-    String unitType = sharedPreferences.getString(getString(R.string.unit_type_key), defaultUnitType);
-    if (unitType.equals(defaultUnitType)) {
-      unitType = localeUtils.getUnitTypeForDeviceLocale(this);
+        return unitType;
     }
 
-    return unitType;
-  }
-
-  private Locale getLanguageFromSharedPreferences() {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    String defaultLanguage = getString(R.string.default_locale);
-    String language = sharedPreferences.getString(getString(R.string.language_key), defaultLanguage);
-    if (language.equals(defaultLanguage)) {
-      return localeUtils.inferDeviceLocale(this);
-    } else {
-      return new Locale(language);
-    }
-  }
-
-  private boolean getShouldSimulateRouteFromSharedPreferences() {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    return sharedPreferences.getBoolean(getString(R.string.simulate_route_key), false);
-  }
-
-  private String getRouteProfileFromSharedPreferences() {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    return sharedPreferences.getString(
-      getString(R.string.route_profile_key), DirectionsCriteria.PROFILE_DRIVING_TRAFFIC
-    );
-  }
-
-  private String obtainOfflinePath() {
-    File offline = getExternalStoragePublicDirectory("Offline");
-    return offline.getAbsolutePath();
-  }
-
-  private String retrieveOfflineVersionFromPreferences() {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    return sharedPreferences.getString(getString(R.string.offline_version_key), "");
-  }
-
-  private void launchNavigationWithRoute() {
-    if (directionsResponse== null || directionsResponse.routes().size()<1) {
-      Snackbar.make(mapView, R.string.error_route_not_available, Snackbar.LENGTH_SHORT).show();
-      return;
+    private Locale getLanguageFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String defaultLanguage = getString(R.string.default_locale);
+        String language = sharedPreferences.getString(getString(R.string.language_key), defaultLanguage);
+        if (language.equals(defaultLanguage)) {
+            return localeUtils.inferDeviceLocale(this);
+        } else {
+            return new Locale(language);
+        }
     }
 
-    NavigationLauncherOptions.Builder optionsBuilder = NavigationLauncherOptions.builder()
-    //  .shouldSimulateRoute(getShouldSimulateRouteFromSharedPreferences());
+    private boolean getShouldSimulateRouteFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean(getString(R.string.simulate_route_key), false);
+    }
 
-            .shouldSimulateRoute(false);
-    CameraPosition initialPosition = new CameraPosition.Builder()
-        .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
+    private String getRouteProfileFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getString(
+                getString(R.string.route_profile_key), DirectionsCriteria.PROFILE_DRIVING_TRAFFIC
+        );
+    }
+
+    private String obtainOfflinePath() {
+        File offline = getExternalStoragePublicDirectory("Offline");
+        return offline.getAbsolutePath();
+    }
+
+    private String retrieveOfflineVersionFromPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getString(getString(R.string.offline_version_key), "");
+    }
+
+    private void launchNavigationWithRoute() {
+        if (directionsResponse == null || directionsResponse.routes().size() < 1) {
+            Snackbar.make(mapView, R.string.error_route_not_available, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        NavigationLauncherOptions.Builder optionsBuilder = NavigationLauncherOptions.builder()
+                //  .shouldSimulateRoute(getShouldSimulateRouteFromSharedPreferences());
+
+                .shouldSimulateRoute(false);
+        CameraPosition initialPosition = new CameraPosition.Builder()
+                .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
 //      .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
-      .zoom(INITIAL_ZOOM)
-      .build();
-    optionsBuilder.initialMapCameraPosition(initialPosition);
-    optionsBuilder.directionsRoute(directionsResponse.routes().get(selectedroute));
-    String offlinePath = obtainOfflinePath();
-    if (!TextUtils.isEmpty(offlinePath)) {
-      optionsBuilder.offlineRoutingTilesPath(offlinePath);
-    }
-    String offlineVersion = retrieveOfflineVersionFromPreferences();
-    if (!offlineVersion.isEmpty()) {
-      optionsBuilder.offlineRoutingTilesVersion(offlineVersion);
-    }
-    NavigationLauncher.startNavigation(this, optionsBuilder.build());
-  }
-
-  private boolean validRouteResponse(Response<DirectionsResponse> response) {
-    return response.body() != null && !response.body().routes().isEmpty();
-  }
-
-  private void hideLoading() {
-    if (loading.getVisibility() == View.VISIBLE) {
-      loading.setVisibility(View.INVISIBLE);
-    }
-  }
-
-  public void boundCameraToRoute() {
-    if (directionsResponse.routes().get(selectedroute) != null) {
-      List<Point> routeCoords = LineString.fromPolyline(directionsResponse.routes().get(selectedroute).geometry(),
-        Constants.PRECISION_6).coordinates();
-      List<LatLng> bboxPoints = new ArrayList<>();
-      for (Point point : routeCoords) {
-        bboxPoints.add(new LatLng(point.latitude(), point.longitude()));
-      }
-      if (bboxPoints.size() > 1) {
-        try {
-          LatLngBounds bounds = new LatLngBounds.Builder().includes(bboxPoints).build();
-          // left, top, right, bottom
-        //  int topPadding = launchBtnFrame.getHeight() * 2;
-            int topPadding=0;
-          animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[] {50, topPadding, 50, 100});
-        } catch (InvalidLatLngBoundsException exception) {
-          Toast.makeText(this, R.string.error_valid_route_not_found, Toast.LENGTH_SHORT).show();
+                .zoom(INITIAL_ZOOM)
+                .build();
+        optionsBuilder.initialMapCameraPosition(initialPosition);
+        optionsBuilder.directionsRoute(directionsResponse.routes().get(selectedroute));
+        String offlinePath = obtainOfflinePath();
+        if (!TextUtils.isEmpty(offlinePath)) {
+            optionsBuilder.offlineRoutingTilesPath(offlinePath);
         }
-      }
+        String offlineVersion = retrieveOfflineVersionFromPreferences();
+        if (!offlineVersion.isEmpty()) {
+            optionsBuilder.offlineRoutingTilesVersion(offlineVersion);
+        }
+        NavigationLauncher.startNavigation(this, optionsBuilder.build());
     }
-  }
 
-  private void animateCameraBbox(LatLngBounds bounds, int animationTime, int[] padding) {
-    CameraPosition position = mapboxMap.getCameraForLatLngBounds(bounds, padding);
-    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), animationTime);
-
-
-  }
-
-  private void animateCamera(LatLng point) {
-    mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, DEFAULT_CAMERA_ZOOM), CAMERA_ANIMATION_DURATION);
-  }
-
-  private void setCurrentMarkerPosition(LatLng position) {
-    if (position != null) {
-      if (currentMarker == null) {
-        MarkerOptions markerViewOptions = new MarkerOptions()
-          .position(position);
-        currentMarker = mapboxMap.addMarker(markerViewOptions);
-      } else {
-        currentMarker.setPosition(position);
-      }
+    private boolean validRouteResponse(Response<DirectionsResponse> response) {
+        return response.body() != null && !response.body().routes().isEmpty();
     }
-  }
 
-  @NonNull
-  private LocationEngineRequest buildEngineRequest() {
-    return new LocationEngineRequest.Builder(UPDATE_INTERVAL_IN_MILLISECONDS)
-      .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
-      .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
-      .build();
-  }
+    private void hideLoading() {
+        if (loading.getVisibility() == View.VISIBLE) {
+            loading.setVisibility(View.INVISIBLE);
+        }
+    }
 
+    public void boundCameraToRoute() {
+        if (directionsResponse.routes().get(selectedroute) != null) {
+            List<Point> routeCoords = LineString.fromPolyline(directionsResponse.routes().get(selectedroute).geometry(),
+                    Constants.PRECISION_6).coordinates();
+            List<LatLng> bboxPoints = new ArrayList<>();
+            for (Point point : routeCoords) {
+                bboxPoints.add(new LatLng(point.latitude(), point.longitude()));
+            }
+            if (bboxPoints.size() > 1) {
+                try {
+                    LatLngBounds bounds = new LatLngBounds.Builder().includes(bboxPoints).build();
+                    // left, top, right, bottom
+                    //  int topPadding = launchBtnFrame.getHeight() * 2;
+                    int topPadding = 500;
+                    animateCameraBbox(bounds, CAMERA_ANIMATION_DURATION, new int[]{50, topPadding, 50, 100});
+                } catch (InvalidLatLngBoundsException exception) {
+                    Toast.makeText(this, R.string.error_valid_route_not_found, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void animateCameraBbox(LatLngBounds bounds, int animationTime, int[] padding) {
+        CameraPosition position = mapboxMap.getCameraForLatLngBounds(bounds, padding);
+
+        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), animationTime);
+
+
+
+    }
+
+    private void animateCamera(LatLng point) {
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, DEFAULT_CAMERA_ZOOM), CAMERA_ANIMATION_DURATION);
+    }
+
+    private void setCurrentMarkerPosition(LatLng position) {
+        if (position != null) {
+            if (currentMarker == null) {
+                MarkerOptions markerViewOptions = new MarkerOptions()
+                        .position(position);
+                currentMarker = mapboxMap.addMarker(markerViewOptions);
+            } else {
+                currentMarker.setPosition(position);
+            }
+        }
+    }
+
+    @NonNull
+    private LocationEngineRequest buildEngineRequest() {
+        return new LocationEngineRequest.Builder(UPDATE_INTERVAL_IN_MILLISECONDS)
+                .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+                .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
+                .build();
+    }
 
 
     @Override
     public void onSelectedRouteChanged(int id) {
-        selectedroute=id;
-        adapter.selectedPosition=id;
+        selectedroute = id;
+        adapter.selectedPosition = id;
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void selectedRouteChangedInList(int id) {
-        if(myPolyline!=null){
-            myPolyline.updateRoutesinMap(id,true);
-            selectedroute=id;
+        if (myPolyline != null) {
+            myPolyline.updateRoutesinMap(id, true);
+            selectedroute = id;
         }
     }
 
-
-
+    boolean allroute_visible=true;
     public void allRouteOnClick(View view) {
 
-      if(findViewById(R.id.rv).getVisibility()==View.GONE)
-         findViewById(R.id.rv).setVisibility(View.VISIBLE);
-      else  findViewById(R.id.rv).setVisibility(View.GONE);
+
+        if (allroute_visible){
+            ((ImageView)findViewById(R.id.route_arrow)).setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+            YoYo.with(Techniques.SlideOutUp)
+                    .duration(700)
+                    .playOn(findViewById(R.id.rv));
+
+        }else {
+            ((ImageView)findViewById(R.id.route_arrow)).setImageResource(R.drawable.down_arrow);
+            YoYo.with(Techniques.SlideInDown)
+                    .duration(700)
+                    .playOn(findViewById(R.id.rv));
+
+        }
+
+        allroute_visible=!allroute_visible;
 
     }
 
@@ -601,8 +615,9 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     private void showOnRecyclerView() {
 
-        recyclerView =activityNavigationLauncherBinding.rv;
+     //   recyclerView =activityNavigationLauncherBinding.rv;
 
+        recyclerView=findViewById(R.id.rv);
         adapter = new RouteListAdapter_new(this,directionsResponse);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.setListener(this);

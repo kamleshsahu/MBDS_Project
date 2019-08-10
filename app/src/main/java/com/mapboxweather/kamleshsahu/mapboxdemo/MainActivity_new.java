@@ -15,6 +15,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -31,6 +33,7 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SettingsActivity;
 import com.mapboxweather.kamleshsahu.mapboxdemo.ViewModels.MainActivityViewModel;
 import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityMainNewBinding;
 
@@ -40,6 +43,8 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.AskPermission.askPermission;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.AskPermission.displayLocationSettingsRequest;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE1;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE2;
@@ -50,7 +55,7 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
      ActivityMainNewBinding activityMainNewBinding;
      MainActivityViewModel mainActivityViewModel;
      String avoid=null;
-
+     String TAG="LocationPermission";
     CheckBox tolls,ferries,highway;
     String travelmode= DirectionsCriteria.PROFILE_DRIVING;
     ImageView car,bike,walk;
@@ -67,6 +72,9 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
         mainActivityViewModel= ViewModelProviders.of(this).get(MainActivityViewModel.class);
         bindview();
 
+        askPermission(this);
+
+
         prefs = getSharedPreferences("formdata", MODE_PRIVATE);
 
         if(!prefs.getString("start","").isEmpty()){
@@ -77,7 +85,9 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
         }
 
         // Check for location permission
-           location_permission();
+        //   location_permission();
+
+        displayLocationSettingsRequest(this);
 
         mainActivityViewModel.getmTimeMutableLiveData().observe(this, new Observer<MTime>() {
             @Override
@@ -374,6 +384,60 @@ public class MainActivity_new extends AppCompatActivity implements PermissionsLi
         }
     }
 
+
+//menu items........................................................................................
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.mainactivity_menu, menu);
+    return true;
+}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.action_retry:
+                resetresult();
+                findRoute_onClick(null);
+                return true;
+            case R.id.Subscription:
+//                Intent intent=new Intent(getApplicationContext(), Subscription.class);
+//                startActivity(intent);
+                return true;
+            case R.id.action_clr:
+
+                resetresult();
+                resetInputs();
+                finish();
+                startActivity(getIntent());
+
+                return true;
+            case R.id.action_main_setting:
+                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent1);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+    //Reset Resulr
+    static void resetresult(){
+
+    };
+//Reset Imputs
+    void resetInputs(){
+
+    }
+//..................................................................................................
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
 
 

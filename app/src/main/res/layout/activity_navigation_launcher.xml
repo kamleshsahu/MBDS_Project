@@ -1,96 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:sothree="http://schemas.android.com/tools">
+    xmlns:sothree="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
 
-    <RelativeLayout
+
+
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true">
+        app:mapbox_uiAttribution="false">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:id="@+id/rvParent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-<android.support.v7.widget.CardView
-    android:layout_margin="10dp"
-    android:padding="5dp"
-    android:layout_gravity="center"
-    android:onClick="allRouteOnClick"
-    app:cardBackgroundColor="@color/colorAccent"
-    app:cardCornerRadius="5dp"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <TextView
-        android:layout_margin="5dp"
-        android:textColor="@color/white"
-        android:layout_width="wrap_content"
+
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="visible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/launch_route_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:enabled="false"
+            android:onClick="onRouteLaunchClick"
+            android:src="@drawable/ic_navigation_black_24dp"
+            sothree:backgroundTint="@color/colorAccent"
+            sothree:borderWidth="0dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="90dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="right|bottom"
+            android:backgroundTint="#ffffff"
+            android:onClick="showWeather"
+            android:src="@drawable/ic_weather"
+            sothree:backgroundTint="#ffffff"
+            sothree:borderWidth="0dp" />
+
+    </com.mapbox.mapboxsdk.maps.MapView>
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="All Routes"/>
-</android.support.v7.widget.CardView>
+        >
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv"
-                    android:layout_width="match_parent"
+        <android.support.v7.widget.CardView
+            android:id="@+id/route_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:onClick="allRouteOnClick"
+            android:padding="5dp"
+            app:cardBackgroundColor="@color/colorAccent"
+            app:cardCornerRadius="5dp">
+
+            <LinearLayout
+                android:layout_marginLeft="6dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/test">
-                </android.support.v7.widget.RecyclerView>
+                    android:text="All Routes"
+                    android:textColor="@color/white" />
+                <ImageView
+                    android:id="@+id/route_arrow"
+                    android:src="@drawable/down_arrow"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp" />
             </LinearLayout>
 
 
 
+        </android.support.v7.widget.CardView>
 
-        </RelativeLayout>
-
-
-        <com.mapbox.mapboxsdk.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_below="@id/rvParent"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:mapbox_uiAttribution="false">
-            <android.support.design.widget.FloatingActionButton
-                android:backgroundTint="#ffffff"
-                sothree:backgroundTint="#ffffff"
-                sothree:borderWidth="0dp"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                android:onClick="showWeather"
-                android:src="@drawable/ic_weather"/>
-            <ProgressBar
-                android:id="@+id/loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:visibility="visible" />
-
-                <android.support.design.widget.FloatingActionButton
-                    sothree:backgroundTint="@color/colorAccent"
-                    android:id="@+id/launch_route_btn"
-                    sothree:borderWidth="0dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/fab_margin"
-                    android:onClick="onRouteLaunchClick"
-                    android:enabled="false"
-                    android:src="@drawable/ic_navigation_black_24dp"/>
-
-        </com.mapbox.mapboxsdk.maps.MapView>
-
-
-
-
-
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/route_card"/>
     </RelativeLayout>
-</layout>
+
+</RelativeLayout>

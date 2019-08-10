@@ -47,10 +47,22 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
         final DirectionsRoute route = data.routes().get(position);
         final int finalpos=position;
 
-        if(selectedPosition==position)
-            holder.cardView.setCardBackgroundColor(Color.parseColor("#773F51B5"));
-        else
-            holder.cardView.setCardBackgroundColor(Color.parseColor("#ffffff"));
+        if(selectedPosition==position) {
+//            holder.cardView.setCardBackgroundColor(Color.parseColor("#3F51B5"));
+//            holder.route.setTextColor(Color.parseColor("#ffffff"));
+//            holder.distance.setTextColor(Color.parseColor("#ffffff"));
+//            holder.route_detail.setTextColor(Color.parseColor("#ffffff"));
+//            holder.time.setTextColor(Color.parseColor("#ffffff"));
+            holder.selected.setBackgroundColor(Color.parseColor("#3F51B5"));
+        }
+        else{
+//            holder.cardView.setCardBackgroundColor(Color.parseColor("#ffffff"));
+//            holder.route.setTextColor(Color.parseColor("#000000"));
+//            holder.distance.setTextColor(Color.parseColor("#000000"));
+//            holder.time.setTextColor(Color.parseColor("#7CB342"));
+            holder.selected.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
+
 
 // ban gya hai ulta pulta mat krna aa k
         holder.item.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +105,7 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
         TextView route,route_detail,time,distance;
         CardView cardView;
         ImageView icon;LinearLayout item;
+        LinearLayout selected;
         public ViewHolder(View itemView) {
             super(itemView);
                 item = itemView.findViewById(R.id.itemContainer);
@@ -101,6 +114,7 @@ public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_
                 time = (TextView) itemView.findViewById(R.id.time);
                 distance = (TextView) itemView.findViewById(R.id.distance);
                 cardView=itemView.findViewById(R.id.item_card);
+            selected=itemView.findViewById(R.id.selected);
                 //   icon=itemView.findViewById(R.id.icon);
         }
 
