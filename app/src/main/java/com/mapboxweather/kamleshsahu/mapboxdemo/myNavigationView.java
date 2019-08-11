@@ -12,9 +12,9 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.services.android.navigation.ui.v5.NavigationView;
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.weatherUtils;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.msteps;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.activity;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.msteps;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.weatherUtils;
 
 public class myNavigationView extends NavigationView implements MapboxMap.OnMapClickListener {
 
@@ -55,7 +55,6 @@ public class myNavigationView extends NavigationView implements MapboxMap.OnMapC
 
         super.onMapReady(mapboxMap);
         this.mapboxMap=mapboxMap;
-
         mapboxMap.addOnMapClickListener(this);
         mapboxMap.getStyle(new Style.OnStyleLoaded() {
             @Override

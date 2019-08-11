@@ -102,6 +102,8 @@ public class MapboxNavigationActivity extends AppCompatActivity
   static Activity activity;
   ProgressBar weather_progressbar;
 
+
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     weatherUtils=new weatherUI_utils();
@@ -113,6 +115,8 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
     navigationView = findViewById(R.id.navigationView);
     weather_progressbar=findViewById(R.id.weather_progressbar);
+
+
   //  navigationView.setListener(this);
 
 
@@ -130,6 +134,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
         updateNextMilestone(0);
       }
     });
+
 
   }
 
