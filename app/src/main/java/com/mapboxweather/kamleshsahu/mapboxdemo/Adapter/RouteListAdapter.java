@@ -28,6 +28,7 @@ public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.View
         this.data=data;
         this.context=context;
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());

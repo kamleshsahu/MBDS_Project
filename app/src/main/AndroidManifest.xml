@@ -3,11 +3,10 @@
     package="com.mapboxweather.kamleshsahu.mapboxdemo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
 
     <application
         android:allowBackup="true"
@@ -17,16 +16,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity_new" android:configChanges="orientation|screenSize">
+
+        <activity android:name=".ActivityMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity">
+        <activity
+            android:name=".MainActivity_new"
+            android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.SimpleMapViewActivity" />
         <activity android:name=".Activity.Subscription" />
 
@@ -35,9 +42,15 @@
             android:value="e748be179c7a242adf140bbde732b54e5aefde3f" />
 
         <activity android:name=".Activity.SettingsActivity" />
-        <activity android:name=".NavigationLauncherActivity_Simulate" android:configChanges="orientation|screenSize"/>
-        <activity android:name=".NavigationMapRouteActivity" android:configChanges="orientation|screenSize"></activity>
-        <activity android:name=".MapboxNavigationActivity" android:configChanges="orientation|screenSize"></activity>
+        <activity
+            android:name=".NavigationLauncherActivity_Simulate"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".NavigationMapRouteActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".MapboxNavigationActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>

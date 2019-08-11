@@ -30,7 +30,6 @@ import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
-import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.core.constants.Constants;
@@ -78,6 +77,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.AskPermission.displayLocationSettingsRequest;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 
@@ -268,15 +268,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     // @OnClick(R.id.launch_route_btn)
     public void onRouteLaunchClick(View view) {
 
-        if (!PermissionsManager.areLocationPermissionsGranted(this)) {
-            Intent intent = new Intent(NavigationLauncherActivity_Simulate.this, MainActivity_new.class);
-            intent.putExtra("NolocationPermission", true);
-            startActivity(intent);
-        } else {
-            LocationEngine locationEngine;
+        displayLocationSettingsRequest(this);
 
-
-        }
         launchNavigationWithRoute();
 
     }

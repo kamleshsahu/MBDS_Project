@@ -25,7 +25,9 @@ import java.util.List;
 
 public class AskPermission {
 
-    static String TAG="TAG";
+    static String TAG = "TAG";
+
+
     static void askPermission(Activity activity) {
         Dexter.withActivity(activity)
                 .withPermissions(
@@ -46,16 +48,19 @@ public class AskPermission {
     }
 
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+
     static public void displayLocationSettingsRequest(Activity activity) {
 
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(activity.getApplicationContext())
                 .addApi(LocationServices.API).build();
         googleApiClient.connect();
 
+
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(10000 / 2);
+
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
@@ -70,6 +75,8 @@ public class AskPermission {
                         Log.i(TAG, "All location settings are satisfied.");
                         Snackbar.make(activity.findViewById(android.R.id.content), "Family Locator is getting your location.", Snackbar.LENGTH_LONG)
                                 .show();
+
+
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");

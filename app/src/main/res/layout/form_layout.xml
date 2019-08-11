@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/test"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            app:cardBackgroundColor="@color/loo_pre"
+            android:id="@+id/srcdstcard"
+            app:cardCornerRadius="0dp"
+            android:layout_margin="0dp"
+            app:cardElevation="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_margin="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fillform"
+                >
+
+                <LinearLayout
+                    android:id="@+id/card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="swap_onClick"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_marginLeft="3dp"
+                            android:id="@+id/swap"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:background="@drawable/ic_swap_vertical_circle_black_24dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="9"
+                            android:orientation="vertical">
+
+
+                            <RelativeLayout
+                                android:orientation="horizontal"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginBottom="1dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/source_field"
+                                android:onClick="source_onclick"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+
+                                <TextView
+                                    android:textStyle="bold"
+                                    android:id="@+id/source"
+                                    android:layout_centerVertical="true"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/rect"
+                                    android:fontFamily="sans-serif-thin"
+                                    android:hint="Choose starting point"
+                                    android:singleLine="true"
+                                    android:textSize="15sp"
+                                    android:visibility="visible" />
+
+                                <ImageView
+
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:visibility="gone"
+                                    android:layout_alignParentRight="true"
+                                    android:src="@drawable/ic_edit_location_black_24dp" />
+
+                            </RelativeLayout>
+
+
+
+                            <LinearLayout
+
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:background="@drawable/dottedline" />
+
+                            <RelativeLayout
+                                android:orientation="horizontal"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="1dp"
+                                android:layout_width="match_parent"
+                                android:id="@+id/dstn_field"
+                                android:onClick="destination_onclick"
+                                android:layout_height="wrap_content">
+
+
+                                <TextView
+                                    android:textStyle="bold"
+                                    android:id="@+id/destination"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/rect"
+                                    android:fontFamily="sans-serif-thin"
+                                    android:hint="Choose destination…"
+                                    android:singleLine="true"
+                                    android:textSize="15sp"
+                                    android:visibility="visible" />
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:visibility="gone"
+                                    android:layout_alignParentRight="true"
+                                    android:src="@drawable/ic_edit_location_black_24dp" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+
+
+
+
+
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-thin"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:text="Depart At  : "
+                            android:textSize="15sp" />
+
+                        <android.support.v7.widget.CardView
+
+                            android:layout_marginRight="10dp"
+                            android:id="@+id/card_date"
+                            android:onClick="datePicker"
+                            app:cardBackgroundColor="@color/colorPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="0dp"
+                            app:cardCornerRadius="7dp"
+                            app:cardElevation="3dp">
+
+                            <LinearLayout
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginTop="3dp"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:fontFamily="sans-serif-condensed"
+                                    android:textColor="@color/loo_pre"
+                                    android:id="@+id/date1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=""
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                        </android.support.v7.widget.CardView>
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <android.support.v7.widget.CardView
+                            android:layout_margin="5dp"
+                            app:cardElevation="3dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardBackgroundColor="#ffffff"
+                            android:layout_weight="3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <ImageView
+                                    android:layout_weight="1"
+                                    android:id="@+id/a"
+                                    android:padding="3dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp" />
+                                <!--<ImageView-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:id="@+id/b"-->
+                                <!--android:padding="3dp"-->
+                                <!--android:layout_width="40dp"-->
+                                <!--android:layout_height="40dp" />-->
+                                <ImageView
+                                    android:layout_weight="1"
+                                    android:id="@+id/d"
+                                    android:padding="3dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp" />
+                                <ImageView
+                                    android:layout_weight="1"
+                                    android:id="@+id/c"
+                                    android:padding="3dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp" />
+                                <!--<ImageView-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:id="@+id/e"-->
+                                <!--android:padding="3dp"-->
+                                <!--android:layout_width="40dp"-->
+                                <!--android:layout_height="40dp" />-->
+                            </LinearLayout>
+
+
+                        </android.support.v7.widget.CardView>
+                        <LinearLayout
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:layout_marginRight="3dp"
+                            android:gravity="right"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:textStyle="bold"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="5dp"
+                                android:id="@+id/option"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="13sp"
+                                android:textAllCaps="true"
+                                android:text="options"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <!--<Switch-->
+
+                            <!--android:textSize="13sp"-->
+                            <!--android:layout_gravity="center_vertical"-->
+                            <!--android:textColor="#9e9e9e"-->
+                            <!--android:id="@+id/weather_switch"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="" />-->
+                            <!--<ImageView-->
+                            <!--android:id="@+id/weather_switch_icon"-->
+                            <!--android:layout_width="40dp"-->
+                            <!--android:layout_height="40dp" />-->
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:gravity="right"
+                        android:layout_weight="1"
+                        android:layout_margin="7dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <LinearLayout
+                            android:visibility="gone"
+                            android:id="@+id/option_list"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:paddingLeft="5dp"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:textSize="13sp"
+                                    android:textAllCaps="true"
+                                    android:text="Avoid"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <CheckBox
+                                    android:id="@+id/highway"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="Highways"
+                                    />
+                                <CheckBox
+                                    android:id="@+id/tolls"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="Tolls"
+                                    />
+                                <CheckBox
+                                    android:id="@+id/ferries"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="Ferries"
+                                    />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:visibility="gone"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:textSize="13sp"
+                                    android:textAllCaps="true"
+                                    android:text="Distance units"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                                <RadioGroup
+                                    android:id="@+id/distance_unit"
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <RadioButton
+                                        android:padding="10dp"
+                                        android:id="@+id/automatic"
+                                        android:text="automatic"
+                                        android:tag="0"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        />
+                                    <RadioButton
+                                        android:padding="10dp"
+                                        android:text="miles"
+                                        android:id="@+id/miles"
+                                        android:tag="1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        />
+                                    <RadioButton
+                                        android:padding="10dp"
+                                        android:text="km"
+                                        android:id="@+id/km"
+                                        android:tag="2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        />
+                                </RadioGroup>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <Button
+                        android:layout_marginBottom="10dp"
+                        android:textColor="#ffffff"
+                        android:text="Find Routes"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="2dp"
+                        android:id="@+id/submit"
+                        android:onClick="findRoute_onClick"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:background="@color/colorPrimary"
+                        />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

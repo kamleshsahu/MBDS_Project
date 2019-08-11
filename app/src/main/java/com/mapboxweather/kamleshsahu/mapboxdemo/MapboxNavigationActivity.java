@@ -85,7 +85,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
   String travelmode;
   long jstarttime;
   long interval;
-  private View.OnClickListener weatherRefreshListener;
+
   private FloatingActionButton weatherRefreshButton;
 
   static List<String> layeridlist;
