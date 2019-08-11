@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -42,14 +42,17 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker;
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SettingsActivity;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.Form;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.MTime;
+import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.ViewModels.MainActivityViewModel;
 import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityMainNewBinding;
 
 import io.fabric.sdk.android.Fabric;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.AskPermission.askPermission;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.AskPermission.displayLocationSettingsRequest;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.AskPermission.askPermission;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.AskPermission.displayLocationSettingsRequest;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE1;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.REQUEST_CODE_AUTOCOMPLETE2;

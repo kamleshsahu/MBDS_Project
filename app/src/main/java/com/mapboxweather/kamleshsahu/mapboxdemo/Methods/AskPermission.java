@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
 import android.Manifest;
 import android.app.Activity;
@@ -28,7 +28,7 @@ public class AskPermission {
     static String TAG = "TAG";
 
 
-    static void askPermission(Activity activity) {
+    public static void askPermission(Activity activity) {
         Dexter.withActivity(activity)
                 .withPermissions(
                         Manifest.permission.ACCESS_COARSE_LOCATION,

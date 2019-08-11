@@ -3,7 +3,7 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 import com.mapbox.geojson.Point;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.ApiInterface;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.TimeZoneApiResponse;
 
 import java.util.concurrent.TimeUnit;
 

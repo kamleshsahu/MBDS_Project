@@ -1,14 +1,15 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Form implements Parcelable {
 
-    MLocation start,dstn;
-    MTime mTime;
-    String avoid;
-    String travelmode;
+    public MLocation start;
+    public MLocation dstn;
+    public MTime mTime;
+    public String avoid;
+    public String travelmode;
     public Form(MLocation start,MLocation dstn,MTime mTime,String avoid,String travelmode) {
          this.mTime=mTime;
          this.dstn=dstn;

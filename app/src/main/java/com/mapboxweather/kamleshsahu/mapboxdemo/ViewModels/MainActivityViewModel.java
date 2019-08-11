@@ -5,8 +5,8 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.MLocation;
-import com.mapboxweather.kamleshsahu.mapboxdemo.MTime;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.MTime;
 
 public class MainActivityViewModel extends AndroidViewModel {
       MutableLiveData<MTime> mTimeMutableLiveData=new MutableLiveData<>();

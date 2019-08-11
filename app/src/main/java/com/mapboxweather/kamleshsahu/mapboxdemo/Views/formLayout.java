@@ -1,9 +1,11 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Views;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
 public class formLayout extends RelativeLayout {
 
@@ -13,7 +15,7 @@ public class formLayout extends RelativeLayout {
 
     public formLayout(Context context) {
         super(context);
-        inflate(getContext(),R.layout.form_layout,this);
+        inflate(getContext(), R.layout.form_layout,this);
     }
 
     public formLayout(Context context, AttributeSet attrs) {

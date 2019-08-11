@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityMain">
+    tools:context=".Activity.ActivityMain">
 
 
-    <com.mapboxweather.kamleshsahu.mapboxdemo.formLayout
+    <com.mapboxweather.kamleshsahu.mapboxdemo.Views.formLayout
         android:id="@+id/myform"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </com.mapboxweather.kamleshsahu.mapboxdemo.formLayout>
+    </com.mapboxweather.kamleshsahu.mapboxdemo.Views.formLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"

@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Models;
+package com.mapboxweather.kamleshsahu.mapboxdemo.models;
 
 public class WeatherData {
     String imgurl;

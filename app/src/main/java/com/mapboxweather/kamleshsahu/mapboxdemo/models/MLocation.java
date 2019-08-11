@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.models;
 
 import android.databinding.BaseObservable;
 import android.os.Parcel;
@@ -10,9 +10,9 @@ import com.mapbox.geojson.Point;
 public class MLocation extends BaseObservable implements Parcelable {
 
 
-    private String name;
-    private Point point;
-    private boolean isCurrentLocation;
+    public String name;
+    public Point point;
+    public boolean isCurrentLocation;
 
     String s_point;
 

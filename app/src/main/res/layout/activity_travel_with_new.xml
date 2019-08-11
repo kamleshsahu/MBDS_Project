@@ -8,19 +8,17 @@
 
         <variable
             name="start"
-            type="com.mapboxweather.kamleshsahu.mapboxdemo.MLocation" />
+            type="com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation" />
 
         <variable
             name="dstn"
-            type="com.mapboxweather.kamleshsahu.mapboxdemo.MLocation" />
+            type="com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation" />
 
         <variable
             name="mtime"
-            type="com.mapboxweather.kamleshsahu.mapboxdemo.MTime" />
+            type="com.mapboxweather.kamleshsahu.mapboxdemo.models.MTime" />
 
-        <variable
-            name="clickHandlers"
-            type="com.mapboxweather.kamleshsahu.mapboxdemo.MainActivity_new" />
+
     </data>
 
     <RelativeLayout

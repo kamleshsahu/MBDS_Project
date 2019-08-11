@@ -15,7 +15,7 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.unitConverter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
-import com.mapboxweather.kamleshsahu.mapboxdemo.routeChangedinList;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.routeChangedinList;
 //import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.SimpleMapViewActivity;
 
 public class RouteListAdapter_new extends RecyclerView.Adapter<RouteListAdapter_new.ViewHolder>{

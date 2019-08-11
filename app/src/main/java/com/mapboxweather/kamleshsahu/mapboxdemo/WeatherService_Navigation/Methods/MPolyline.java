@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods;
 
 import android.content.Context;
 import android.graphics.PointF;
@@ -17,6 +17,8 @@ import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.selectedRouteChangedListener;
+import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +119,7 @@ public class MPolyline {
      }
 
 
-    void updateRoutesinMap(int routeid,boolean updated){
+    public void updateRoutesinMap(int routeid, boolean updated){
         if(routeid<10 && selectedroute!=routeid){
 
             selectedroute=routeid;

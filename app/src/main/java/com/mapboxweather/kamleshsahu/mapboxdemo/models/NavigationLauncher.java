@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.models;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MapboxNavigationActivity;
 
 /**
  * Use this class to launch the navigation UI
@@ -58,13 +59,13 @@ public class NavigationLauncher {
    * @param context to retrieve {@link SharedPreferences}
    * @return {@link DirectionsRoute} stored when launching
    */
-  static DirectionsRoute extractRoute(Context context) {
+  public static DirectionsRoute extractRoute(Context context) {
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
     String directionsRouteJson = preferences.getString(NavigationConstants.NAVIGATION_VIEW_ROUTE_KEY, "");
     return DirectionsRoute.fromJson(directionsRouteJson);
   }
 
-  static void cleanUpPreferences(Context context) {
+  public static void cleanUpPreferences(Context context) {
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
     SharedPreferences.Editor editor = preferences.edit();
     editor

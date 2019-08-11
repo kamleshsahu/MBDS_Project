@@ -33,7 +33,7 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.RouteFinder;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Methods.TimeZoneOfOrigin;
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.TimeZoneApiResponse;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 
 import java.util.Calendar;

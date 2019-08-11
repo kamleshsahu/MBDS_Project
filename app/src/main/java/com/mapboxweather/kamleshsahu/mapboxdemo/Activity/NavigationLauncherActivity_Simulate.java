@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -55,7 +55,13 @@ import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter_new;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.routeChangedinList;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.selectedRouteChangedListener;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.Form;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.NavigationLauncher;
+import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.WeatherServiceListener;
+import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.MPolyline;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mPoint;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.mStep;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
@@ -77,8 +83,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.AskPermission.displayLocationSettingsRequest;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.DisplayError.displayError;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.AskPermission.displayLocationSettingsRequest;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 
 

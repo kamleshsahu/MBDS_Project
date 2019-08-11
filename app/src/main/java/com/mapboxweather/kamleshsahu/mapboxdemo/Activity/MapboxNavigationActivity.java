@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -34,6 +34,9 @@ import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOpti
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.NavigationLauncher;
+import com.mapboxweather.kamleshsahu.mapboxdemo.R;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Views.myNavigationView;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.NextMilestoneSetter;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.WeatherServiceListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.StepCorrection;
@@ -52,7 +55,7 @@ import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.DisplayError.displayError;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.myUtils.getCorrection;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.myUtils.mycustomMilestone;
 
@@ -79,7 +82,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   int nextMilestone;
 
-  static weatherUI_utils weatherUtils;
+  public static weatherUI_utils weatherUtils;
   int selectedroute;
   String timezone;
   String travelmode;
@@ -88,9 +91,9 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   private FloatingActionButton weatherRefreshButton;
 
-  static List<String> layeridlist;
+  public static List<String> layeridlist;
 
-  static  Map<Integer, mStep> msteps;
+  public static  Map<Integer, mStep> msteps;
 
   WeatherUpdateService weatherUpdateService;
 
@@ -99,7 +102,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
   public MapboxNavigationActivity() {
     nextMilestone = 0;
   }
-  static Activity activity;
+  public static Activity activity;
   ProgressBar weather_progressbar;
 
 

@@ -4,7 +4,7 @@ package com.mapboxweather.kamleshsahu.mapboxdemo.Interface;
 
 
 
-import com.mapboxweather.kamleshsahu.mapboxdemo.Models.TimeZoneApiResponse;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.TimeZoneApiResponse;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models.Darkskyapi;
 
 import retrofit2.Call;

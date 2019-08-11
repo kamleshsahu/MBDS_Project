@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Methods;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class DisplayError {
   static AlertDialog.Builder bld;
-   static void displayError(Context context,String title, String msg){
+   public static void displayError(Context context, String title, String msg){
 //        if(!AlreadyGotError) {
 //            AlreadyGotError=true;
             int maxLength = (msg.length() < 40) ? msg.length() : 40;

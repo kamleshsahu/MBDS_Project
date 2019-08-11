@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;//package com.example.mymapboxnavigation;
+package com.mapboxweather.kamleshsahu.mapboxdemo.Views;//package com.example.mymapboxnavigation;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,11 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.services.android.navigation.ui.v5.NavigationView;
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MapboxNavigationActivity;
 
-import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.activity;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.msteps;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.MapboxNavigationActivity.weatherUtils;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MapboxNavigationActivity.activity;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MapboxNavigationActivity.msteps;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Activity.MapboxNavigationActivity.weatherUtils;
 
 public class myNavigationView extends NavigationView implements MapboxMap.OnMapClickListener {
 

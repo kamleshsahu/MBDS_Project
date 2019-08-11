@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo;
+package com.mapboxweather.kamleshsahu.mapboxdemo.models;
 
 import android.databinding.BaseObservable;
 import android.os.Parcel;
@@ -14,10 +14,14 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation
 
 public class MTime extends BaseObservable implements Parcelable {
 
-     String timezone;
-     int mYear, mMonth, mDay, mHour, mMinute;
-     long jstart_date_millis, jstart_time_millis;
-     String disp_time;
+     public String timezone;
+     public int mYear;
+    public int mMonth;
+    public int mDay;
+    public int mHour;
+    public int mMinute;
+    public long jstart_date_millis, jstart_time_millis;
+     public String disp_time;
 
     public MTime() {
         final Calendar c = Calendar.getInstance();

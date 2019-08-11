@@ -1,4 +1,4 @@
-package com.mapboxweather.kamleshsahu.mapboxdemo.Models;
+package com.mapboxweather.kamleshsahu.mapboxdemo.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
