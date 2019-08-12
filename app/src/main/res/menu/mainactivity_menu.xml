@@ -2,8 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:visible="false"
         android:id="@+id/action_retry"
         android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="retry"
+        app:showAsAction="always" />
+    <item
+        android:onClick="swap_onClick"
+        android:icon="@drawable/ic_swap_vertical_circle_black_24dp"
         android:title="retry"
         app:showAsAction="always" />
     <item

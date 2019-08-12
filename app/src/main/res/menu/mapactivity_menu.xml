@@ -6,18 +6,31 @@
         android:icon="@drawable/ic_refresh_black_24dp"
         android:title="retry"
         app:showAsAction="always" />
-    <item
-        android:icon="@drawable/ic_delete_black_24dp"
-        android:fontFamily="sans-serif-thin"
-        android:id="@+id/action_clr"
-        android:title="Clear"
-        app:showAsAction="always" />
+    <!--<item-->
+        <!--android:icon="@drawable/ic_delete_black_24dp"-->
+        <!--android:fontFamily="sans-serif-thin"-->
+        <!--android:id="@+id/action_clr"-->
+        <!--android:title="Clear"-->
+        <!--app:showAsAction="always" />-->
     <!--<item-->
 
         <!--android:fontFamily="sans-serif-thin"-->
         <!--android:id="@+id/Subscription"-->
         <!--android:title="Subscription"-->
         <!--app:showAsAction="never" />-->
+    <item
+        android:onClick="showWeather"
+    android:icon="@drawable/ic_weather"
+    android:fontFamily="sans-serif-thin"
+    android:title="Show Weather"
+    app:showAsAction="always" />
+    <item
+        android:onClick="onclick_mapStyle"
+        android:icon="@drawable/ic_layers_black_24dp"
+        android:fontFamily="sans-serif-thin"
+        android:id="@+id/action_clr"
+        android:title="Layers"
+        app:showAsAction="always" />
     <item
         android:fontFamily="sans-serif-thin"
         android:id="@+id/action_settings"
@@ -57,5 +70,12 @@
             </group>
         </menu>
     </item>
+    <item
+    android:fontFamily="sans-serif-thin"
+    android:id="@+id/settings"
+    android:title="Settings"
+    app:showAsAction="never" />
+
+
 
 </menu>

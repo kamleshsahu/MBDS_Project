@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -106,7 +107,10 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     public static Boolean layeridCreated;
     List<Source> markersourcelist;
     private Style style;
-
+    int i=0;
+    //shared pref
+    SharedPreferences.Editor editor;
+    Menu menu;
     Map<Integer, mStep> msteps;
 
     int totalsteps = 0;
@@ -186,26 +190,181 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             form = getIntent().getParcelableExtra("form");
 
         }
+
+        editor = getSharedPreferences("distance", MODE_PRIVATE).edit();
+        SharedPreferences prefs = getSharedPreferences("distance", MODE_PRIVATE);
+        setIntervalDefaultValOnDisp(prefs.getInt("10", 0));
+
     }
 
 
+    //menu items........................................................................................
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.navigation_view_activity_menu, menu);
+        getMenuInflater().inflate(R.menu.mapactivity_menu, menu);
+        this.menu=menu;
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
-//      case R.id.settings:
-//        showSettings();
-//        return true;
+            case R.id.km10:
+                item.setChecked(true);
+                interval=10000;
+                i=1;
+                editor.putInt("10",10);
+                editor.apply();
+
+                return true;
+            case R.id.km20:
+                item.setChecked(true);
+                interval=20000;
+                i=2;
+                editor.putInt("10",20);
+                editor.apply();
+
+                return true;
+            case R.id.km30:
+                item.setChecked(true);
+                interval=30000;
+                i=3;
+                editor.putInt("10",30);
+                editor.apply();
+
+                return true;
+            case R.id.km40:
+                item.setChecked(true);
+                interval=40000;
+                i=4;
+                editor.putInt("10",40);
+                editor.apply();
+
+                return true;
+            case R.id.km50:
+                item.setChecked(true);
+                interval=50000;
+                i=5;
+                editor.putInt("10",50);
+                editor.apply();
+
+                return true;
+            case R.id.action_retry:
+                mapboxMap.clear();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //   drawRoute();
+                        showWeather(null);
+                    }
+                },500);
+
+
+                return true;
+
+            case R.id.action_clr:
+
+                recreate();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+    void setIntervalDefaultValOnDisp(int a){
+        switch (a) {
+            case 10:
+                //  Toast.makeText(mApp, "10", Toast.LENGTH_SHORT).show();
+
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km10);
+                            interval = 10000;
+                            i = 1;
+                            item.setChecked(true);
+                        }
+                    }, 2000);
+                } catch (Exception e) {
+
+                }
+                break;
+            case 20:
+                //  Toast.makeText(mApp, "20", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km20);
+                            item.setChecked(true);
+                            interval = 20000;
+                            i = 2;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
+
+                }
+
+                break;
+            case 30:
+                //  Toast.makeText(mApp, "30", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km30);
+                            item.setChecked(true);
+                            interval = 30000;
+                            i = 3;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
+
+                }
+                break;
+            case 40:
+                // Toast.makeText(mApp, "40", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km40);
+                            item.setChecked(true);
+                            interval = 40000;
+                            i = 4;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
+
+                }
+                break;
+            case 50:
+                // Toast.makeText(mApp, "50", Toast.LENGTH_SHORT).show();
+                try {
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuItem item = menu.findItem(R.id.km50);
+                            item.setChecked(true);
+                            interval = 50000;
+                            i = 5;
+                        }
+                    }, 2000);
+                } catch (Exception e) {
+
+                }
+                break;
+            default:
+                //   Toast.makeText(mApp, "0", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+//..................................................................................................
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -588,6 +747,21 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     }
 
+    public void onclick_mapStyle(MenuItem item) {
+    }
+
+    public void showWeather(MenuItem item) {
+        showCurrProgressOnProgressDialog();
+
+        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(0).steps().size();
+        customLayer.removeWeatherIcons(layeridlist,markersourcelist);
+
+
+        weatherServiceCall = new WeatherService(directionsResponse.routes().get(selectedroute),form.mTime.timezone,interval,form.mTime.gettime_millis(),form.travelmode);
+        weatherServiceCall.subscribe(this);
+        weatherServiceCall.execute();
+    }
+
     private static class NavigationLauncherLocationCallback implements LocationEngineCallback<LocationEngineResult> {
 
     private final WeakReference<NavigationLauncherActivity_Simulate> activityWeakReference;
@@ -637,19 +811,11 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     }
 
-    public void showWeather(View view){
-
-        showCurrProgressOnProgressDialog();
-
-        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(0).steps().size();
-        customLayer.removeWeatherIcons(layeridlist,markersourcelist);
-
-
-        weatherServiceCall = new WeatherService(directionsResponse.routes().get(selectedroute),form.mTime.timezone,interval,form.mTime.gettime_millis(),form.travelmode);
-        weatherServiceCall.subscribe(this);
-        weatherServiceCall.execute();
-
-    }
+//    public void showWeather(View view){
+//
+//
+//
+//    }
 
     void showCurrProgressOnProgressDialog(){
         progress=new ProgressDialog(this);

@@ -4,7 +4,7 @@
 
     <stroke
         android:color="@color/cardview_dark_background"
-        android:dashWidth="10px"
-        android:dashGap="10px"
+        android:dashWidth="20dp"
+        android:dashGap="20dp"
         android:width="0.1dp"/>
 </shape>

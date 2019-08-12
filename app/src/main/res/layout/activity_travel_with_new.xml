@@ -60,9 +60,10 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:visibility="gone"
                                 android:id="@+id/swap"
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="3dp"
                                 android:background="@drawable/ic_swap_vertical_circle_black_24dp"
@@ -99,6 +100,7 @@
                                         android:orientation="vertical">
 
                                         <TextView
+                                            android:padding="5dp"
                                             android:id="@+id/start_address"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -113,16 +115,21 @@
                                             android:visibility="visible" />
 
                                         <LinearLayout
+                                            android:padding="5dp"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content">
 
                                             <TextView
+                                              android:layout_marginLeft="0dp"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                android:layout_marginLeft="2dp"
+                                                android:layout_centerVertical="true"
+                                                android:layout_marginRight="5dp"
+                                                android:fontFamily="sans-serif-thin"
                                                 android:text="Current Location"
-                                                android:textColor="#9D9D9D"
-                                                android:textSize="12sp" />
+                                                android:textSize="15sp"
+                                                android:textStyle="bold"
+                                                android:visibility="visible" />
 
                                             <Switch
                                                 android:id="@+id/current_location"
@@ -137,8 +144,8 @@
 
                                     <ImageView
                                         android:id="@+id/select_from_map"
-                                        android:layout_width="30dp"
-                                        android:layout_height="30dp"
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
                                         android:layout_alignParentRight="true"
                                         android:onClick="onClickCurrentLocation1"
                                         android:padding="0dp"
@@ -151,16 +158,17 @@
                                 <LinearLayout
 
                                     android:layout_width="match_parent"
-                                    android:layout_height="1dp"
+                                    android:layout_height="5dp"
                                     android:layout_marginLeft="10dp"
                                     android:layout_marginRight="10dp"
                                     android:background="@drawable/dottedline" />
 
                                 <RelativeLayout
+                                    android:padding="5dp"
                                     android:id="@+id/dstn_field"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
                                     android:layout_marginLeft="10dp"
                                     android:layout_marginTop="5dp"
                                     android:layout_marginRight="10dp"
@@ -170,6 +178,7 @@
 
 
                                     <TextView
+                                        android:layout_centerVertical="true"
                                         android:id="@+id/dstn_address"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -183,9 +192,9 @@
                                         android:visibility="visible" />
 
                                     <ImageView
-
-                                        android:layout_width="30dp"
-                                        android:layout_height="30dp"
+                                        android:layout_marginRight="-5dp"
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
                                         android:layout_alignParentRight="true"
                                         android:onClick="onClickCurrentLocation2"
                                         android:src="@drawable/ic_pin_drop_black_24dp"

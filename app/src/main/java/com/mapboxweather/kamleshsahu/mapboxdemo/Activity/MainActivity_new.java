@@ -535,11 +535,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
     }
 
-    void swap_onClick(View view){
 
+    public void swap_onClick(MenuItem item) {
     }
-
-
 }
 
 
