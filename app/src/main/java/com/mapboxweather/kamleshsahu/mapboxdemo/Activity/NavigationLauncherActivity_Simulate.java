@@ -471,7 +471,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                         setDstnMarkerPosition();
                         setStartMarkerPosition();
                     }
-                }, 500);
+                }, 250);
 
             }
 
