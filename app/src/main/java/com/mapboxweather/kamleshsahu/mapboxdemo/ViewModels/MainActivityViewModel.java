@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation;
 import com.mapboxweather.kamleshsahu.mapboxdemo.models.MTime;
 
@@ -13,13 +14,16 @@ public class MainActivityViewModel extends AndroidViewModel {
       MutableLiveData<MLocation> startLiveData=new MutableLiveData<>();
       MutableLiveData<MLocation> dstnLiveData=new MutableLiveData<>();
 
-      MTime mTime;
 
+      public MutableLiveData<String> avoid =new MutableLiveData<>();
+      public MutableLiveData<String> travelmode =new MutableLiveData<>();
 
+    MTime mTime;
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
          mTime=new MTime();
          updatemTimeMutableLiveData();
+         travelmode.setValue(DirectionsCriteria.PROFILE_DRIVING);
     }
 
 
@@ -54,5 +58,11 @@ public class MainActivityViewModel extends AndroidViewModel {
         return mTime;
     }
 
+    public MutableLiveData<String> getAvoid() {
+        return avoid;
+    }
 
+    public MutableLiveData<String> getTravelmode() {
+        return travelmode;
+    }
 }

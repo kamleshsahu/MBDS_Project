@@ -14,7 +14,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -31,7 +33,6 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
-import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.Point;
@@ -42,12 +43,12 @@ import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker;
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions;
-import com.mapboxweather.kamleshsahu.mapboxdemo.models.Form;
-import com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation;
-import com.mapboxweather.kamleshsahu.mapboxdemo.models.MTime;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.ViewModels.MainActivityViewModel;
 import com.mapboxweather.kamleshsahu.mapboxdemo.databinding.ActivityMainNewBinding;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.Form;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.MLocation;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.MTime;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -61,14 +62,14 @@ import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation
 public class MainActivity_new extends AppCompatActivity {
 
     ActivityMainNewBinding activityMainNewBinding;
-    MainActivityViewModel mainActivityViewModel;
-    String avoid = null;
-    String TAG = "LocationPermission";
+    MainActivityViewModel viewModel;
+   
+    
+    
     CheckBox tolls, ferries, highway;
-    String travelmode = DirectionsCriteria.PROFILE_DRIVING;
     ImageView car, bike, walk;
     TextView option;
-    private PermissionsManager permissionsManager;
+    
     SharedPreferences prefs;
     ImageView IVcurrentLocaction;
     public static LatLng currentLocation;
@@ -84,19 +85,19 @@ public class MainActivity_new extends AppCompatActivity {
         Mapbox.getInstance(this, MapboxKey);
         setContentView(R.layout.activity_main_new);
         activityMainNewBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_new);
-        mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         bindview();
 
         askPermission(this);
 
 
-        prefs = getSharedPreferences("formdata", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (!prefs.getString("start", "").isEmpty()) {
-            mainActivityViewModel.setStart(new Gson().fromJson(prefs.getString("start", ""), MLocation.class));
+            viewModel.setStart(new Gson().fromJson(prefs.getString("start", ""), MLocation.class));
         }
         if (!prefs.getString("dstn", "").isEmpty()) {
-            mainActivityViewModel.setDstn(new Gson().fromJson(prefs.getString("dstn", ""), MLocation.class));
+            viewModel.setDstn(new Gson().fromJson(prefs.getString("dstn", ""), MLocation.class));
         }
 
         // Check for location permission
@@ -104,21 +105,22 @@ public class MainActivity_new extends AppCompatActivity {
 
         displayLocationSettingsRequest(this);
 
-        mainActivityViewModel.getmTimeMutableLiveData().observe(this, new Observer<MTime>() {
+        viewModel.getmTimeMutableLiveData().observe(this, new Observer<MTime>() {
             @Override
             public void onChanged(@Nullable MTime mTime) {
                 activityMainNewBinding.setMtime(mTime);
             }
         });
 
-        mainActivityViewModel.getStartLiveData().observe(this, new Observer<MLocation>() {
+        viewModel.getStartLiveData().observe(this, new Observer<MLocation>() {
             @Override
             public void onChanged(@Nullable MLocation mLocation) {
+
                 activityMainNewBinding.setStart(mLocation);
             }
         });
 
-        mainActivityViewModel.getDstnLiveData().observe(this, new Observer<MLocation>() {
+        viewModel.getDstnLiveData().observe(this, new Observer<MLocation>() {
             @Override
             public void onChanged(@Nullable MLocation mLocation) {
                 activityMainNewBinding.setDstn(mLocation);
@@ -138,7 +140,7 @@ public class MainActivity_new extends AppCompatActivity {
                 tolls.setVisibility(View.VISIBLE);
                 ferries.setVisibility(View.VISIBLE);
 
-                travelmode = DirectionsCriteria.PROFILE_DRIVING_TRAFFIC;
+                viewModel.travelmode.setValue(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC);
 
             }
         });
@@ -155,7 +157,7 @@ public class MainActivity_new extends AppCompatActivity {
                 tolls.setVisibility(View.INVISIBLE);
                 ferries.setVisibility(View.INVISIBLE);
 
-                travelmode = DirectionsCriteria.PROFILE_CYCLING;
+                viewModel.travelmode.setValue(DirectionsCriteria.PROFILE_WALKING);
 
             }
         });
@@ -172,7 +174,8 @@ public class MainActivity_new extends AppCompatActivity {
                 tolls.setVisibility(View.INVISIBLE);
                 ferries.setVisibility(View.VISIBLE);
 
-                travelmode = DirectionsCriteria.PROFILE_CYCLING;
+                viewModel.travelmode.setValue(DirectionsCriteria.PROFILE_CYCLING);
+               
             }
         });
 
@@ -193,8 +196,8 @@ public class MainActivity_new extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (highway.isChecked()) {
-                    avoid = DirectionsCriteria.EXCLUDE_MOTORWAY;
-                } else avoid = null;
+                    viewModel.avoid.setValue(DirectionsCriteria.EXCLUDE_MOTORWAY);
+                } else viewModel.avoid.setValue(null);
                 if (tolls.isChecked()) tolls.setChecked(false);
                 if (ferries.isChecked()) ferries.setChecked(false);
             }
@@ -205,8 +208,8 @@ public class MainActivity_new extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (tolls.isChecked()) {
-                    avoid = DirectionsCriteria.EXCLUDE_TOLL;
-                } else avoid = null;
+                    viewModel.avoid.setValue(DirectionsCriteria.EXCLUDE_TOLL);
+                } else viewModel.avoid.setValue(null);
                 if (highway.isChecked()) highway.setChecked(false);
                 if (ferries.isChecked()) ferries.setChecked(false);
             }
@@ -218,24 +221,34 @@ public class MainActivity_new extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (ferries.isChecked()) {
-                    avoid = DirectionsCriteria.EXCLUDE_FERRY;
-                } else avoid = null;
+                    viewModel.avoid.setValue(DirectionsCriteria.EXCLUDE_FERRY);
+                } else viewModel.avoid.setValue(null);
                 if (highway.isChecked()) highway.setChecked(false);
                 if (tolls.isChecked()) tolls.setChecked(false);
             }
         });
 
 
+
         currentLocation_view.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked
                         && currentLocation != null) {
-                    mainActivityViewModel.setStart(new MLocation("Your Location",
+                    viewModel.setStart(new MLocation("Your Current Location",
                             Point.fromLngLat(currentLocation.getLongitude(), currentLocation.getLatitude()), true));
-                } else {
+                }else if(isChecked && currentLocation==null){
                     currentLocation_view.setChecked(false);
-                    mainActivityViewModel.setStart(null);
+                    Snackbar.make(findViewById(android.R.id.content), "Turn on Location Services to get Current Location", Snackbar.LENGTH_LONG)
+                            .show();
                     displayLocationSettingsRequest(MainActivity_new.this);
+                }
+                else {
+                    if(viewModel.getStartLiveData().getValue()!=null &&
+                            viewModel.getStartLiveData().getValue().isCurrentLocation)
+                    {
+                        viewModel.setStart(null);
+                    }
+
                 }
             }
         });
@@ -255,7 +268,7 @@ public class MainActivity_new extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 1000.0f, (android.location.LocationListener) mLocationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100l, 1000.0f, (android.location.LocationListener) mLocationListener);
 
     }
 
@@ -318,11 +331,11 @@ public class MainActivity_new extends AppCompatActivity {
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        mainActivityViewModel.getmTime().setdate(year, monthOfYear, dayOfMonth);
-                        mainActivityViewModel.updatemTimeMutableLiveData();
+                        viewModel.getmTime().setdate(year, monthOfYear, dayOfMonth);
+                        viewModel.updatemTimeMutableLiveData();
                         timePicker();
                     }
-                }, mainActivityViewModel.getmTime().mYear, mainActivityViewModel.getmTime().mMonth, mainActivityViewModel.getmTime().mDay);
+                }, viewModel.getmTime().mYear, viewModel.getmTime().mMonth, viewModel.getmTime().mDay);
         datePickerDialog.show();
     }
 
@@ -331,10 +344,10 @@ public class MainActivity_new extends AppCompatActivity {
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        mainActivityViewModel.getmTime().settime(hourOfDay, minute);
-                        mainActivityViewModel.updatemTimeMutableLiveData();
+                        viewModel.getmTime().settime(hourOfDay, minute);
+                        viewModel.updatemTimeMutableLiveData();
                     }
-                }, mainActivityViewModel.getmTime().mHour, mainActivityViewModel.getmTime().mMinute, true);
+                }, viewModel.getmTime().mHour, viewModel.getmTime().mMinute, true);
         timePickerDialog.show();
     }
 
@@ -386,10 +399,26 @@ public class MainActivity_new extends AppCompatActivity {
     }
 
     public void findRoute_onClick(View view){
+
+       if(viewModel.getStartLiveData().getValue()==null){
+           Snackbar.make(findViewById(android.R.id.content), "Please Select Start Address...", Snackbar.LENGTH_LONG)
+                   .show();
+        return;
+       }
+
+       if(viewModel.getDstnLiveData().getValue()==null) {
+           Snackbar.make(findViewById(android.R.id.content), "Please Select Destination Address...", Snackbar.LENGTH_LONG)
+                   .show();
+             return;
+       }
+
+
         Intent intent=new Intent(MainActivity_new.this,NavigationLauncherActivity_Simulate.class);
-        Form form=new Form(mainActivityViewModel.getStartLiveData().getValue(),
-                mainActivityViewModel.getDstnLiveData().getValue(),
-                mainActivityViewModel.getmTimeMutableLiveData().getValue(),avoid,travelmode);
+        Form form=new Form(viewModel.getStartLiveData().getValue(),
+                viewModel.getDstnLiveData().getValue(),
+                viewModel.getmTimeMutableLiveData().getValue(),
+                viewModel.avoid.getValue(),
+                viewModel.travelmode.getValue());
         intent.putExtra("form",form);
 
         startActivity(intent);
@@ -404,32 +433,36 @@ public class MainActivity_new extends AppCompatActivity {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             //System.out.println("feature text :"+feature.text());
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
-            mainActivityViewModel.setStart(new MLocation(feature.placeName(),feature.center()));
-            prefs.edit().putString("start", new Gson().toJson(mainActivityViewModel.getStartLiveData().getValue())).apply();
-
+            viewModel.setStart(new MLocation(feature.placeName(),feature.center()));
+            prefs.edit().putString("start", new Gson().toJson(viewModel.getStartLiveData().getValue())).apply();
+             if(currentLocation_view.isChecked())currentLocation_view.setChecked(false);
 
         }else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE2) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             //System.out.println("feature text :"+feature.text());
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
-            mainActivityViewModel.setDstn(new MLocation(feature.placeName(),feature.center()));
-            prefs.edit().putString("dstn", new Gson().toJson(mainActivityViewModel.getDstnLiveData().getValue())).apply();
+            viewModel.setDstn(new MLocation(feature.placeName(),feature.center()));
+            prefs.edit().putString("dstn", new Gson().toJson(viewModel.getDstnLiveData().getValue())).apply();
+
 
         }else if (requestCode == PLACEPICKER_REQUEST_CODE1 && resultCode == RESULT_OK) {
 
              CarmenFeature feature = PlaceAutocomplete.getPlace(data);
 
              Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
-             mainActivityViewModel.setStart(new MLocation( feature.placeName(), feature.center()));
-             prefs.edit().putString("start", new Gson().toJson(mainActivityViewModel.getStartLiveData().getValue())).apply();
+             viewModel.setStart(new MLocation( feature.placeName(), feature.center()));
+             prefs.edit().putString("start", new Gson().toJson(viewModel.getStartLiveData().getValue())).apply();
+            if(currentLocation_view.isChecked())currentLocation_view.setChecked(false);
 
         }else if (requestCode == PLACEPICKER_REQUEST_CODE2 && resultCode == RESULT_OK) {
 
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             //System.out.println("feature text :"+feature.text());
             Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
-            mainActivityViewModel.setDstn(new MLocation(feature.placeName(),feature.center()));
-            prefs.edit().putString("dstn", new Gson().toJson(mainActivityViewModel.getDstnLiveData().getValue())).apply();
+            viewModel.setDstn(new MLocation(feature.placeName(),feature.center()));
+            prefs.edit().putString("dstn", new Gson().toJson(viewModel.getDstnLiveData().getValue())).apply();
+
+
         }
     }
 
@@ -448,24 +481,23 @@ public boolean onCreateOptionsMenu(Menu menu) {
         switch (item.getItemId()) {
 
             case R.id.action_retry:
-                resetresult();
-                findRoute_onClick(null);
+
                 return true;
             case R.id.Subscription:
 //                Intent intent=new Intent(getApplicationContext(), Subscription.class);
 //                startActivity(intent);
                 return true;
             case R.id.action_clr:
+                prefs.edit().putString("start", "").apply();
+                prefs.edit().putString("dstn", "").apply();
 
-                resetresult();
-                resetInputs();
                 finish();
                 startActivity(getIntent());
 
                 return true;
             case R.id.action_main_setting:
-                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent1);
+//                Intent intent1=new Intent(getApplicationContext(), SettingsActivity.class);
+//                startActivity(intent1);
                 return true;
 
             default:
@@ -475,14 +507,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
 
 
-    //Reset Resulr
-    static void resetresult(){
-
-    };
-//Reset Imputs
-    void resetInputs(){
-
-    }
 //..................................................................................................
 
     @Override
@@ -537,6 +561,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
 
     public void swap_onClick(MenuItem item) {
+
+        MLocation temp=viewModel.getStartLiveData().getValue();
+        viewModel.getStartLiveData().setValue(viewModel.getDstnLiveData().getValue());
+        viewModel.getDstnLiveData().setValue(temp);
     }
 }
 

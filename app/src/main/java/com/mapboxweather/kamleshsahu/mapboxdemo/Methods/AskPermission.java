@@ -73,7 +73,7 @@ public class AskPermission {
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         Log.i(TAG, "All location settings are satisfied.");
-                        Snackbar.make(activity.findViewById(android.R.id.content), "Family Locator is getting your location.", Snackbar.LENGTH_LONG)
+                        Snackbar.make(activity.findViewById(android.R.id.content), "RouteWeather is getting your location.", Snackbar.LENGTH_LONG)
                                 .show();
 
 
