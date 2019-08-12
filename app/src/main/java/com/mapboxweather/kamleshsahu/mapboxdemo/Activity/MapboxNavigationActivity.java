@@ -34,7 +34,6 @@ import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOpti
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
-import com.mapboxweather.kamleshsahu.mapboxdemo.models.NavigationLauncher;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Views.myNavigationView;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.NextMilestoneSetter;
@@ -45,6 +44,7 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherUI_utils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.WeatherUpdateService;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.NavigationLauncher;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,11 +83,11 @@ public class MapboxNavigationActivity extends AppCompatActivity
   int nextMilestone;
 
   public static weatherUI_utils weatherUtils;
-  int selectedroute;
+
   String timezone;
   String travelmode;
   long jstarttime;
-  long interval;
+  long interval=50000;
 
   private FloatingActionButton weatherRefreshButton;
 
@@ -147,10 +147,8 @@ public class MapboxNavigationActivity extends AppCompatActivity
     timezone= Calendar.getInstance().getTimeZone().getID();
 
 
-    travelmode= DirectionsCriteria.PROFILE_DRIVING;
-    interval = 5000;
-    selectedroute = 0;
-
+    travelmode= DirectionsCriteria.PROFILE_DRIVING_TRAFFIC;
+    interval = PreferenceManager.getDefaultSharedPreferences(this).getInt("10",50)*1000;
     layeridlist=new ArrayList<>();
   }
 
@@ -263,13 +261,18 @@ public class MapboxNavigationActivity extends AppCompatActivity
     steps = route.legs().get(0).steps();
     options.directionsRoute(route);
     this.directionsRoute=route;
+    travelmode=route.routeOptions().profile();
   }
 
   private void extractConfiguration(NavigationViewOptions.Builder options) {
-    LocationEngine engine=new ReplayRouteLocationEngine();
-    ((ReplayRouteLocationEngine) engine).updateSpeed(100);
-    ((ReplayRouteLocationEngine) engine).assign(directionsRoute);
-    options.locationEngine(engine);
+   if(PreferenceManager.getDefaultSharedPreferences(this)
+           .getBoolean("simulate", false)){
+     LocationEngine engine=new ReplayRouteLocationEngine();
+     ((ReplayRouteLocationEngine) engine).updateSpeed(100);
+     ((ReplayRouteLocationEngine) engine).assign(directionsRoute);
+     options.locationEngine(engine);
+   }
+
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
   //  options.shouldSimulateRoute(preferences.getBoolean(NavigationConstants.NAVIGATION_VIEW_SIMULATE_ROUTE, false));
     options.shouldSimulateRoute(false);

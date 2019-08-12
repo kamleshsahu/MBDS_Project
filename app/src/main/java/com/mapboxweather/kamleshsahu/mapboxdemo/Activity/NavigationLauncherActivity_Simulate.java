@@ -1,6 +1,10 @@
 package com.mapboxweather.kamleshsahu.mapboxdemo.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -58,8 +62,6 @@ import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter_new;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.routeChangedinList;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.selectedRouteChangedListener;
-import com.mapboxweather.kamleshsahu.mapboxdemo.models.Form;
-import com.mapboxweather.kamleshsahu.mapboxdemo.models.NavigationLauncher;
 import com.mapboxweather.kamleshsahu.mapboxdemo.R;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Interface.WeatherServiceListener;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Methods.MPolyline;
@@ -68,6 +70,8 @@ import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Models
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherIconMap;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.UIutils.weatherUI_utils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.WeatherService;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.Form;
+import com.mapboxweather.kamleshsahu.mapboxdemo.models.NavigationLauncher;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -84,7 +88,6 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
-import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.AskPermission.displayLocationSettingsRequest;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 
@@ -109,7 +112,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     private Style style;
     int i=0;
     //shared pref
-    SharedPreferences.Editor editor;
+    SharedPreferences prefs;
     Menu menu;
     Map<Integer, mStep> msteps;
 
@@ -191,8 +194,9 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
         }
 
-        editor = getSharedPreferences("distance", MODE_PRIVATE).edit();
-        SharedPreferences prefs = getSharedPreferences("distance", MODE_PRIVATE);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //    SharedPreferences prefs = getSharedPreferences("distance", MODE_PRIVATE);
         setIntervalDefaultValOnDisp(prefs.getInt("10", 0));
 
     }
@@ -213,40 +217,35 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                 item.setChecked(true);
                 interval=10000;
                 i=1;
-                editor.putInt("10",10);
-                editor.apply();
+                prefs.edit().putInt("10",10).apply();
 
                 return true;
             case R.id.km20:
                 item.setChecked(true);
                 interval=20000;
                 i=2;
-                editor.putInt("10",20);
-                editor.apply();
+                prefs.edit().putInt("10",20).apply();
 
                 return true;
             case R.id.km30:
                 item.setChecked(true);
                 interval=30000;
                 i=3;
-                editor.putInt("10",30);
-                editor.apply();
+                prefs.edit().putInt("10",30).apply();
 
                 return true;
             case R.id.km40:
                 item.setChecked(true);
                 interval=40000;
                 i=4;
-                editor.putInt("10",40);
-                editor.apply();
+                prefs.edit().putInt("10",40).apply();
 
                 return true;
             case R.id.km50:
                 item.setChecked(true);
                 interval=50000;
                 i=5;
-                editor.putInt("10",50);
-                editor.apply();
+                prefs.edit().putInt("10",50).apply();
 
                 return true;
             case R.id.action_retry:
@@ -262,9 +261,16 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
                 return true;
 
-            case R.id.action_clr:
+            case R.id.action_clean_map:
 
-                recreate();
+                if(customLayer!=null)
+                customLayer.removeWeatherIcons(layeridlist,markersourcelist);
+
+                return true;
+
+            case R.id.action_mapstyle:
+
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -433,7 +439,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     // @OnClick(R.id.launch_route_btn)
     public void onRouteLaunchClick(View view) {
 
-        displayLocationSettingsRequest(this);
+
 
         launchNavigationWithRoute();
 
@@ -456,6 +462,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             if (form != null) {
                 // updateCurrentLocation(form.start.getS_point());
                 fetchRoute();
+                setDstnMarkerPosition();
+                setStartMarkerPosition();
             }
 
         });
@@ -529,7 +537,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                 //.origin(currentLocation)
                 .origin(form.start.getS_point())
                 .destination(form.dstn.getS_point())
-                .profile(getRouteProfileFromSharedPreferences())
+                .profile(form.travelmode)
                 .alternatives(true);
         setFieldsFromSharedPreferences(builder);
         builder.build().getRoute(new Callback<DirectionsResponse>() {
@@ -555,7 +563,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
             @Override
             public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
+                    displayError(NavigationLauncherActivity_Simulate.this,"Error:Fetching Route",t.getMessage());
             }
         });
         loading.setVisibility(View.VISIBLE);
@@ -591,7 +599,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     private boolean getShouldSimulateRouteFromSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean(getString(R.string.simulate_route_key), false);
+        return sharedPreferences.getBoolean("simulate", false);
     }
 
     private String getRouteProfileFromSharedPreferences() {
@@ -617,26 +625,9 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             return;
         }
 
-        NavigationLauncherOptions.Builder optionsBuilder = NavigationLauncherOptions.builder()
-                //  .shouldSimulateRoute(getShouldSimulateRouteFromSharedPreferences());
+        optionDialog(this,"Simulate Navigation","Select \"Yes\" if you want to Simulate Navigation(Testing Only)");
 
-                .shouldSimulateRoute(false);
-        CameraPosition initialPosition = new CameraPosition.Builder()
-                .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
-//      .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
-                .zoom(INITIAL_ZOOM)
-                .build();
-        optionsBuilder.initialMapCameraPosition(initialPosition);
-        optionsBuilder.directionsRoute(directionsResponse.routes().get(selectedroute));
-        String offlinePath = obtainOfflinePath();
-        if (!TextUtils.isEmpty(offlinePath)) {
-            optionsBuilder.offlineRoutingTilesPath(offlinePath);
-        }
-        String offlineVersion = retrieveOfflineVersionFromPreferences();
-        if (!offlineVersion.isEmpty()) {
-            optionsBuilder.offlineRoutingTilesVersion(offlineVersion);
-        }
-        NavigationLauncher.startNavigation(this, optionsBuilder.build());
+
     }
 
     private boolean validRouteResponse(Response<DirectionsResponse> response) {
@@ -674,11 +665,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
     private void animateCameraBbox(LatLngBounds bounds, int animationTime, int[] padding) {
         CameraPosition position = mapboxMap.getCameraForLatLngBounds(bounds, padding);
-
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), animationTime);
-
-
-
 
     }
 
@@ -696,6 +683,18 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                 currentMarker.setPosition(position);
             }
         }
+    }
+
+    private void setStartMarkerPosition() {
+        LatLng temp=new LatLng(form.start.getS_point().latitude(),form.start.getS_point().longitude());
+       mapboxMap.addMarker(new MarkerOptions()
+               .setPosition(temp).setTitle("Start Location"));
+    }
+
+    private void setDstnMarkerPosition() {
+        LatLng temp=new LatLng(form.dstn.getS_point().latitude(),form.dstn.getS_point().longitude());
+        mapboxMap.addMarker(new MarkerOptions()
+                .setPosition(temp).setTitle("Destination"));
     }
 
     @NonNull
@@ -753,7 +752,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     public void showWeather(MenuItem item) {
         showCurrProgressOnProgressDialog();
 
-        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(0).steps().size();
+        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(selectedroute).steps().size();
         customLayer.removeWeatherIcons(layeridlist,markersourcelist);
 
 
@@ -879,5 +878,68 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     }
 
 
+       void optionDialog(Context context, String title, String msg){
+
+           AlertDialog.Builder bld=null;
+           SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
+
+                  bld = new AlertDialog.Builder(context);
+                  bld.setMessage(msg);
+                  bld.setNeutralButton("NO", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                         pref.edit().putBoolean("simulate",false).apply();
+                          dialog.dismiss();
+                          startNavigation();
+
+                      }
+                  });
+                  bld.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          pref.edit().putBoolean("simulate", true).apply();
+                          dialog.dismiss();
+                          startNavigation();
+                      }
+                  });
+                  bld.setTitle(title);
+
+                  Log.d("TAG", "Showing alert dialog: " + msg);
+                  Dialog dialog = bld.create();
+
+                  dialog.show();
+
+
+      }
+
+      void startNavigation(){
+          if(!form.start.isCurrentLocation && !getShouldSimulateRouteFromSharedPreferences()) {
+              displayError(NavigationLauncherActivity_Simulate.this,"Cant Navigate",
+                      "Please Select \"Your Current Location\" in \"Start Address Field\" to Start Navigation");
+
+              return;
+          }
+          NavigationLauncherOptions.Builder optionsBuilder = NavigationLauncherOptions.builder()
+                  //  .shouldSimulateRoute(getShouldSimulateRouteFromSharedPreferences());
+
+                  .shouldSimulateRoute(false);
+          CameraPosition initialPosition = new CameraPosition.Builder()
+                  .target(new LatLng(form.start.getS_point().latitude()
+                          , form.start.getS_point().longitude()))
+//      .target(new LatLng(currentLocation.latitude(), currentLocation.longitude()))
+                  .zoom(INITIAL_ZOOM)
+                  .build();
+          optionsBuilder.initialMapCameraPosition(initialPosition);
+          optionsBuilder.directionsRoute(directionsResponse.routes().get(selectedroute));
+          String offlinePath = obtainOfflinePath();
+          if (!TextUtils.isEmpty(offlinePath)) {
+              optionsBuilder.offlineRoutingTilesPath(offlinePath);
+          }
+          String offlineVersion = retrieveOfflineVersionFromPreferences();
+          if (!offlineVersion.isEmpty()) {
+              optionsBuilder.offlineRoutingTilesVersion(offlineVersion);
+          }
+          NavigationLauncher.startNavigation(this, optionsBuilder.build());
+      }
 
 }

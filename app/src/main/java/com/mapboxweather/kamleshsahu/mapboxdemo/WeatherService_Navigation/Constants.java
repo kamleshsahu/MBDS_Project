@@ -19,6 +19,7 @@ public class Constants {
    public static final String STEP_MANEUVER_MODIFIER_LEFT = "left";
    public static final String STEP_MANEUVER_MODIFIER_SHARP_LEFT = "sharp left";
 
+   public static final String NAVIGATION_VIEW_SIMULATE_ROUTE="NAVIGATION_VIEW_SIMULATE_ROUTE";
 
    public static final String MAP_STYLE="MAP_STYLE";
 

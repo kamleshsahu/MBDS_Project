@@ -11,7 +11,7 @@ public class DisplayError {
    public static void displayError(Context context, String title, String msg){
 //        if(!AlreadyGotError) {
 //            AlreadyGotError=true;
-            int maxLength = (msg.length() < 40) ? msg.length() : 40;
+            int maxLength = (msg.length() < 100) ? msg.length() : 100;
             msg = msg.substring(0, maxLength);
 
             if(bld==null){
