@@ -59,6 +59,8 @@ import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
+import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_weather;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.RouteListAdapter_new;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.routeChangedinList;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Interface.selectedRouteChangedListener;
@@ -89,6 +91,7 @@ import timber.log.Timber;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.DisplayError.displayError;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptolist;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 
 
@@ -461,9 +464,15 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             customLayer = new weatherUI_utils(mapboxMap, this);
             if (form != null) {
                 // updateCurrentLocation(form.start.getS_point());
-                fetchRoute();
-                setDstnMarkerPosition();
-                setStartMarkerPosition();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        fetchRoute();
+                        setDstnMarkerPosition();
+                        setStartMarkerPosition();
+                    }
+                }, 500);
+
             }
 
         });
@@ -555,6 +564,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                         myPolyline = new MPolyline(getApplicationContext(), mapboxMap, style, response.body(), 0);
                         myPolyline.setListener(NavigationLauncherActivity_Simulate.this);
                         boundCameraToRoute();
+
+                        initializedragUP();
                     } else {
                         Snackbar.make(mapView, R.string.error_select_longer_route, Snackbar.LENGTH_SHORT).show();
                     }
@@ -567,6 +578,23 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             }
         });
         loading.setVisibility(View.VISIBLE);
+    }
+
+    private void initializedragUP() {
+       RecyclerView link = (RecyclerView) findViewById(R.id.dragup_list_recycler);
+        link.setLayoutManager(new LinearLayoutManager(this));
+       DragupListAdapter_route routeadapter = new DragupListAdapter_route(getApplicationContext(), directionsResponse.routes().get(selectedroute));
+        link.setAdapter(routeadapter);
+    }
+
+    private void initializedragUP_weather() {
+        RecyclerView link = (RecyclerView) findViewById(R.id.dragup_list_recycler);
+        link.setLayoutManager(new LinearLayoutManager(this));
+        link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), maptolist(msteps)));
+    }
+
+    private void changeDragUP(){
+
     }
 
     private void setFieldsFromSharedPreferences(NavigationRoute.Builder builder) {
@@ -718,6 +746,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         if (myPolyline != null) {
             myPolyline.updateRoutesinMap(id, true);
             selectedroute = id;
+            initializedragUP();
         }
     }
 
@@ -849,7 +878,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         this.msteps=msteps;
         if(progress!=null)
             progress.dismiss();
-
+        initializedragUP_weather();
    //     link.setAdapter(new DragupListAdapter_weather(getApplicationContext(), maptolist(msteps)));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 

@@ -167,7 +167,7 @@ public class SimpleMapViewActivity extends AppCompatActivity
 
  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(0));
+                routeadapter = new DragupListAdapter_route(getApplicationContext(), directionapiresp.routes().get(selectedroute));
                 link.setAdapter(routeadapter);
                 if (directionapiresp.routes().get(selectedroute).legs().get(0).distance() != null) {
                     slidingUpPanelLayout.setPanelHeight(getApplicationContext().getResources().getDimensionPixelSize(R.dimen.dragupsize));
