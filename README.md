@@ -1,5 +1,5 @@
 # MapboxDarkSkyApp
-[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/vt5fpE0bzSY)
+[![Watch the video]<img src="https://github.com/favicon.ico" width="48">](https://youtu.be/vt5fpE0bzSY)
 
 <img src="https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/form_fill_blank.jpeg?token=AF733CICOS66JZJAXX6ADG25NQQRU" width="300">
 <img src="https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/select%20Start%20and%20Destination.jpeg?token=AF733CKTDKGQ5E33W6NPXVK5NQQUA" width="300">
