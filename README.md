@@ -1,8 +1,6 @@
 # MapboxDarkSkyApp
-<video width="320" height="240" controls>
-  <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-   Mapbox Darksky.
-</video>
+[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://youtu.be/vt5fpE0bzSY)
+
 <img src="https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/form_fill_blank.jpeg?token=AF733CICOS66JZJAXX6ADG25NQQRU" width="300">
 <img src="https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/select%20Start%20and%20Destination.jpeg?token=AF733CKTDKGQ5E33W6NPXVK5NQQUA" width="300">
 <img src="https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/form_fill_filled.jpeg?token=AF733CLINEZAY4YSM34H6YK5NQQSI" width="300">
