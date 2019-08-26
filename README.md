@@ -4,8 +4,8 @@ Features :<br>
 2.Shows weather for every X distance (every 5 ,10 ,20 ,30 or 40 km selected by User) on Selected Route.<br>
 3.Shows weather for every X distance (every 5 ,10 ,20 ,30 or 40 km selected by User) while Navigating the Route (built in Navigation inside the App).
 
-<h4>Demo Video of App:</h4>
-<br>
+Demo Video of App:
+
 [![Watch the video](https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/video%20captcha.jpeg?token=AF733CM733WRIRQ5Y3PHHVK5NQVCU)](https://drive.google.com/file/d/1RJ94EShAeOVk_cGi6WuSN6jQTbJS9FCV/preview)
 
 <h3>Weather on MyTrip App Screenshots</h3>
