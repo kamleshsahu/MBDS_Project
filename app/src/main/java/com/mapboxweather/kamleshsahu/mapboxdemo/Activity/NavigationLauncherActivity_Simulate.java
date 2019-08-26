@@ -102,7 +102,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 {
     Form form;
 
-    int interval = 5000;
+    int interval = 50000;
     public static ProgressDialog progress;
     Boolean AlreadyGotError = false;
 
@@ -569,11 +569,14 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                     } else {
                         Snackbar.make(mapView, R.string.error_select_longer_route, Snackbar.LENGTH_SHORT).show();
                     }
-                }
+                }else{
+                    hideLoading();
+                    displayError(NavigationLauncherActivity_Simulate.this,"Error:Fetching Route","Not able to find the Route for selected Start and End Location");                }
             }
 
             @Override
             public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                    hideLoading();
                     displayError(NavigationLauncherActivity_Simulate.this,"Error:Fetching Route",t.getMessage());
             }
         });
@@ -779,15 +782,20 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     }
 
     public void showWeather(MenuItem item) {
-        showCurrProgressOnProgressDialog();
 
-        totalsteps=directionsResponse.routes().get(selectedroute).legs().get(selectedroute).steps().size();
-        customLayer.removeWeatherIcons(layeridlist,markersourcelist);
+        if(directionsResponse!=null) {
+            showCurrProgressOnProgressDialog();
+
+            totalsteps = directionsResponse.routes().get(selectedroute).legs().get(selectedroute).steps().size();
+            customLayer.removeWeatherIcons(layeridlist, markersourcelist);
 
 
-        weatherServiceCall = new WeatherService(directionsResponse.routes().get(selectedroute),form.mTime.timezone,interval,form.mTime.gettime_millis(),form.travelmode);
-        weatherServiceCall.subscribe(this);
-        weatherServiceCall.execute();
+            weatherServiceCall = new WeatherService(directionsResponse.routes().get(selectedroute), form.mTime.timezone, interval, form.mTime.gettime_millis(), form.travelmode);
+            weatherServiceCall.subscribe(this);
+            weatherServiceCall.execute();
+        }else{
+            displayError(this,"Route not Loaded yet","Please wait while Route Gets Loaded or Refresh..");
+        }
     }
 
     private static class NavigationLauncherLocationCallback implements LocationEngineCallback<LocationEngineResult> {
