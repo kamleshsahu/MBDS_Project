@@ -1,10 +1,10 @@
-Weather on MyTrip is for those users who travel long by Road.The app is like Google Maps Navigation App with an Additional Weather feature on Route:<br>
+<h4>Weather on MyTrip is for those users who travel long by Road.The app is like Google Maps Navigation App with an Additional Weather feature on Route:</h4><br>
 Features :<br>
 1.It is same as other Navigation App like Google Maps.<br>
 2.Shows weather for every X distance (every 5 ,10 ,20 ,30 or 40 km selected by User) on Selected Route.<br>
 3.Shows weather for every X distance (every 5 ,10 ,20 ,30 or 40 km selected by User) while Navigating the Route (built in Navigation inside the App).
 
-Demo Video of App:
+<h4>Demo Video of App:</h4>
 <br>
 [![Watch the video](https://raw.githubusercontent.com/kamleshsahu/MapboxDarkSkyApp/master/Readme/video%20captcha.jpeg?token=AF733CM733WRIRQ5Y3PHHVK5NQVCU)](https://drive.google.com/file/d/1RJ94EShAeOVk_cGi6WuSN6jQTbJS9FCV/preview)
 
