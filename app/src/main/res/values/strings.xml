@@ -94,4 +94,6 @@
     <string name="offline_version_title">Choose offline version</string>
     <string name="general_category_title">General</string>
     <string name="title_activity_my_navigation_view">MyNavigationView</string>
+
+
 </resources>

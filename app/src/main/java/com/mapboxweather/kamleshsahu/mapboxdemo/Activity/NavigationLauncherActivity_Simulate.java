@@ -57,6 +57,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
 import com.mapboxweather.kamleshsahu.mapboxdemo.Adapter.DragupListAdapter_route;
@@ -92,6 +93,7 @@ import timber.log.Timber;
 import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.DisplayError.displayError;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.Methods.MaptoList.maptolist;
+import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MAP_STYLE;
 import static com.mapboxweather.kamleshsahu.mapboxdemo.WeatherService_Navigation.Constants.MapboxKey;
 
 
@@ -129,7 +131,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     private static final int INITIAL_ZOOM = 4;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 500;
-
+    private static final int MAP_THEME_REQUEST_CODE = 1005;
     private final NavigationLauncherLocationCallback callback = new NavigationLauncherLocationCallback(this);
     private LocationEngine locationEngine;
     //  private NavigationMapRoute mapRoute;
@@ -157,6 +159,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     DirectionsResponse directionsResponse;
     WeatherService weatherServiceCall;
     LatLngBounds bounds;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -272,8 +275,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                 return true;
 
             case R.id.action_mapstyle:
-
-
+                Intent intent=new Intent(getApplicationContext(),SettingsActivity.class);
+                startActivityForResult(intent,MAP_THEME_REQUEST_CODE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -385,6 +388,24 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 //        fetchRoute();
 //      }
 //    }
+
+        
+          //not in use currently
+//        if(requestCode==MAP_THEME_REQUEST_CODE && resultCode==RESULT_OK){
+//            String MAP_THEME=PreferenceManager.getDefaultSharedPreferences(this).getString(MAP_STYLE,style.LIGHT);
+//            if(MAP_THEME==null || MAP_THEME.equals(""))MAP_THEME=style.LIGHT;
+//
+//            if(mapboxMap!=null)
+//            mapboxMap.setStyle(MAP_THEME, new Style.OnStyleLoaded() {
+//                @Override
+//                public void onStyleLoaded(@NonNull Style newstyle) {
+//                    style=newstyle;
+//                    redrawRoute();
+//                }
+//            });
+//        }
+
+
     }
 
     @Override
@@ -398,6 +419,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+
         mapView.onResume();
         if (locationEngine != null) {
             locationEngine.requestLocationUpdates(buildEngineRequest(), callback, null);
@@ -442,8 +464,6 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     // @OnClick(R.id.launch_route_btn)
     public void onRouteLaunchClick(View view) {
 
-
-
         launchNavigationWithRoute();
 
     }
@@ -452,15 +472,16 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     public void onMapReady(MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
 
-        // mapView.setOnClickListener(this);
-        //  mapView.setOnTouchListener(this);
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+        String MAP_THEME=PreferenceManager.getDefaultSharedPreferences(this).getString(MAP_STYLE,style.LIGHT);
+        if(MAP_THEME==null || MAP_THEME.equals(""))MAP_THEME=style.LIGHT;
+
+        mapboxMap.setStyle(MAP_THEME, style -> {
 
             mapboxMap.addOnMapClickListener(this);
             this.style = style;
             initializeLocationEngine();
             initializeLocationComponent(style);
-            initializeMapRoute();
+
             customLayer = new weatherUI_utils(mapboxMap, this);
             if (form != null) {
                 // updateCurrentLocation(form.start.getS_point());
@@ -472,10 +493,8 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
                         setStartMarkerPosition();
                     }
                 }, 250);
-
-            }
-
-        });
+         }
+       });
     }
 
     @Override
@@ -533,11 +552,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         locationComponent.setRenderMode(RenderMode.COMPASS);
     }
 
-    private void initializeMapRoute() {
-//    mapRoute = new NavigationMapRoute(mapView, mapboxMap);
-//    mapRoute.setOnRouteSelectionChangeListener(this);
 
-    }
 
     private void fetchRoute() {
 
@@ -581,6 +596,15 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
             }
         });
         loading.setVisibility(View.VISIBLE);
+    }
+
+
+    void redrawRoute(){
+        if(directionsResponse!=null){
+            myPolyline = new MPolyline(getApplicationContext(), mapboxMap, style,directionsResponse, selectedroute);
+            myPolyline.setListener(NavigationLauncherActivity_Simulate.this);
+            boundCameraToRoute();
+        }
     }
 
     private void initializedragUP() {
@@ -786,7 +810,7 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
         if(directionsResponse!=null) {
             showCurrProgressOnProgressDialog();
 
-            totalsteps = directionsResponse.routes().get(selectedroute).legs().get(selectedroute).steps().size();
+            totalsteps = directionsResponse.routes().get(selectedroute).legs().get(0).steps().size();
             customLayer.removeWeatherIcons(layeridlist, markersourcelist);
 
 
@@ -956,10 +980,18 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
 
               return;
           }
+
+         String MAP_THEME= PreferenceManager.getDefaultSharedPreferences(this).getString(MAP_STYLE,style.LIGHT);
+
+          PreferenceManager.getDefaultSharedPreferences(this)
+                  .edit().putString(NavigationConstants.MAP_STYLE_URL_KEY,MAP_THEME).apply();
+
           NavigationLauncherOptions.Builder optionsBuilder = NavigationLauncherOptions.builder()
                   //  .shouldSimulateRoute(getShouldSimulateRouteFromSharedPreferences());
-
+                 // .lightThemeResId(R.style.NavigationViewLight)
+                  .darkThemeResId(R.style.NavigationViewDark)
                   .shouldSimulateRoute(false);
+
           CameraPosition initialPosition = new CameraPosition.Builder()
                   .target(new LatLng(form.start.getS_point().latitude()
                           , form.start.getS_point().longitude()))
@@ -978,5 +1010,6 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
           }
           NavigationLauncher.startNavigation(this, optionsBuilder.build());
       }
+
 
 }

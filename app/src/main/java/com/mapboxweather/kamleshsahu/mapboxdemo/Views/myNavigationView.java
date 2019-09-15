@@ -28,7 +28,7 @@ public class myNavigationView extends NavigationView implements MapboxMap.OnMapC
      }
 
     public myNavigationView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, -1);
     }
 
     public myNavigationView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -52,11 +52,11 @@ public class myNavigationView extends NavigationView implements MapboxMap.OnMapC
     @Override
     public void onMapReady(MapboxMap mapboxMap) {
 
-
-
+        mapboxMap.setStyle(Style.DARK);
         super.onMapReady(mapboxMap);
         this.mapboxMap=mapboxMap;
         mapboxMap.addOnMapClickListener(this);
+
         mapboxMap.getStyle(new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {

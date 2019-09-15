@@ -25,6 +25,7 @@
     android:title="Show Weather"
     app:showAsAction="always" />
     <item
+        android:visible="false"
         android:icon="@drawable/ic_layers_black_24dp"
         android:fontFamily="sans-serif-thin"
         android:id="@+id/action_mapstyle"
@@ -70,6 +71,7 @@
         </menu>
     </item>
     <item
+        android:visible="false"
     android:fontFamily="sans-serif-thin"
     android:id="@+id/settings"
     android:title="Settings"

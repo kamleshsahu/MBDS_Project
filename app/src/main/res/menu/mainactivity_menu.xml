@@ -20,6 +20,7 @@
         app:showAsAction="always" />
 
     <item
+        android:visible="true"
         android:fontFamily="sans-serif-thin"
         android:id="@+id/action_main_setting"
         android:title="Settings"

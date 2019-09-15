@@ -105,19 +105,28 @@ public class MapboxNavigationActivity extends AppCompatActivity
   public static Activity activity;
   ProgressBar weather_progressbar;
 
-
+//  SharedPreferences sp;
+//  public static String MAP_THEME;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     weatherUtils=new weatherUI_utils();
     activity=this;
     setTheme(com.mapbox.services.android.navigation.ui.v5.R.style.Theme_AppCompat_NoActionBar);
+
     super.onCreate(savedInstanceState);
     Fabric.with(this, new Crashlytics());
+
+
     setContentView(R.layout.activity_navigation);
 
     navigationView = findViewById(R.id.navigationView);
+
+
+
+ 
     weather_progressbar=findViewById(R.id.weather_progressbar);
+
 
 
   //  navigationView.setListener(this);
@@ -145,8 +154,6 @@ public class MapboxNavigationActivity extends AppCompatActivity
 
   void initialiseWeatherVariables(){
     timezone= Calendar.getInstance().getTimeZone().getID();
-
-
     travelmode= DirectionsCriteria.PROFILE_DRIVING_TRAFFIC;
     interval = PreferenceManager.getDefaultSharedPreferences(this).getInt("10",50)*1000;
     layeridlist=new ArrayList<>();
