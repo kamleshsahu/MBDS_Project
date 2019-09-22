@@ -76,6 +76,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
         NextMilestoneSetter,
         WeatherServiceListener
 
+
 {
 
   private myNavigationView navigationView;
@@ -113,9 +114,9 @@ public class MapboxNavigationActivity extends AppCompatActivity
     weatherUtils=new weatherUI_utils();
     activity=this;
     setTheme(com.mapbox.services.android.navigation.ui.v5.R.style.Theme_AppCompat_NoActionBar);
-
     super.onCreate(savedInstanceState);
     Fabric.with(this, new Crashlytics());
+
 
 
     setContentView(R.layout.activity_navigation);

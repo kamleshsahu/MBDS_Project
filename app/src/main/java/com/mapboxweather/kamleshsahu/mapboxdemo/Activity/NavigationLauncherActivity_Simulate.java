@@ -55,6 +55,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.traffic.TrafficPlugin;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
@@ -472,10 +473,15 @@ public class NavigationLauncherActivity_Simulate extends AppCompatActivity
     public void onMapReady(MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
 
+
+
         String MAP_THEME=PreferenceManager.getDefaultSharedPreferences(this).getString(MAP_STYLE,style.LIGHT);
         if(MAP_THEME==null || MAP_THEME.equals(""))MAP_THEME=style.LIGHT;
 
         mapboxMap.setStyle(MAP_THEME, style -> {
+
+            TrafficPlugin trafficPlugin = new TrafficPlugin(mapView, mapboxMap,style);
+            trafficPlugin.setVisibility(true); // Enable the traffic view
 
             mapboxMap.addOnMapClickListener(this);
             this.style = style;
