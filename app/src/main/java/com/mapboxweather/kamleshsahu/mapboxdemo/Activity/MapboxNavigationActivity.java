@@ -342,7 +342,7 @@ public class MapboxNavigationActivity extends AppCompatActivity
               ,routeProgress.currentLegProgress().stepIndex(),
               getCorrection(location,routeProgress));
      }
-    }
+  }
 
   public void updateWeather(DirectionsRoute route, int currStep, StepCorrection correction){
     disablerefresh();

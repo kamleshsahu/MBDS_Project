@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler);
         progress=new ProgressDialog(this);
         departAt = findViewById(R.id.date1);
-      
+
         final Calendar c = Calendar.getInstance();
         timezone=c.getTimeZone().getID();
         mYear = c.get(Calendar.YEAR);

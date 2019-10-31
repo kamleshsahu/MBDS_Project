@@ -28,8 +28,6 @@ public class WeatherService extends AsyncTask<Void,Object,Void>
         IntermediatePointListener
 {
 
-
-
     private DirectionsRoute routedata=null;
     private String timezoneid;
     private long interval=50000;
